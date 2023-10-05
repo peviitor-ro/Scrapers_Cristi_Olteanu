@@ -24,6 +24,10 @@ def get_pages():
 
 
 def get_jobs():
+    """
+                 ... this func() make a simple requests
+                 and collect data from API.
+              """
 
     list_jobs = []
 
