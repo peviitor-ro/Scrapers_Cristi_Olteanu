@@ -60,7 +60,7 @@ def scrape_and_update_peviitor(company_name, data_list):
     return data_list
 
 
-company_name = 'FlTechincs'  # add test comment
+company_name = 'FlTechincs'
 data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
