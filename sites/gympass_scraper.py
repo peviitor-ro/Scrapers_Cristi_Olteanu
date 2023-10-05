@@ -1,15 +1,21 @@
+
+#
+#  Company - > Gympass
+# Link -> https://boards.greenhouse.io/gympass
+#
+
 import requests
 from bs4 import BeautifulSoup
-from headers import default_headers
+from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
+from L_00_logo import update_logo
 import uuid
 
-
-list_jobs = []
-
-response = requests.get('https://boards.greenhouse.io/gympass',headers=default_headers)
-soup = BeautifulSoup(response.text,'lxml')
-
 def get_jobs():
+
+    list_jobs = []
+
+    response = requests.get('https://boards.greenhouse.io/gympass', headers=DEFAULT_HEADERS)
+    soup = BeautifulSoup(response.text, 'lxml')
     jobs = soup.find_all('div',class_='opening')
 
     for job in jobs:
