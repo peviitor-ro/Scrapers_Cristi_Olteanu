@@ -59,3 +59,4 @@ scrape_and_update_peviitor(company_name, data_list)
 print(update_logo('Riverbed',
                   'https://cms.jibecdn.com/prod/riverbed/assets/HEADER-LOGO_IMG-en-us-1649182997894.png'
                   ))
+
