@@ -52,7 +52,7 @@ data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
 print(update_logo('assaabloy',
-                  'https://brandslogos.com/wp-content/uploads/thumbs/assa-abloy-logo-black-and-white.png'
+                  'https://www.hpd-collaborative.org/wp-content/uploads/2019/07/ASSA-ABLOY-logo-300x200.jpg'
                   ))
 
 
