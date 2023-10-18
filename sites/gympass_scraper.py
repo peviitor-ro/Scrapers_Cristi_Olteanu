@@ -3,7 +3,6 @@
 #  Company - > Gympass
 # Link -> https://boards.greenhouse.io/gympass
 #
-
 import requests
 from bs4 import BeautifulSoup
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
@@ -11,7 +10,9 @@ from L_00_logo import update_logo
 import uuid
 
 def get_jobs():
-
+    '''
+    This function collects data from the company site.
+    '''
     list_jobs = []
 
     response = requests.get('https://boards.greenhouse.io/gympass', headers=DEFAULT_HEADERS)
@@ -21,16 +22,25 @@ def get_jobs():
     for job in jobs:
         link = 'https://boards.greenhouse.io/' + job.find('a')['href']
         title = job.find('a').text
-        city = job.find('span',class_='location').text
+        location = job.find('span', class_='location').text
 
-        if city == 'Bucharest':
+        if 'Remote' in location:
+            type = 'remote'
+        elif 'Hybrid' in location:
+            type = 'hybrid'
+        else:
+            type = 'on-site'
+
+        if 'Romania' in location:
+            city = job.find('span', class_='location').text.split()[1].strip('(')
             list_jobs.append({
                 "id": str(uuid.uuid4()),
                 "job_title": title,
                 "job_link": link,
                 "company": "Gympass",
                 "country": "Romania",
-                "city": city
+                "city": city,
+                "remote": type
             })
     return list_jobs
 
@@ -43,7 +53,7 @@ def scrape_and_update_peviitor(company_name, data_list):
     return data_list
 
 
-company_name = 'Gympass'  # add test comment
+company_name = 'Gympass'
 data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
