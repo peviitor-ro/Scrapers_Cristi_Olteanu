@@ -11,7 +11,8 @@ import uuid
 
 def get_jobs():
     list_jobs = []
-    response = requests.get('https://careers.te.com/search/?createNewAlert=false&q=&locationsearch=Romania&optionsFacetsDD_customfield3=&optionsFacetsDD_department=')
+    response = requests.get('https://careers.te.com/search/?createNewAlert=false&q=&locationsearch=Romania&optionsFacetsDD_customfield3=&optionsFacetsDD_department='
+                            ,headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(response.text,'lxml')
 
     jobs = soup.find_all('tr', class_='data-row')
