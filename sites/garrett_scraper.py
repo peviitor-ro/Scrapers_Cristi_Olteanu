@@ -7,11 +7,13 @@ from L_00_logo import update_logo
 import requests
 import uuid
 
+
 def make_request(url):
 
     ses = requests.session()
-    response = ses.get(url,headers=DEFAULT_HEADERS).json()['items']
+    response = ses.get(url, headers=DEFAULT_HEADERS).json()['items']
     return response
+
 
 def get_num_jobs():
 
@@ -24,7 +26,7 @@ def get_jobs():
 
     list_jobs = []
 
-    for page in range(0,get_num_jobs(),25):
+    for page in range(0, get_num_jobs(), 25):
 
         r = make_request(f'https://ehth.fa.em2.oraclecloud.com/hcmRestApi/resources/latest/recruitingCEJobRequisitions?onlyData=true&expand=requisitionList.secondaryLocations,flexFieldsFacet.values&finder=findReqs;siteNumber=CX_2001,facetsList=LOCATIONS%3BWORK_LOCATIONS%3BWORKPLACE_TYPES%3BTITLES%3BCATEGORIES%3BORGANIZATIONS%3BPOSTING_DATES%3BFLEX_FIELDS,limit=25,locationId=300000000275207,sortBy=POSTING_DATES_DESC,offset={page}')[0]['requisitionList']
 
