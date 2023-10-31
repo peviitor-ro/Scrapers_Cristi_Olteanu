@@ -42,7 +42,7 @@ def get_jobs():
             link = 'https://www.adecco.ro/jobs/'+job.find('a')['href']
             title = job.find('a').text
 
-            if 'remote' in city.lower() or 'remote' in title.lower():
+            if 'remote' in city.lower() or 'remote' in title.lower() or 'Romania' in city:
                 city = ''
                 job_type = 'remote'
             else:
@@ -55,7 +55,11 @@ def get_jobs():
             elif 'Mures' in city:
                 city = 'Targu Mures'
             elif 'stefanestii' in city.lower():
-                city = 'Stefanesti de Jos'
+                city = 'Stefanestii de Jos'
+            elif 'Satu' in city:
+                city = 'Satu Mare'
+            elif 'cluj' in city.lower():
+                city = 'Cluj-Napoca'
 
             list_jobs.append({
                 "id": str(uuid.uuid4()),
