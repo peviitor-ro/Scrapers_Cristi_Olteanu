@@ -63,7 +63,8 @@ def get_jobs():
                 "job_link": link,
                 "company": "Adecco",
                 "country": "Romania",
-                "city": city
+                "city": city,
+                "remote": job_type
             })
 
     return list_jobs
