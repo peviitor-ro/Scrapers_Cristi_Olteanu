@@ -8,43 +8,42 @@ from bs4 import BeautifulSoup
 import requests
 import uuid
 
+
 def get_soup(url: str):
 
-    req = requests.get(url,headers=DEFAULT_HEADERS)
+    req = requests.get(url, headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(req.text, "lxml")
     return soup
 
+
 def get_num_pages():
 
-    soup_pages = get_soup(url='https://jobs.bonduelle.com/search/?q=&sortColumn=referencedate&sortDirection=desc&searchby=location&d=10&startrow=0')
-    num_jobs = int(soup_pages.find('span',class_='paginationLabel').text.split()[-1])
+    soup_pages = get_soup(url='https://jobs.bonduelle.com/search/?searchby=location&createNewAlert=false&q=&locationsearch=Romania&geolocation=&optionsFacetsDD_country=&optionsFacetsDD_customfield1=&optionsFacetsDD_customfield3=')
+    num_jobs = int(soup_pages.find('span', class_='paginationLabel').text.split()[-1])
     return num_jobs
+
 
 def get_jobs():
     list_jobs = []
 
-    for page in range(0,get_num_pages(),20):
+    for page in range(0, get_num_pages(), 20):
 
-        soup_jobs = get_soup(url=f'https://jobs.bonduelle.com/search/?q=&sortColumn=referencedate&sortDirection=desc&searchby=location&d=10&startrow={page}')
-        jobs = soup_jobs.find_all('tr',class_='data-row')
+        soup_jobs = get_soup(url=f'https://jobs.bonduelle.com/search/?searchby=location&createNewAlert=false&q=&locationsearch=Romania&geolocation=&optionsFacetsDD_country=&optionsFacetsDD_customfield1=&optionsFacetsDD_customfield3=&startrow={page}')
+        jobs = soup_jobs.find_all('tr', class_='data-row')
 
         for job in jobs:
-            title = job.find('a',class_='jobTitle-link').text
-            link = 'https://jobs.bonduelle.com' + job.find('a',class_='jobTitle-link')['href']
-            city = job.find('span',class_='jobLocation').text.split(',')[0].strip()
-            location = job.find('span',class_='jobLocation').text.split(',')[1].strip()
+            title = job.find('a', class_='jobTitle-link').text
+            link = 'https://jobs.bonduelle.com' + job.find('a', class_='jobTitle-link')['href']
+            city = job.find('span', class_='jobLocation').text.split(',')[0].strip()
 
-            if 'RO' in location:
-
-                list_jobs.append({
-                    "id": str(uuid.uuid4()),
-                    "job_title": title,
-                    "job_link": link,
-                    "company": "Bonduelle",
-                    "country": "Romania",
-                    "city": city,
+            list_jobs.append({
+                "id": str(uuid.uuid4()),
+                "job_title": title,
+                "job_link": link,
+                "company": "Bonduelle",
+                "country": "Romania",
+                "city": city,
                 })
-
     return list_jobs
 
 @update_peviitor_api
