@@ -11,40 +11,44 @@ import uuid
 
 def get_soup(url: str):
 
-    res = requests.get(url,headers=DEFAULT_HEADERS)
+    res = requests.get(url, headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(res.text,'lxml')
     return soup
 
+
 def get_nr_pages():
 
-    soup_pages = get_soup('https://careers.stericycle.com/search/?q=&locationsearch=Romania&searchby=location&d=10&startrow=')
-    nr_pages = int(soup_pages.find('span',class_='paginationLabel').text.split()[-1])
+    soup_pages = get_soup('https://careers.stericycle.com/search/?q=&q2=&alertId=&locationsearch=&geolocation=&searchby=location&d=10&lat=&lon=&title=&location=Romania')
+    try:
+        nr_pages = int(soup_pages.find('span', class_='paginationLabel').text.split()[-1])
+    except:
+        nr_pages = 0
     return nr_pages
 
 
 def get_jobs():
     list_jobs = []
 
-    for page in range(0,get_nr_pages(),10):
+    for page in range(0, get_nr_pages(), 10):
 
-        soup_jobs = get_soup('https://careers.stericycle.com/search/?q=&locationsearch=Romania&searchby=location&d=10&startrow='+str(page))
+        soup_jobs = get_soup('https://careers.stericycle.com/search/?q=&q2=&alertId=&locationsearch=&geolocation=&searchby=location&d=10&lat=&lon=&title=&location=Romania'+str(page))
         jobs = soup_jobs.find_all('tr', class_='data-row')
 
-        for job in jobs:
+        if len(jobs) > 0:
 
-            title = job.find('a',class_='jobTitle-link').text
-            link = 'https://careers.stericycle.com/' + job.find('a',class_='jobTitle-link')['href']
-            city = job.find('span',class_='jobLocation').text.split(',')[0].strip()
+            for job in jobs:
+                title = job.find('a', class_='jobTitle-link').text
+                link = 'https://careers.stericycle.com/' + job.find('a',class_='jobTitle-link')['href']
+                city = job.find('span', class_='jobLocation').text.split(',')[0].strip()
 
-            list_jobs.append({
-                "id": str(uuid.uuid4()),
-                "job_title": title,
-                "job_link": link,
-                "company": "Stericycle",
-                "country": "Romania",
-                "city": city
-            })
-
+                list_jobs.append({
+                    "id": str(uuid.uuid4()),
+                    "job_title": title,
+                    "job_link": link,
+                    "company": "Stericycle",
+                    "country": "Romania",
+                    "city": city
+                })
     return list_jobs
 
 @update_peviitor_api
