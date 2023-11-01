@@ -19,7 +19,10 @@ def get_soup(url: str):
 def get_num_pages():
 
     soup_pages = get_soup(url='https://jobs.bonduelle.com/search/?searchby=location&createNewAlert=false&q=&locationsearch=Romania&geolocation=&optionsFacetsDD_country=&optionsFacetsDD_customfield1=&optionsFacetsDD_customfield3=')
-    num_jobs = int(soup_pages.find('span', class_='paginationLabel').text.split()[-1])
+    try:
+        num_jobs = int(soup_pages.find('span', class_='paginationLabel').text.split()[-1])
+    except:
+        num_jobs = 0
     return num_jobs
 
 
