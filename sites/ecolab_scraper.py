@@ -68,14 +68,15 @@ def get_jobs():
         title = job['title']
         link = 'https://ecolab.wd1.myworkdayjobs.com/en-US/Ecolab_External' + job['externalPath']
         location = job['locationsText']
-        city = location.split('-')[-1]
+        city = location.split('-')[-1].strip()
 
         if 'locations' in location.lower():
             additional_locations = session.get(f"https://ecolab.wd1.myworkdayjobs.com/wday/cxs/ecolab/Ecolab_External{job['externalPath']}",
                                                headers=data[2]).json()['jobPostingInfo']['additionalLocations']
             for additional_location in additional_locations:
                 if 'ROU' in additional_location:
-                    city = additional_location.split('-')[-1]
+                    city = additional_location.split('-')[-1].strip()
+
 
         list_jobs.append({
             "id": str(uuid.uuid4()),
@@ -86,6 +87,7 @@ def get_jobs():
             "city": city
         })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
