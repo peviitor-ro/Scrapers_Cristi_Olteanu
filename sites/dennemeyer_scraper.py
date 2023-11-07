@@ -11,7 +11,7 @@ import re
 
 def get_ids() -> tuple:
     response = requests.head(
-        url='https://dennemeyer.wd3.myworkdayjobs.com/wday/cxs/dennemeyer/dennemeyer_linkedIn/jobs',
+        url='https://dennemeyer.wd3.myworkdayjobs.com/wday/cxs/dennemeyer/dennemeyer_careers/jobs',
         headers=DEFAULT_HEADERS).headers
 
     play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
@@ -27,7 +27,7 @@ def get_jobs():
 
     data = get_ids()
 
-    url = "https://dennemeyer.wd3.myworkdayjobs.com/wday/cxs/dennemeyer/dennemeyer_linkedIn/jobs"
+    url = "https://dennemeyer.wd3.myworkdayjobs.com/wday/cxs/dennemeyer/dennemeyer_careers/jobs"
 
     payload = {
         "appliedFacets": {"locations": ["99c9060b642e1001e86635de40a00000"]},
@@ -46,7 +46,7 @@ def get_jobs():
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-origin",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36.",
         "sec-ch-ua": '"Chromium";v="118", "Google Chrome";v="118", "Not=A?Brand";v="99"',
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": "Windows",
@@ -56,7 +56,7 @@ def get_jobs():
 
     for job in response:
         title = job['title']
-        link = 'https://dennemeyer.wd3.myworkdayjobs.com/en-US/dennemeyer_linkedIn' + job['externalPath']
+        link = 'https://dennemeyer.wd3.myworkdayjobs.com/en-US/dennemeyer_careers' + job['externalPath']
 
         list_jobs.append({
             "id": str(uuid.uuid4()),
@@ -67,6 +67,7 @@ def get_jobs():
             "city": 'Brasov'
         })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
