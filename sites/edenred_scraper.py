@@ -23,23 +23,21 @@ def get_jobs():
 
   for page in range(0,get_pages()):
     res = requests.get(f'https://www.edenred.ro/ro/api/jobs?page={page}&_=1696064805636').json()['rows']
-    city = job['field_locatie_job']
-
-    if 'Sfantul' in job['field_locatie_job']:
-        city = 'Sfântu Gheorghe'
-
 
     for job in res:
+        city = job['field_locatie_job']
 
-      list_jobs.append({
-        "id": str(uuid.uuid4()),
-        "job_title": job['title'],
-        "job_link": 'https://www.edenred.ro'+job['nid'],
-        "company": "Edenred",
-        "country": "Romania",
-        "city": city
-      })
+        if 'Sfântul' in city:
+            city = 'Sfantu Gheorghe'
 
+        list_jobs.append({
+            "id": str(uuid.uuid4()),
+            "job_title": job['title'],
+            "job_link": 'https://www.edenred.ro' + job['nid'],
+            "company": "Edenred",
+            "country": "Romania",
+            "city": city
+        })
   return list_jobs
 
 @update_peviitor_api
