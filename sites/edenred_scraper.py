@@ -23,6 +23,10 @@ def get_jobs():
 
   for page in range(0,get_pages()):
     res = requests.get(f'https://www.edenred.ro/ro/api/jobs?page={page}&_=1696064805636').json()['rows']
+    city = job['field_locatie_job']
+
+    if 'Sfantul' in job['field_locatie_job']:
+        city = 'Sfântu Gheorghe'
 
 
     for job in res:
@@ -33,7 +37,7 @@ def get_jobs():
         "job_link": 'https://www.edenred.ro'+job['nid'],
         "company": "Edenred",
         "country": "Romania",
-        "city": job['field_locatie_job']
+        "city": city
       })
 
   return list_jobs
