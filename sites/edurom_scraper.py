@@ -35,53 +35,60 @@ def get_jobs():
     for job in jobs:
         title = job.find('a').text
         link = job.find('a')['href']
-        city = job.find('span', class_='awsm-job-specification-term').text
-        location = ''
+        list_city = job.find('div', class_='awsm-job-specification-item awsm-job-specification-job-location'
+                             ).text.split()
 
-        try:
-            location = job.find('div', class_='awsm-job-specification-item awsm-job-specification-job-location').text
-        except:
-            pass
-
-        if 'Remote' in location:
-            remote = 'remote'
-        elif 'Hybrid' in location:
-            remote = 'hybrid'
+        if len(list_city) == 1 and 'Remote' in list_city:
+            city = 'Bucuresti'
+            job_type = 'remote'
+        elif 'Hybrid' in list_city:
+            job_type = 'hybrid'
+            city = 'Bucuresti'
         else:
-            remote = 'on-site'
+            city = list_city
+            job_type = 'on-site'
 
-        if city == 'Hybrid':
-            city = location.split()[-1]
+        if len(list_city) > 1 and 'Remote' in list_city:
+            list_city.remove('Remote')
+            city = list_city
+            job_type = 'remote'
 
-        if city != 'Closed' and city != 'Senior':
-            list_jobs.append({
-                "id": str(uuid.uuid4()),
-                "job_title": title,
-                "job_link": link,
-                "company": "Edurom",
-                "country": "Romania",
-                "city": city,
-                "remote": remote
-            })
+        elif 'Hybrid' in list_city:
+            list_city.remove('Hybrid')
+            city = list_city
+            job_type = 'hybrid'
+        else:
+            job_type = 'on-site'
+
+        list_jobs.append({
+            "id": str(uuid.uuid4()),
+            "job_title": title,
+            "job_link": link,
+            "company": "Edurom",
+            "country": "Romania",
+            "city": city,
+            "remote": job_type
+        })
 
     return list_jobs
 
-@update_peviitor_api
-def scrape_and_update_peviitor(company_name, data_list):
-    """
-    Update data on peviitor API!
-    """
-
-    return data_list
-
-
-company_name = 'Edurom'  # add test comment
-data_list = get_jobs()
-scrape_and_update_peviitor(company_name, data_list)
-
-print(update_logo('Edurom',
-                  'https://images.crunchbase.com/image/upload/c_lpad,h_170,w_170,f_auto,b_white,q_auto:eco,dpr_1/v1460910381/o5sxwffz8lb8h6dpbs2b.png'
-                  ))
+#
+# @update_peviitor_api
+# def scrape_and_update_peviitor(company_name, data_list):
+#     """
+#     Update data on peviitor API!
+#     """
+#
+#     return data_list
+#
+#
+# company_name = 'Edurom'  # add test comment
+# data_list = get_jobs()
+# scrape_and_update_peviitor(company_name, data_list)
+#
+# print(update_logo('Edurom',
+#                   'https://images.crunchbase.com/image/upload/c_lpad,h_170,w_170,f_auto,b_white,q_auto:eco,dpr_1/v1460910381/o5sxwffz8lb8h6dpbs2b.png'
+#                   ))
 
 
 
