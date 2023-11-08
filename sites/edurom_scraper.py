@@ -8,91 +8,61 @@ import requests
 from bs4 import BeautifulSoup
 import uuid
 
-session = requests.Session()
 
-def prepare_post(page: str):
+def prepare_post():
 
-    url= 'https://www.edurom.ro/wp-admin/admin-ajax.php'
+    url = "https://www.edurom.ro/wp-admin/admin-ajax.php"
 
-    headers={
-        'authority':'www.edurom.ro',
-        'accept': '/',
-        'accept-language': 'en-US,en;q=0.9',
-        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'origin': 'https://www.edurom.ro/',
-        'referer': 'https://www.edurom.ro/it-jobs/',
-        'sec-ch-ua': '"Chromium";v="116", "Not)A;Brand";v="24", "Brave";v="116"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Linux"',
-        'sec-fetch-dest': 'empty',
-        'sec-fetch-mode': 'cors',
-        'sec-fetch-site': 'same-origin',
-        'sec-gpc': '1',
-        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
-        'x-requested-with': 'XMLHttpRequest',
-            }
+    payload = "jq=&awsm_job_spec%5Bjob-type%5D=&awsm_job_spec%5Bjob-location%5D=&awsm_job_spec%5Bjob-level%5D=&awsm_job_spec%5Bjob-status%5D=29&awsm_job_spec%5Bjob-requirements%5D=&action=jobfilter&listings_per_page=100&shortcode_specs=job-category%3A18"
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
+    }
 
-    data = {'action': 'loadmore',
-            'paged': f'{page}',
-            'listings_per_page': '100',
-            'shortcode_specs': 'job-category%3A18'}
+    return url, payload, headers
 
-    return url, headers, data
 
 def get_jobs():
 
     list_jobs = []
+    data = prepare_post()
 
-    page = 0
-    flag = True
+    response = requests.request("POST", data[0], data=data[1], headers=data[2])
+    soup = BeautifulSoup(response.text, 'lxml')
 
-    while flag:
+    jobs = soup.find_all('div', class_='awsm-job-listing-item awsm-list-item')
 
-        data = prepare_post(str(page))
-        res = requests.post(url=data[0], headers=data[1], data=data[2])
-        soup = BeautifulSoup(res.text,'lxml')
+    for job in jobs:
+        title = job.find('a').text
+        link = job.find('a')['href']
+        city = job.find('span', class_='awsm-job-specification-term').text
+        location = ''
 
-        jobs = soup.find_all('div', class_='awsm-job-listing-item awsm-list-item')
+        try:
+            location = job.find('div', class_='awsm-job-specification-item awsm-job-specification-job-location').text
+        except:
+            pass
 
-        if len(jobs) > 0:
-
-
-            for job in jobs:
-                title = job.find('a').text
-                link = job.find('a')['href']
-                city = job.find('span', class_='awsm-job-specification-term').text
-
-                try:
-                    location = job.find('div',class_='awsm-job-specification-item awsm-job-specification-job-location').text
-                except:
-                    pass
-
-
-                if 'Remote' in location:
-                    remote = 'remote'
-                elif 'Hybrid' in location:
-                    remote = 'hybrid'
-                else:
-                    remote = 'on-site'
-
-                if city == 'Hybrid':
-                    city = location.split()[-1]
-
-                if city != 'Closed' and city != 'Senior':
-
-                    list_jobs.append({
-                        "id": str(uuid.uuid4()),
-                        "job_title": title,
-                        "job_link": link,
-                        "company": "Edurom",
-                        "country": "Romania",
-                        "city": city,
-                        "remote": remote
-                    })
-
+        if 'Remote' in location:
+            remote = 'remote'
+        elif 'Hybrid' in location:
+            remote = 'hybrid'
         else:
-            flag= False
-        page+=1
+            remote = 'on-site'
+
+        if city == 'Hybrid':
+            city = location.split()[-1]
+
+        if city != 'Closed' and city != 'Senior':
+            list_jobs.append({
+                "id": str(uuid.uuid4()),
+                "job_title": title,
+                "job_link": link,
+                "company": "Edurom",
+                "country": "Romania",
+                "city": city,
+                "remote": remote
+            })
 
     return list_jobs
 
