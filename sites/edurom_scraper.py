@@ -72,23 +72,23 @@ def get_jobs():
 
     return list_jobs
 
-#
-# @update_peviitor_api
-# def scrape_and_update_peviitor(company_name, data_list):
-#     """
-#     Update data on peviitor API!
-#     """
-#
-#     return data_list
-#
-#
-# company_name = 'Edurom'  # add test comment
-# data_list = get_jobs()
-# scrape_and_update_peviitor(company_name, data_list)
-#
-# print(update_logo('Edurom',
-#                   'https://images.crunchbase.com/image/upload/c_lpad,h_170,w_170,f_auto,b_white,q_auto:eco,dpr_1/v1460910381/o5sxwffz8lb8h6dpbs2b.png'
-#                   ))
+
+@update_peviitor_api
+def scrape_and_update_peviitor(company_name, data_list):
+    """
+    Update data on peviitor API!
+    """
+
+    return data_list
+
+
+company_name = 'Edurom'  # add test comment
+data_list = get_jobs()
+scrape_and_update_peviitor(company_name, data_list)
+
+print(update_logo('Edurom',
+                  'https://images.crunchbase.com/image/upload/c_lpad,h_170,w_170,f_auto,b_white,q_auto:eco,dpr_1/v1460910381/o5sxwffz8lb8h6dpbs2b.png'
+                  ))
 
 
 
