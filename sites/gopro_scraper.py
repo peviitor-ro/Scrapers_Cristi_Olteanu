@@ -21,27 +21,35 @@ def get_soup(url):
 def get_jobs():
 
     list_jobs = []
+    url = "https://jobs.gopro.com/api/v1/jobs/external"
 
-    soup = get_soup('https://jobs.gopro.com/all-openings#/')
-    jobs = soup.find_all('a', class_='c-blk h-c-gopro td-n-h')
+    payload = {
+        "group": "gopro",
+        "group_id": "1613",
+        "filters": "{}",
+        "query": "Romania'",
+        "from": 0,
+        "mobile": 0,
+        "session": "",
+        "old_search": 0}
 
-    for job in jobs:
-        link = 'https://jobs.gopro.com' + job.get('href')
-        title = job.find('p', class_='m0 fz-16 fz-22--md fw-bld').text
-        location = job.find('div', class_='col-xs-12 col-sm-10').text.split()
+    response = sessions.post(url, json=payload, headers=DEFAULT_HEADERS
+                             ).json()['response']['matchingJobs']
 
-        if 'Bucharest' in location:
+    for job in response:
+        title = job['jobTitleSnippet']
+        link = job['job']['customAttributes']['url']['stringValues'][0]
 
-            location_headline = get_soup(link).find('div', class_='col-md-7').find('h5').text
+        location_headline = get_soup(link).find('div', class_='col-md-7').find('h5').text
 
-            if 'flexible' in location_headline.lower():
-                job_type = 'hybrid'
-            elif 'remote' in location_headline.lower():
-                job_type = 'remote'
-            else:
-                job_type = 'on-ssite'
+        if 'flexible' in location_headline.lower():
+            job_type = 'hybrid'
+        elif 'remote' in location_headline.lower():
+            job_type = 'remote'
+        else:
+            job_type = 'on-site'
 
-            list_jobs.append({
+        list_jobs.append({
                 "id": str(uuid.uuid4()),
                 "job_title": title,
                 "job_link": link,
@@ -52,6 +60,7 @@ def get_jobs():
             })
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
