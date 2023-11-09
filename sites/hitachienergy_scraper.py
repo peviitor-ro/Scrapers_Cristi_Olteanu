@@ -45,6 +45,6 @@ data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
 print(update_logo('hitachienergy',
-                  'https://1000logos.net/wp-content/uploads/2018/01/Hitachi-logo-500x212.jpg'
+                  'https://www.hitachienergy.com/content/dam/web/logo/hitachi-logo.svg'
                   ))
 
