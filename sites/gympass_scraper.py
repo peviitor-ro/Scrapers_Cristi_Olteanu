@@ -7,7 +7,6 @@ import requests
 from bs4 import BeautifulSoup
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
-import uuid
 
 def get_jobs():
     '''
@@ -17,7 +16,7 @@ def get_jobs():
 
     response = requests.get('https://boards.greenhouse.io/gympass', headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(response.text, 'lxml')
-    jobs = soup.find_all('div',class_='opening')
+    jobs = soup.find_all('div', class_='opening')
 
     for job in jobs:
         link = 'https://boards.greenhouse.io/' + job.find('a')['href']
@@ -34,7 +33,6 @@ def get_jobs():
         if 'Romania' in location:
             city = job.find('span', class_='location').text.split()[1].strip('(')
             list_jobs.append({
-                "id": str(uuid.uuid4()),
                 "job_title": title,
                 "job_link": link,
                 "company": "Gympass",
@@ -43,6 +41,7 @@ def get_jobs():
                 "remote": type
             })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
