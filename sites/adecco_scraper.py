@@ -43,7 +43,7 @@ def get_jobs():
             title = job.find('a').text
 
             if 'remote' in city.lower() or 'remote' in title.lower() or 'Romania' in city:
-                city = ''
+                city = 'Bucuresti'
                 job_type = 'remote'
             else:
                 job_type = 'on-site'
@@ -61,8 +61,9 @@ def get_jobs():
             elif 'cluj' in city.lower():
                 city = 'Cluj-Napoca'
 
+            print(city)
+
             list_jobs.append({
-                "id": str(uuid.uuid4()),
                 "job_title": title,
                 "job_link": link,
                 "company": "Adecco",
@@ -73,16 +74,13 @@ def get_jobs():
 
     return list_jobs
 
-get_jobs()
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
     """
     Update data on peviitor API!
     """
-
     return data_list
-
 
 company_name = 'Adecco'  # add test comment
 data_list = get_jobs()
