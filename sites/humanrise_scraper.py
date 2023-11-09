@@ -6,7 +6,6 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
 
 
 def get_soup(url):
@@ -42,12 +41,11 @@ def get_jobs():
                 title = str(job.find('h5')).split('>')[1].strip('</h5').strip().replace('&amp;', '&')
                 link = 'https://www.careers-page.com' + text
                 try:
-                    city = str(job.find('span')).split('</span')[0].split('i>')[1].split(',')[0]
+                    city = str(job.find('span')).split('</span')[0].split('i>')[1].split(',')[0].strip()
                 except:
                     city = 'Iasi'
 
                 list_jobs.append({
-                    "id": str(uuid.uuid4()),
                     "job_title": title,
                     "job_link": link,
                     "company": "Humanrise",
