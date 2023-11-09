@@ -50,7 +50,7 @@ def get_jobs():
 
             if 'Com' in city:
                 city = city.split()[0]
-            elif 'Bucuresti' in city or '104H' in city:
+            elif 'Bucuresti' in city or '104H' in city or 'Bucharest' in city:
                 city = 'Bucuresti'
             elif 'Mures' in city:
                 city = 'Targu Mures'
