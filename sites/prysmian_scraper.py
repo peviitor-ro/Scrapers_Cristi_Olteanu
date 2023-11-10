@@ -63,7 +63,6 @@ def get_jobs():
     for job in response:
         title = job['title']
         link = 'https://prysmiangroup.wd3.myworkdayjobs.com/en-US/Careers' + job['externalPath']
-        city = job['locationsText'].split()[0]
 
         list_jobs.append({
             "id": str(uuid.uuid4()),
@@ -71,9 +70,10 @@ def get_jobs():
             "job_link": link,
             "company": "Prysmian",
             "country": "Romania",
-            "city": city,
+            "city": 'Slatina',
         })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
