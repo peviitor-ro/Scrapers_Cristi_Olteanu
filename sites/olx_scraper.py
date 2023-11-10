@@ -21,11 +21,9 @@ def get_jobs():
         title = job.find('h5').text
         country = job.find('span',class_='sort-by-location posting-category small-category-label location').text.split(', ')[-1]
         location = job.find('span',class_='sort-by-location posting-category small-category-label location').text.split(', ')[0]
-        city = ''
-        remote = ''
 
         if 'Remote' in location:
-            city = 'remote'
+            city = 'Bucuresti'
             remote = 'remote'
         else:
             city = location
