@@ -20,7 +20,7 @@ def get_jobs():
         soup = BeautifulSoup(job, 'lxml')
         link = soup.find('a')['href']
         title = soup.find('a').text
-        city = soup.find('div', class_='muted asc-job-public-stats').text.split(' Location:')[-1].split(',')[0]
+        city = soup.find('div', class_='muted asc-job-public-stats').text.split(' Location:')[-1].split(',')[0].strip()
 
         list_jobs.append({
             "id": str(uuid.uuid4()),
