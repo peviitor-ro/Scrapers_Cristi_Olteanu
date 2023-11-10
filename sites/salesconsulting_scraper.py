@@ -56,7 +56,7 @@ def get_jobs():
                     soup_city = get_soup(link)
                     city = soup_city.find('dl',
                                           class_='md:max-w-[70%] mx-auto text-md gap-y-0 md:gap-y-5 flex flex-wrap flex-col md:flex-row company-links'
-                                          ).text.split('Locații')[1].split('Status')[0].strip().split(',')
+                                          ).text.split('Locații')[1].split('Status')[0].strip().split(', ')
 
                 list_jobs.append({
                     "id": str(uuid.uuid4()),
@@ -69,6 +69,7 @@ def get_jobs():
                 })
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
