@@ -32,32 +32,32 @@ def get_jobs():
 
         for job in jobs:
             text = job.find('a',class_='job-card__link more-link')
-            if text != None:
+            if text is not None:
                 link = text['href']
                 title = job.find('a').text
                 try:
                     city = job.find('ul',class_='job-card__details').text.split(',')[-2].split()[-1]
                 except:
                     city = job.find('ul',class_='job-card__details').text.split(',')[-1].split()[-1]
-                if city == 'Neamt' or city == 'Neamţ':
+                if 'Neamt' in city:
                     city = 'Piatra Neamt'
-                elif city == 'Harghita':
+                elif 'Harghita' in city:
                     city = 'Miercurea Ciuc'
-                elif city == 'Dolj':
+                elif 'Dolj' in city:
                     city = 'Craiova'
-                elif city == 'Iulia':
+                elif 'Iulia' in city:
                     city = 'Alba Iulia'
-                elif city == 'Jiu':
+                elif 'Jiu' in city:
                     city = 'Targu Jiu'
-                elif city == 'Valcea':
+                elif 'Valcea' in city:
                     city = 'Ramnicu Valcea'
-                elif city == 'Mures':
+                elif 'Mures' in city:
                     city = 'Targu Mures'
-                elif city == 'Mare':
+                elif 'Mare' in city:
                     city = 'Satu Mare'
-                elif city == 'Romania' or city.lower() == 'negotiable' or city == 'Negotiable':
+                elif city.lower() in ['romania', 'negotiable', 'ilfov']:
                     city = 'Bucuresti'
-                elif city == 'Ialomita':
+                elif 'Ialomita' in city:
                     city = 'Slobozia'
 
                 if 'on site' in title.lower() or 'on-site' in title.lower():
