@@ -46,12 +46,12 @@ def get_jobs():
                 title = str(job.find('h5')).split('\n')[1].strip()
                 link = 'https://www.careers-page.com' + link_text
                 try:
-                    city = str(job.find('span')).split('i>')[1].split(',')[0]
+                    city = str(job.find('span')).split('i>')[1].split(',')[0].strip()
                     job_type = 'on-site'
                 except:
-                    city = ''
+                    city = 'Bucharest'
                     job_type = 'remote'
-
+                print(city)
                 list_jobs.append({
                     "id": str(uuid.uuid4()),
                     "job_title": title,
@@ -62,23 +62,23 @@ def get_jobs():
                     "remote": job_type
                 })
     return list_jobs
-
-@update_peviitor_api
-def scrape_and_update_peviitor(company_name, data_list):
-    """
-    Update data on peviitor API!
-    """
-
-    return data_list
-
-
-company_name = 'ObenTechnology'  # add test comment
-data_list = get_jobs()
-scrape_and_update_peviitor(company_name, data_list)
-
-print(update_logo('ObenTechnology',
-                  'https://manatal-backend-public-assets.s3.amazonaws.com/media/career_portal_logo_direct_upload/b81ef1de-4098-4e0a-af8c-b3c5858e412f_oben-logo-268x268.png'
-                  ))
+get_jobs()
+# @update_peviitor_api
+# def scrape_and_update_peviitor(company_name, data_list):
+#     """
+#     Update data on peviitor API!
+#     """
+#
+#     return data_list
+#
+#
+# company_name = 'ObenTechnology'  # add test comment
+# data_list = get_jobs()
+# scrape_and_update_peviitor(company_name, data_list)
+#
+# print(update_logo('ObenTechnology',
+#                   'https://manatal-backend-public-assets.s3.amazonaws.com/media/career_portal_logo_direct_upload/b81ef1de-4098-4e0a-af8c-b3c5858e412f_oben-logo-268x268.png'
+#                   ))
 
 
 
