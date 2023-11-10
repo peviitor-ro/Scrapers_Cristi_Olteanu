@@ -30,7 +30,7 @@ def get_jobs():
             pass
 
         if city == 'Remote':
-            city = ''
+            city = 'Oradea'
             type = 'remote'
         else:
             type = 'on-site'
