@@ -32,7 +32,7 @@ def get_jobs():
         for job in jobs:
             title = job.find('a').text
             link = job.find('a')['href']
-            city = job.find('div',class_='list__item__text__subtitle').text.split('City:')[-1].split('.')[0]
+            city = job.find('div',class_='list__item__text__subtitle').text.split('City:')[-1].split('.')[0].strip()
 
             list_jobs.append({
                 "id": str(uuid.uuid4()),
