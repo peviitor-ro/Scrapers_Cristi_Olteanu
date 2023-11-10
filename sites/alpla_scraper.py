@@ -45,6 +45,9 @@ def get_jobs():
                 title = text.find('a').text
                 city = job.findNext('td', class_='views-field views-field-field-location-city').find('a').text
 
+                if 'Bucharest' in city:
+                    city = 'Bucharest'
+
                 list_jobs.append({
                     "id": str(uuid.uuid4()),
                     "job_title": title,
