@@ -39,7 +39,7 @@ def get_jobs():
                     city = job.find('ul',class_='job-card__details').text.split(',')[-2].split()[-1]
                 except:
                     city = job.find('ul',class_='job-card__details').text.split(',')[-1].split()[-1]
-                if 'Neamt' in city:
+                if 'Neamt' in city or 'Neamţ' in city:
                     city = 'Piatra Neamt'
                 elif 'Harghita' in city:
                     city = 'Miercurea Ciuc'
@@ -51,13 +51,13 @@ def get_jobs():
                     city = 'Targu Jiu'
                 elif 'Valcea' in city:
                     city = 'Ramnicu Valcea'
-                elif 'Mures' in city:
+                elif 'Mures' in city or 'Mureş' in city:
                     city = 'Targu Mures'
                 elif 'Mare' in city:
                     city = 'Satu Mare'
-                elif city.lower() in ['romania', 'negotiable', 'ilfov', '€']:
+                elif city.lower() in ['romania', 'negotiable', 'ilfov', '€150']:
                     city = 'Bucuresti'
-                elif 'Ialomita' in city:
+                elif 'Ialomita' in city or 'Ialomița' in city:
                     city = 'Slobozia'
 
                 if 'on site' in title.lower() or 'on-site' in title.lower():
