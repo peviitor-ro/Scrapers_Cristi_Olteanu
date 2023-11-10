@@ -24,7 +24,7 @@ def get_jobs():
         location = job['data']['city']
 
         if location == 'Home Office':
-            city = country_location
+            city = 'Cluj-Napoca'
             remote = 'remote'
         else:
             city = location
