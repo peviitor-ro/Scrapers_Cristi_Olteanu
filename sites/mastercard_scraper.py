@@ -10,6 +10,7 @@ import uuid
 
 session = requests.Session()
 
+
 def get_cookies() -> tuple:
 
     response = session.head(
@@ -19,6 +20,7 @@ def get_cookies() -> tuple:
     play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
     phpppe_act = re.search(r"PHPPPE_ACT=([^;]+);", str(response)).group(0)
     return play_session, phpppe_act
+
 
 def prepare_post():
 
@@ -66,6 +68,7 @@ def prepare_post():
     }
     return url,payload,headers
 
+
 def get_jobs():
 
     data = prepare_post()
@@ -74,7 +77,6 @@ def get_jobs():
 
     for job in response:
         title = job['title']
-        city = job['city']
         link = 'https://careers.mastercard.com/us/en/job/' + job['jobId']
 
         list_jobs.append({
@@ -83,7 +85,7 @@ def get_jobs():
             "job_link": link,
             "company": "mastercard",
             "country": "Romania",
-            "city": city,
+            "city": 'Bucuresti',
         })
     return list_jobs
 
