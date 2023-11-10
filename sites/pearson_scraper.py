@@ -23,6 +23,7 @@ def get_jobs():
         location = job.find('span', class_='hiringPlace').text.strip().split(',')[0]
 
         if location == 'Romania':
+            location = 'Bucuresti'
             remote = 'remote'
         else:
             remote = 'on-site'
