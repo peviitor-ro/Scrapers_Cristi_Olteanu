@@ -19,7 +19,6 @@ def get_jobs():
 
         country = job['data']['country']
         other_city = job['data']['full_location'].split(';')[-1].split(',')[0].strip()
-        city = ''
 
         if country == 'Romania':
             city = job['data']['city']
@@ -32,7 +31,7 @@ def get_jobs():
             "job_link": job['data']['meta_data']['canonical_url'],
             "company": "Pepsico",
             "country": "Romania",
-            "city": city,
+            "city": city.strip('Com.').strip(),
         })
 
     return list_jobs
