@@ -30,7 +30,7 @@ def get_jobs():
                "job_link": link,
                "company": "Consensys",
                "country": "Romania",
-               "city": 'remote',
+               "city": 'Cluj-Napoca',
                "remote": 'remote'
            })
 
