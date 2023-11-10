@@ -28,7 +28,7 @@ def get_jobs():
         offices = job['offices']
         for office in offices:
             if 'Romania' in office['name']:
-                city = 'Cluj_napoca'
+                city = 'Cluj-Napoca'
                 job_type = 'remote'
 
                 list_jobs.append({
