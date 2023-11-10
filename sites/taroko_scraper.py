@@ -32,7 +32,7 @@ def get_jobs():
                 "job_link": link,
                 "company": "taroko",
                 "country": "Romania",
-                "city": "",
+                "city": "Bucuresti",
                 "remote": type
             })
     return list_jobs
