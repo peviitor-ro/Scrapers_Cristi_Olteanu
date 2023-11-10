@@ -22,7 +22,6 @@ def get_jobs():
     for job in jobs:
         link = job.find('a',class_='dettaglio')['href']
         title = job.find('div',class_='col-10').text.strip()
-        city = job.find('li',class_='card-text size-16 blue font-weight-bold posto').text.split(',')[0]
 
         list_jobs.append({
             "id": str(uuid.uuid4()),
@@ -30,9 +29,10 @@ def get_jobs():
             "job_link": link,
             "company": "wyser",
             "country": "Romania",
-            "city": city
+            "city": 'Bucuresti'
         })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
