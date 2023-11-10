@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 import requests
 import uuid
 
+
 def get_jobs():
     response = requests.get('https://mobilexpense.recruitee.com/', headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(response.text, 'lxml')
@@ -24,9 +25,8 @@ def get_jobs():
         except:
             remote = 'on-site'
 
-        city = job.find('span',class_='custom-css-style-job-location-city').text
+        city = job.find('span',class_='custom-css-style-job-location-city').text.split(' or ')
         country = job.find('span',class_='custom-css-style-job-location-country').text
-
         if country == 'Romania':
 
             list_jobs.append({
@@ -38,7 +38,7 @@ def get_jobs():
                 "city": city,
                 "remote": remote
             })
-    return  list_jobs
+    return list_jobs
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
