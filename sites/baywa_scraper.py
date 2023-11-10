@@ -38,7 +38,7 @@ def get_jobs():
                 link = text.find('a')['href']
                 title = text.find('a').text
                 country = job.find('td', class_='real_table_col5').text
-                city = job.find('td', class_='real_table_col4').text.split(',')
+                city = job.find('td', class_='real_table_col4').text.split(', ')
 
                 if 'Romania' in country:
                     list_jobs.append({
@@ -49,7 +49,6 @@ def get_jobs():
                                 "country": "Romania",
                                 "city": city,
                             })
-
     return list_jobs
 
 
