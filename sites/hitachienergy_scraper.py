@@ -7,6 +7,7 @@ from L_00_logo import update_logo
 import requests
 import uuid
 
+
 def get_jobs():
     response = requests.get(
         'https://www.hitachienergy.com/careers/open-jobs/_jcr_content/root/container/content_1/content/grid_0/joblist.listsearchresults.json?offset=0&location=Romania%2FBucharest++Ilfov&calculatedOffset=0',
@@ -16,7 +17,6 @@ def get_jobs():
 
     for job in response:
         location = job['location']
-        city = ''
 
         if 'Bucharest' in location:
             city = 'Bucharest'
@@ -36,9 +36,7 @@ def scrape_and_update_peviitor(company_name, data_list):
     """
     Update data on peviitor API!
     """
-
     return data_list
-
 
 company_name = 'hitachienergy'  # add test comment
 data_list = get_jobs()
