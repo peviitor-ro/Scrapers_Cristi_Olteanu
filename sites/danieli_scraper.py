@@ -26,7 +26,8 @@ def get_token():
 def get_cookies():
 
     response = requests.head(
-        url='https://emea3.recruitmentplatform.com/fo/rest/jobs?firstResult=0&maxResults=12&sortBy=DPOSTINGSTART&sortOrder=asc')
+        url='https://emea3.recruitmentplatform.com/fo/rest/jobs?firstResult=0&maxResults=12&sortBy=DPOSTINGSTART&sortOrder=asc',
+    headers=DEFAULT_HEADERS)
     response_text = str(response.headers)
 
     cookie = re.search(r'AWSALBCORS=(.*?)(?:[;]|$)', response_text).group(0)
