@@ -1,6 +1,6 @@
 #
 # Company - > danieli
-# Link -> # https://retarus-learning.csod.com/ux/ats/careersite/4/home/requisition/166?c=retarus-learning&lang=en-GB&source=LinkedIn
+# Link -> # https://www.danieli.com/en/europe-and-usa-opportunities.htm?searchCriteria[0][key]=COUN&searchCriteria[0][values][]=1249
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
