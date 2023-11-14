@@ -58,7 +58,7 @@ def get_jobs():
                 link = job.find('a', class_='awsm-job-item')['href']
                 title = job.find('h2', class_='awsm-job-post-title').text.strip()
                 text = job.find('span', class_='awsm-job-specification-term').text
-                city = text.split('-')[0]
+                city = text.split('-')[0].strip()
 
                 if 'Romania' in text:
                     list_jobs.append({
