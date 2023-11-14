@@ -6,33 +6,32 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
-import uuid
 
 
 def get_jobs():
     list_jobs = []
 
-    response = requests.get('https://career.hoffmann-group.com/job-offers.html',headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text,'lxml')
+    response = requests.get('https://career.hoffmann-group.com/job-offers.html', headers=DEFAULT_HEADERS)
+    soup = BeautifulSoup(response.text, 'lxml')
 
-    jobs = soup.find_all('div',class_='joboffer_container')
+    jobs = soup.find_all('div', class_='joboffer_container')
 
     for job in jobs:
-        city = job.find('a',class_='joboffer_maplink').text.split(' - ')[1]
         link = job.find('a')['href']
         title = job.find('a').text
-        country = job.find('a',class_='joboffer_maplink').text.split(' - ')[0]
+        locations = job.find_all('div', class_='location_item')
 
-        if 'RO' in country:
-            list_jobs.append({
-                "id": str(uuid.uuid4()),
-                "job_title": title,
-                "job_link": link,
-                "company": "Hoffman",
-                "country": "Romania",
-                "city": city,
-            })
+        for location in locations:
+            if 'RO' in location.text:
+                list_jobs.append({
+                    "job_title": title,
+                    "job_link": link,
+                    "company": "Hoffman",
+                    "country": "Romania",
+                    "city": 'Bucuresti',
+                })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
