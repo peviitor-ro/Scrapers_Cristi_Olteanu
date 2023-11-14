@@ -5,13 +5,22 @@
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
-import uuid
+from bs4 import BeautifulSoup
+
+
+def get_link_id():
+    response = requests.get('https://www.extia-group.com/fr-en/join-us?page=1',                         )
+    soup = BeautifulSoup(response.text, 'lxml')
+    link_id = str(soup.find_all('script', src=True)).split()[-1].split('/')[3]
+
+    return link_id
 
 
 def get_jobs():
 
+    link_id = get_link_id()
     list_jobs = []
-    response = requests.get('https://www.extia-group.com/_next/data/YjHr0F3HHGbS1pn2Fw4Sh/fr-en/join-us.json?page=1&locations=103',
+    response = requests.get(f'https://www.extia-group.com/_next/data/{link_id}/fr-en/join-us.json?page=1&locations=103',
                             headers=DEFAULT_HEADERS).json()['pageProps']['jobOffers']
 
     for job in response:
@@ -20,7 +29,6 @@ def get_jobs():
         city = job['attributes']['location_cities']['data'][0]['attributes']['city']
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "extia",
