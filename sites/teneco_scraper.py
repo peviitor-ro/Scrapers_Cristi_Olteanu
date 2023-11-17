@@ -9,29 +9,48 @@ from bs4 import BeautifulSoup
 import uuid
 
 
+def get_soup(url):
+
+    response = requests.get(url, headers=DEFAULT_HEADERS)
+    soup = BeautifulSoup(response.text, 'lxml')
+    return soup
+
+
+def get_num_pages():
+
+    soup_pages = get_soup('https://jobs.tenneco.com/search/?createNewAlert=false&q=&locationsearch=Ro')
+    num_pages = soup_pages.find('span', class_='srHelp').text.split('of')[-1].strip()
+    return int(num_pages)
+
+
 def get_jobs():
+
     list_jobs = []
 
-    response = requests.get('https://jobs.tenneco.com/search/?createNewAlert=false&q=&locationsearch=Ro',headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text, 'lxml')
+    for page in range(0, get_num_pages()*10, 10):
 
-    jobs = soup.find_all('tr',class_='data-row')
+        soup_jobs = get_soup(f'https://jobs.tenneco.com/search/?q=&locationsearch=Romania&startrow={page}')
+        jobs = soup_jobs.find_all('tr', class_='data-row')
 
-    for job in jobs:
-        link = 'https://jobs.tenneco.com/'+job.find('a',class_='jobTitle-link')['href']
-        title = job.find('a',class_='jobTitle-link').text
-        city = job.find('span',class_='jobLocation').text.split(', ')[-2].strip()
-        country = job.find('span',class_='jobLocation').text.split(', ')[-1].split()[0]
+        for job in jobs:
+            link = 'https://jobs.tenneco.com/'+job.find('a', class_='jobTitle-link')['href']
+            title = job.find('a', class_='jobTitle-link').text
+            city = job.find('span', class_='jobLocation').text.split(', ')[-2].strip()
+            country = job.find('span', class_='jobLocation').text.split(', ')[-1].split()[0]
 
-        if country == 'RO':
+            if country != 'RO':
+                cities = get_soup(link).find_all('span', class_='jobGeoLocation')
+                for item in cities:
+                    if 'RO' in item.text:
+                        city = item.text.split(',')[0].strip('\n')
+
             list_jobs.append({
-                "id": str(uuid.uuid4()),
                 "job_title": title,
                 "job_link": link,
                 "company": "teneco",
                 "country": "Romania",
                 "city": city
-            })
+                })
 
     return list_jobs
 
