@@ -35,7 +35,7 @@ def get_jobs():
         for job in jobs:
             link = 'https://jobs.tenneco.com/'+job.find('a', class_='jobTitle-link')['href']
             title = job.find('a', class_='jobTitle-link').text
-            city = job.find('span', class_='jobLocation').text.split(', ')[-2].strip()
+            city = job.find('span', class_='jobLocation').text.split(', ')[-2].strip().replace('Rahtiv', 'Rahtivani')
             country = job.find('span', class_='jobLocation').text.split(', ')[-1].split()[0]
 
             if country != 'RO':
