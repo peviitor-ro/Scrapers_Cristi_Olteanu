@@ -6,7 +6,6 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
-import uuid
 
 
 def get_jobs():
@@ -16,18 +15,19 @@ def get_jobs():
         'https://careers.timken.com/search/?q=&q2=&alertId=&locationsearch=&title=&location=Ro&department=',headers=DEFAULT_HEADERS)
 
     soup = BeautifulSoup(response.text, 'lxml')
-
-    jobs = soup.find_all('tr',class_='data-row')
+    jobs = soup.find_all('tr', class_='data-row')
 
     for job in jobs:
+        location = job.find('span', class_='jobLocation').text.strip()
 
-        list_jobs.append({
-            "id": str(uuid.uuid4()),
-            "job_title": job.find('a',class_='jobTitle-link').text,
-            "job_link": 'https://careers.timken.com/job.find'+job.find('a',class_='jobTitle-link')['href'],
-            "company": "Timken",
-            "country": "Romania",
-            "city": job.find('span',class_='jobLocation').text.split()[0].strip(',')
+        if 'RO' in location:
+
+            list_jobs.append({
+                "job_title": job.find('a', class_='jobTitle-link').text,
+                "job_link": 'https://careers.timken.com/job.find'+job.find('a',class_='jobTitle-link')['href'],
+                "company": "Timken",
+                "country": "Romania",
+                "city": job.find('span', class_='jobLocation').text.split()[0].strip(',')
         })
     return list_jobs
 
