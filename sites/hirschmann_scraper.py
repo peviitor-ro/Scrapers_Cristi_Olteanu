@@ -18,7 +18,7 @@ def prepare_post(offset):
                    "type": "1598607815",
                    "cHash": "4ed15b391f3ac694700794122ed277ed"}
 
-    payload ={
+    payload = {
         "tx_site_jobdetail[__referrer][@extension]": "Site",
         "tx_site_jobdetail[__referrer][@controller]": "Job",
         "tx_site_jobdetail[__referrer][@action]": "list",
@@ -59,7 +59,8 @@ def get_jobs():
                 title = job.find('h3').text
                 location = job.find('a').text.split('-')[-1]
                 if 'Rumänien' in location:
-                    city = str(job.find('a')).split('<p>')[-1].split('-')[0].replace('Tirgu', 'Targu')
+                    city = str(job.find('a')).split('<p>')[-1].split('-')[0].replace('Tirgu', 'Targu'
+                                                                                     ).strip()
 
                     list_jobs.append({
                         "job_title": title,
