@@ -61,8 +61,6 @@ def get_jobs():
             elif 'cluj' in city.lower():
                 city = 'Cluj-Napoca'
 
-            print(city)
-
             list_jobs.append({
                 "job_title": title,
                 "job_link": link,
