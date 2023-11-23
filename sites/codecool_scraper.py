@@ -21,7 +21,6 @@ def get_jobs():
         else:
             job_type = 'hibrid'
 
-
         title = job['jobOpeningName']
         link = f"https://codecool.bamboohr.com/careers/{job['id']}?source=aWQ9MTA="
 
