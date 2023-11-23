@@ -5,7 +5,7 @@
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
-import uuid
+
 
 def get_jobs():
     list_jobs = []
@@ -13,22 +13,26 @@ def get_jobs():
 
     for job in response:
         city = job['location']['city']
-        if job['isRemote'] == 'True':
-            type = 'remote'
+
+        if job['locationType'] == '0':
+            job_type = 'on-site'
+        elif job['locationType'] == '1':
+            job_type = 'remote'
         else:
-            type = 'on-site'
+            job_type = 'hibrid'
+
+
         title = job['jobOpeningName']
         link = f"https://codecool.bamboohr.com/careers/{job['id']}?source=aWQ9MTA="
 
-        if (city is None and type == 'remote') or (city == 'Bucharest'):
+        if city == 'Bucharest':
             list_jobs.append({
-                "id": str(uuid.uuid4()),
                 "job_title": title,
                 "job_link": link,
                 "company": "codecool",
                 "country": "Romania",
                 "city": city,
-                "remote": type
+                "remote": job_type
             })
     return list_jobs
 
