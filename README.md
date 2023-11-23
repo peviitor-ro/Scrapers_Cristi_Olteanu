@@ -11,6 +11,8 @@ This repository houses a collection of more than 100 Python web scrapers. These 
 - **requests**
  
 <p align="left"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="80" height="80"/> <img src="https://funthon.files.wordpress.com/2017/05/bs.png?w=772" alt="python" width="120" height="80"/> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Requests_Python_Logo.png/467px-Requests_Python_Logo.png" alt="python" width="80" height="80"/></a> <a target="_blank" rel="noreferrer"></a> </p>
+
+## [Testing Protocol and Assignment Guidelines for Scrapers at peviitor.ro](https://github.com/peviitor-ro/Scrapers_Cristi_Olteanu/issues/40)
   
 ## The scraped information includes:
 - job titles
