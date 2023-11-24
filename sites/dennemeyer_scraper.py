@@ -4,7 +4,6 @@
 #
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
-import uuid
 import requests
 import re
 
@@ -30,7 +29,7 @@ def get_jobs():
     url = "https://dennemeyer.wd3.myworkdayjobs.com/wday/cxs/dennemeyer/dennemeyer_careers/jobs"
 
     payload = {
-        "appliedFacets": {"locations": ["99c9060b642e1001e86635de40a00000"]},
+        "appliedFacets": {"locations": ["99c9060b642e1001e86635de40a00000","023dd96435d8016f98adf461d036dbdb"]},
         "limit": 20,
         "offset": 0,
         "searchText": ""
@@ -59,7 +58,6 @@ def get_jobs():
         link = 'https://dennemeyer.wd3.myworkdayjobs.com/en-US/dennemeyer_careers' + job['externalPath']
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "dennemeyer",
@@ -67,7 +65,6 @@ def get_jobs():
             "city": 'Brasov'
         })
     return list_jobs
-
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
