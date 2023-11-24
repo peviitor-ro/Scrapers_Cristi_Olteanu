@@ -1,5 +1,5 @@
 #
-# Company - > VictorySquarePartners
+# Company - > VictorySquare
 # Link -> https://victorysquarepartners.com/careers/job-opportunities/
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
@@ -31,7 +31,7 @@ def get_jobs():
             "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
-            "company": "VictorySquarePartners",
+            "company": "VictorySquare",
             "country": "Romania",
             "city": city,
             "remote": job_type
@@ -48,10 +48,10 @@ def scrape_and_update_peviitor(company_name, data_list):
     return data_list
 
 
-company_name = 'VictorySquarePartners'  # add test comment
+company_name = 'VictorySquare'  # add test comment
 data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
-print(update_logo('VictorySquarePartners',
+print(update_logo('VictorySquare',
                   'https://victorysquarepartners.com/wp-content/uploads/2022/06/VSP-Logo-SVG.svg'
                   ))
