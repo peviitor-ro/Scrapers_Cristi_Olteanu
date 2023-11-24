@@ -78,21 +78,20 @@ def get_jobs():
             "city": city,
         })
     return list_jobs
-print(get_jobs())
-#
-# @update_peviitor_api
-# def scrape_and_update_peviitor(company_name, data_list):
-#     """
-#     Update data on peviitor API!
-#     """
-#
-#     return data_list
-#
-#
-# company_name = 'DAMEN'
-# data_list = get_jobs()
-# scrape_and_update_peviitor(company_name, data_list)
-#
-# print(update_logo('DAMEN',
-#                   'https://www.lumesse-engage.com/damen/wp-content/uploads/sites/76/2019/12/damen_blue_logo-1.png'
-#                   ))
+
+@update_peviitor_api
+def scrape_and_update_peviitor(company_name, data_list):
+    """
+    Update data on peviitor API!
+    """
+
+    return data_list
+
+
+company_name = 'DAMEN'
+data_list = get_jobs()
+scrape_and_update_peviitor(company_name, data_list)
+
+print(update_logo('DAMEN',
+                  'https://www.lumesse-engage.com/damen/wp-content/uploads/sites/76/2019/12/damen_blue_logo-1.png'
+                  ))
