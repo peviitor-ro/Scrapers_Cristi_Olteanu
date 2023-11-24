@@ -2,14 +2,14 @@
 #  Company - > DAMEN
 # Link -> https://career.damen.com/jobs/
 #
-from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
+from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
 import re
-import uuid
 
 session = requests.Session()
+
 
 def get_cookies():
 
@@ -18,6 +18,7 @@ def get_cookies():
     ).headers
     phpsessid = re.search(r"PHPSESSID=([^;]+);", str(response)).group(0)
     return phpsessid
+
 
 def prepare_post():
 
@@ -59,19 +60,17 @@ def get_jobs():
 
     list_jobs = []
     data = prepare_post()
-
-    response = session.request("POST", data[0], data=data[1], headers=data[2])
-    soup = BeautifulSoup(response.text, 'lxml')
-
-    jobs = soup.find_all('li')
+    response = session.request("POST", data[0], data=data[1], headers=data[2]).json()['advertsHtml']
+    soup = BeautifulSoup(response, 'lxml')
+    jobs = soup.find_all('li', class_='col-lg-4 col-md-4 col-sm-6 col-xs-12')
 
     for job in jobs:
-        link = 'https://career.damen.com/jobs/' + str(job.find('a')['href']).split('jobs\/')[1].split('\\"')[0]
-        title = job.find('a').text.split('<')[0]
-        city = job.find('span').text.split(',')[1].split('<')[0]
+        title = job.find('a', class_='aa-item').text
+        link = job.find('a', class_='aa-item')['href']
+        city = job.find('span', class_='cs-location').text.split()[-1].strip()
+
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "DAMEN",
@@ -79,20 +78,21 @@ def get_jobs():
             "city": city,
         })
     return list_jobs
-
-@update_peviitor_api
-def scrape_and_update_peviitor(company_name, data_list):
-    """
-    Update data on peviitor API!
-    """
-
-    return data_list
-
-
-company_name = 'DAMEN'
-data_list = get_jobs()
-scrape_and_update_peviitor(company_name, data_list)
-
-print(update_logo('DAMEN',
-                  'https://www.lumesse-engage.com/damen/wp-content/uploads/sites/76/2019/12/damen_blue_logo-1.png'
-                  ))
+print(get_jobs())
+#
+# @update_peviitor_api
+# def scrape_and_update_peviitor(company_name, data_list):
+#     """
+#     Update data on peviitor API!
+#     """
+#
+#     return data_list
+#
+#
+# company_name = 'DAMEN'
+# data_list = get_jobs()
+# scrape_and_update_peviitor(company_name, data_list)
+#
+# print(update_logo('DAMEN',
+#                   'https://www.lumesse-engage.com/damen/wp-content/uploads/sites/76/2019/12/damen_blue_logo-1.png'
+#                   ))
