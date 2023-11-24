@@ -41,10 +41,10 @@ def get_jobs():
         if len(list_city) == 1 and 'Remote' in list_city:
             city = 'Bucuresti'
             job_type = 'remote'
-        elif 'Hybrid' in list_city:
+        elif len(list_city) == 1 and 'Hybrid' in list_city:
             job_type = 'hybrid'
             city = 'Bucuresti'
-        else:
+        elif len(list_city) == 1 and 'Remote' not in list_city and 'Hybrid' not in list_city:
             city = list_city
             job_type = 'on-site'
 
@@ -52,12 +52,12 @@ def get_jobs():
             list_city.remove('Remote')
             city = list_city
             job_type = 'remote'
-
-        elif 'Hybrid' in list_city:
+        elif len(list_city) > 1 and 'Hybrid' in list_city:
             list_city.remove('Hybrid')
             city = list_city
             job_type = 'hybrid'
-        else:
+        elif len(list_city) > 1 and 'Remote' not in list_city and 'Hybrid' not in list_city:
+            city = list_city
             job_type = 'on-site'
 
         list_jobs.append({
@@ -71,7 +71,6 @@ def get_jobs():
         })
 
     return list_jobs
-
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
