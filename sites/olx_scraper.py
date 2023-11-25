@@ -21,18 +21,8 @@ def get_jobs():
         title = job.find('h5').text
         country = job.find('span',  class_='sort-by-location posting-category small-category-label location'
                            ).text.split(', ')[-1]
-        location = job.find('span', class_='sort-by-location posting-category small-category-label location'
-                            ).text.split(', ')[0]
-
-        if 'Remote' in location:
-            city = 'Bucuresti'
-            job_type = 'remote'
-        elif 'Hybrid' in location:
-            city = 'Bucuresti'
-            job_type = 'Hybrid'
-        else:
-            city = 'Bucuresti'
-            job_type = 'on-site'
+        job_type = job.find('span', class_='display-inline-block small-category-label workplaceTypes'
+                            ).text.split()[0]
 
         if country == 'Romania':
             list_jobs.append({
@@ -40,7 +30,7 @@ def get_jobs():
                 "job_link": link,
                 "company": "OlxGroup",
                 "country": "Romania",
-                "city": city,
+                "city": 'Bucuresti',
                 "remote": job_type
             })
     return list_jobs
