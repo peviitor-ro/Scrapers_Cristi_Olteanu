@@ -40,9 +40,7 @@ def scrape_and_update_peviitor(company_name, data_list):
     """
     Update data on peviitor API!
     """
-
     return data_list
-
 
 company_name = 'OlxGroup'  # add test comment
 data_list = get_jobs()
