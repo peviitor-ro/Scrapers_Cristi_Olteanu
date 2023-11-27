@@ -37,6 +37,7 @@ def get_jobs():
             "company": "kellanova",
             "country": "Romania",
             "city": city,
+            "remote": job_type
         })
     return list_jobs
 
