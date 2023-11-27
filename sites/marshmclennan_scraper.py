@@ -6,22 +6,21 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import re
 import requests
-import uuid
 
 session = requests.Session()
 
 
 def get_cookies() -> tuple:
 
-    response = session.head(
+    response = requests.head(
         url='https://careers.marshmclennan.com/widgets',
         headers=DEFAULT_HEADERS).headers
-
     play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
     phpppe_act = re.search(r"PHPPPE_ACT=([^;]+);", str(response)).group(0)
     return play_session, phpppe_act
 
-def prepare_post():
+
+def prepare_post(value):
 
     cookies = get_cookies()
     url = "https://careers.marshmclennan.com/widgets"
@@ -46,7 +45,7 @@ def prepare_post():
         "siteType": "external",
         "keywords": "",
         "global": True,
-        "selected_fields": {"country": ["Romania"]},
+        "selected_fields": {"country": ["Romania"], "workFromHome": [f"{value}"]},
         "locationData": {
             "sliderRadius": 25,
             "aboveMaxRadius": False,
@@ -76,24 +75,26 @@ def prepare_post():
 def get_jobs():
 
     list_jobs = []
-    data = prepare_post()
+    for value in ["Onsite", "Hybrid", "Remote"]:
 
-    response = requests.request("POST", data[0], json=data[1], headers=data[2]
-                                ).json()['eagerLoadRefineSearch']['data']['jobs']
+        data = prepare_post(value)
+        response = requests.request("POST", data[0], json=data[1], headers=data[2]
+                                    ).json()['eagerLoadRefineSearch']['data']['jobs']
 
-    for job in response:
-        title = job['title']
-        city = job['city']
-        link = 'https://careers.marshmclennan.com/global/en/job/' + job['jobId']
+        for job in response:
+            title = job['title']
+            city = job['city']
+            link = 'https://careers.marshmclennan.com/global/en/job/' + job['jobId']
+            job_type = value
 
-        list_jobs.append({
-            "id": str(uuid.uuid4()),
-            "job_title": title,
-            "job_link": link,
-            "company": "MarshMclennan",
-            "country": "Romania",
-            "city": city,
-        })
+            list_jobs.append({
+                "job_title": title,
+                "job_link": link,
+                "company": "MarshMclennan",
+                "country": "Romania",
+                "city": city,
+                "remote": job_type
+            })
     return list_jobs
 
 @update_peviitor_api
