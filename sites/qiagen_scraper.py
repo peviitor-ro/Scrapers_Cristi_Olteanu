@@ -94,12 +94,19 @@ def get_jobs():
         city = job['jobFields']['SLOVLIST27']
         link = f"https://www.qiagen.com/us/about-us/careers/jobs/details?jobId={job['id']}&jobTitle="
 
+        if 'Remote' in city:
+            city = 'Cluj-Napoca'
+            job_type = 'remote'
+        else:
+            job_type = 'on-site'
+
         jobs_list.append({
             "job_title": title,
             "job_link": link,
             "company": "qiagen",
             "country": "Romania",
             "city": city,
+            "remote": job_type
         })
     return jobs_list
 
