@@ -6,7 +6,7 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
-import uuid
+
 
 def get_jobs():
 
@@ -20,12 +20,11 @@ def get_jobs():
 
         link = 'https://www.ceragon.com' + job.find('a')['href']
         title = job.find('h5').text
-        city = job.find('li',class_='hs-data-location').text.split()[1]
+        city = job.find('li',class_='hs-data-location').text.split()[-1]
         country = job.find('li',class_='hs-data-location').text.split()[0]
 
         if country == 'Romania':
             list_jobs.append({
-                "id": str(uuid.uuid4()),
                 "job_title": title,
                 "job_link": link,
                 "company": "Ceragon",
@@ -34,12 +33,12 @@ def get_jobs():
             })
     return list_jobs
 
+
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
     """
     Update data on peviitor API!
     """
-
     return data_list
 
 
