@@ -17,8 +17,9 @@ def get_jobs():
         cities = []
         for office in job['offices']:
             city = office['name']
+            location = office['location']
 
-            if 'Romania' in office['location']:
+            if location is not None and 'Romania' in location:
                 cities.append(city)
                 jobs_list.append({
                     "job_title": job['title'],
