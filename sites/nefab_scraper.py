@@ -44,7 +44,6 @@ def get_jobs():
                 "country": "Romania",
                 "city": city,
             })
-
     return job_list
 
 @update_peviitor_api
@@ -52,7 +51,6 @@ def scrape_and_update_peviitor(company_name, data_list):
     """
     Update data on peviitor API!
     """
-
     return data_list
 
 company_name = 'nefab'
