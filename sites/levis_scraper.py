@@ -4,26 +4,27 @@
 # Link -> https://levistraussandco.wd5.myworkdayjobs.com/ro-RO/External/?q=Romania
 #
 import requests
-from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
+from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
-import uuid
 import re
 
 session = requests.Session()
 
+
 def get_ids() -> tuple:
 
     response = session.head(
-        url='https://levistraussandco.wd5.myworkdayjobs.com/wday/cxs/levistraussandco/External/jobs',
+        url='https://levistraussandco.wd5.myworkdayjobs.com/ro-RO/External/?q=Romania',
         headers=DEFAULT_HEADERS).headers
 
     play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
-    csrf_token = re.search(r"CALYPSO_CSRF_TOKEN=([^;]+);", str(response))
+    csrf_token = re.search(r"CALYPSO_CSRF_TOKEN=([^;]+);", str(response)).group(0)
     ts_id = re.search(r"TS014c1515=([^;]+);", str(response)).group(0)
     wday_vps = re.search(r"wday_vps_cookie=([^;]+);", str(response)).group(0)
     wd_browser_id = re.search(r"wd-browser-id=([^;]+);", str(response)).group(0)
 
     return play_session, csrf_token, ts_id, wday_vps, wd_browser_id
+
 
 def prepare_post() -> tuple:
     play_session, csrf_token, ts_id, wday_vps, wd_browser_id = get_ids()
@@ -57,34 +58,50 @@ def prepare_post() -> tuple:
     return url, headers, data
 
 
+def get_city(url):
+
+    response_ = requests.get(url, headers=DEFAULT_HEADERS).json()['jobPostingInfo']
+    additional_locations = response_['additionalLocations']
+
+    for additional_location in additional_locations:
+        if 'Romania' in additional_location:
+            city = additional_location.split(',')[0]
+    return city
+
+
 def get_jobs():
+
+    jobs_list = []
     url, headers, data = prepare_post()
     response = session.post(url=url, headers=headers, json=data).json()
 
-    lst_with_data = []
     for job in response['jobPostings']:
 
-        city = job['bulletFields'][2].split(',')[0]
-        if city != 'Bucharest':
-            city = 'Bucharest'
+        country = job['bulletFields'][2].split(',')[-1]
+        link_request = ('https://levistraussandco.wd5.myworkdayjobs.com/wday/cxs/levistraussandco/External'
+                        + job['externalPath'])
 
-        lst_with_data.append({
-            "id": str(uuid.uuid4()),
+        if 'Romania' in country:
+            city = job['bulletFields'][2].split(',')[0]
+        else:
+            city = get_city(link_request)
+
+
+        jobs_list.append({
             "job_title": job['title'],
             "job_link": 'https://levistraussandco.wd5.myworkdayjobs.com/ro-RO/External'+job['externalPath'],
             "company": "Levis",
             "country": "Romania",
             "city": city
         })
+    return jobs_list
 
-    return lst_with_data
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
     """
     Update data on peviitor API!
     """
-
     return data_list
 
 company_name = 'Levis'
