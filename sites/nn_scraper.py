@@ -55,6 +55,7 @@ def prepare_post():
     }
     return url, headers, payload
 
+
 def get_job_type(url):
     try:
         job_type = requests.get(url, headers=DEFAULT_HEADERS).json()['jobPostingInfo']['remoteType']
