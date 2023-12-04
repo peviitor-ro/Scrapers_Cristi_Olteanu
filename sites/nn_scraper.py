@@ -6,10 +6,10 @@
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
-import uuid
 import re
 
 session = requests.Session()
+
 
 def get_ids() -> tuple:
 
@@ -23,6 +23,7 @@ def get_ids() -> tuple:
     wd_browser_id = re.search(r"wd-browser-id=([^;]+);", str(response)).group(0)
 
     return play_session,ts_id, wday_vps, wd_browser_id
+
 
 def prepare_post():
 
@@ -54,6 +55,13 @@ def prepare_post():
     }
     return url, headers, payload
 
+def get_job_type(url):
+    try:
+        job_type = requests.get(url, headers=DEFAULT_HEADERS).json()['jobPostingInfo']['remoteType']
+    except:
+        job_type = 'on-site'
+    return job_type
+
 
 def get_jobs():
 
@@ -63,16 +71,18 @@ def get_jobs():
 
     for job in response:
         title = job['title']
-        link = 'https://nngroup.wd3.myworkdayjobs.com/en-US/WDExternal'+job['externalPath']
+        link = 'https://nngroup.wd3.myworkdayjobs.com/en-US/WDExternal'+ job['externalPath']
+        link_request = 'https://nngroup.wd3.myworkdayjobs.com/wday/cxs/nngroup/WDExternal' + job['externalPath']
         city = job['locationsText']
+        job_type = get_job_type(link_request)
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "NN",
             "country": "Romania",
-            "city": city
+            "city": city,
+            "remote": job_type
         })
     return list_jobs
 
@@ -81,7 +91,6 @@ def scrape_and_update_peviitor(company_name, data_list):
     """
     Update data on peviitor API!
     """
-
     return data_list
 
 
