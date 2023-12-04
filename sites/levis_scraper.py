@@ -109,6 +109,6 @@ data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
 print(update_logo('Levis',
-                  'https://e7.pngegg.com/pngimages/6/505/png-clipart-levi-strauss-co-clothing-jeans-company-denim-jeans-love-text-thumbnail.png'
+                  'https://www.kindpng.com/picc/m/83-838136_levis-logo-levis-logo-hd-png-download.png'
                   ))
 
