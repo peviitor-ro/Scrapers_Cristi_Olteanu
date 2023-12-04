@@ -6,7 +6,6 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
 
 
 def get_jobs():
@@ -26,7 +25,6 @@ def get_jobs():
         city = job.find('span', class_='job-location').text.split(',')[0].strip()
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "MassMutual",
@@ -48,6 +46,6 @@ data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
 print(update_logo('MassMutual',
-                  'https://banner2.cleanpng.com/20180426/ekw/kisspng-massachusetts-mutual-life-insurance-company-massmu-5ae196127600b5.6295915315247334584834.jpg'
+'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/MassMutual_logo.svg/512px-MassMutual_logo.svg.png'
                   ))
 
