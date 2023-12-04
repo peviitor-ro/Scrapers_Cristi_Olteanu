@@ -5,10 +5,10 @@
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
-import uuid
 import re
 
 session = requests.Session()
+
 
 def get_ids() -> tuple:
 
@@ -23,6 +23,7 @@ def get_ids() -> tuple:
     wd_browser_id = re.search(r"wd-browser-id=([^;]+);", str(response)).group(0)
 
     return play_session, csrf_token, ts_id, wday_vps, wd_browser_id
+
 
 def prepare_post() -> tuple:
 
@@ -56,6 +57,15 @@ def prepare_post() -> tuple:
 
     return url, headers, data
 
+
+def get_job_type(url):
+    try:
+        job_type = requests.get(url, headers=DEFAULT_HEADERS).json()['jobPostingInfo']['remoteType']
+    except:
+        job_type = 'on-site'
+    return job_type
+
+
 def get_jobs():
 
     url, headers, data = prepare_post()
@@ -64,19 +74,20 @@ def get_jobs():
     list_jobs = []
     for job in response['jobPostings']:
         city = job['locationsText'].split(',')[0].strip()
-        if 'Locations' in city:
-            city = 'Brasov'
+        link_request = 'https://nvent.wd5.myworkdayjobs.com/wday/cxs/nvent/nVent' + job['externalPath']
+        job_type = get_job_type(link_request)
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": job['title'],
             "job_link": 'https://nvent.wd5.myworkdayjobs.com/en-US/nVent' + job['externalPath'],
             "company": "nVent",
             "country": "Romania",
-            "city": city
+            "city": city,
+            "remote": job_type
         })
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
