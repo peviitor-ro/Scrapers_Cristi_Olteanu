@@ -61,7 +61,7 @@ def get_jobs():
                 if 'Rumänien' in location:
                     city = str(job.find('a')).split('<p>')[-1].split('-')[0].replace('Tirgu Mures', 'Targu-Mures'
                                                                                      ).strip()
-
+                    print(title)
                     list_jobs.append({
                         "job_title": title,
                         "job_link": link,
