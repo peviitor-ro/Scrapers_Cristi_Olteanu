@@ -5,26 +5,41 @@
 from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
-import uuid
+from bs4 import BeautifulSoup
+
+
+def get_job_types(job_id):
+
+    res = requests.get('https://api.picsart.com/careers/jobs/' + job_id).json()['description']
+    soup = BeautifulSoup(res, 'lxml').find_all('li', attrs={'style': 'line-height: 1.1;'})[1].text
+
+    if 'hybrid' in soup.lower():
+        job_type_ = 'hybrid'
+    elif 'remote' in soup.lower():
+        job_type_ = 'remote'
+    else:
+        job_type_ = 'on-site'
+    return job_type_
+
 
 def get_jobs():
 
     list_jobs = []
-
-    response = requests.get('https://api.picsart.com/careers/jobs',headers=DEFAULT_HEADERS).json()
+    response = requests.get('https://api.picsart.com/careers/jobs', headers=DEFAULT_HEADERS).json()
 
     for job in response:
         country = job['location'].split(',')[-1]
 
         if 'Romania' in country:
+            job_type = get_job_types(job['id'])
 
             list_jobs.append({
-                "id": str(uuid.uuid4()),
                 "job_title": job['title'],
                 "job_link": 'https://picsart.com/jobs/vacancies/' + job['id'],
                 "company": "Picsart",
                 "country": "Romania",
-                "city": job['city']
+                "city": job['city'],
+                "remote": job_type
             })
     return list_jobs
 
