@@ -1,5 +1,5 @@
 #
-#  Company - > P&G
+#  Company - > proctorandgamble
 # Link -> https://www.pgcareers.com/global/en/search-results
 #
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
@@ -97,7 +97,7 @@ def get_jobs():
             "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
-            "company": "Procter&Gamble",
+            "company": "proctorandgamble",
             "country": "Romania",
             "city": city,
         })
@@ -111,11 +111,11 @@ def scrape_and_update_peviitor(company_name, data_list):
 
     return data_list
 
-company_name = 'Procter&Gamble'
+company_name = 'proctorandgamble'
 data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
-print(update_logo('Procter&Gamble',
+print(update_logo('proctorandgamble',
                   'https://logos-world.net/wp-content/uploads/2022/11/PG-Symbol.png'
                   ))
 
