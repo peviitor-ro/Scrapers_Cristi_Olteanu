@@ -59,14 +59,14 @@ def get_jobs():
                     try:
                         city = soup_city.find('dl',
                                           class_='md:max-w-[70%] mx-auto text-md gap-y-0 md:gap-y-5 flex flex-wrap flex-col md:flex-row company-links'
-                                          ).text.split('Locations')[1].split('Status')[0].strip().split('\n')[0].split(',')
+                                          ).text.split('Locations')[1].split('Status')[0].strip().split('\n')[0].split(', ')
                     except:
                         city = soup_city.find('dl',
                                           class_='md:max-w-[70%] mx-auto text-md gap-y-0 md:gap-y-5 flex flex-wrap flex-col md:flex-row company-links'
-                                          ).text.split('Locations')[1].strip().split('\n')[0].split(',')
+                                          ).text.split('Locations')[1].strip().split('\n')[0].split(', ')
 
                 try:
-                    city = city.split(',')
+                    city = city.split(', ')
                 except:
                     pass
 
