@@ -46,7 +46,7 @@ def get_jobs():
 
             jobs_list.append({
                 "job_title": title,
-                "job_link": 'https://boards.greenhouse.io/' + link,
+                "job_link": link,
                 "company": "Snyk",
                 "country": "Romania",
                 "city": cities,
