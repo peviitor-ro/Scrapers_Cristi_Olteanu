@@ -6,39 +6,54 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
-import uuid
+
+
+def get_job_type(url):
+
+    response = requests.get(url, headers=DEFAULT_HEADERS)
+    soup = BeautifulSoup(response.text, 'lxml')
+    text = soup.find('div', {'id': 'content'}).text
+
+    if 'remote' in text:
+        job_type = 'remote'
+    else:
+        job_type = 'on-site'
+    return job_type
 
 
 def get_jobs():
+
+    jobs_list = []
     req = requests.get('https://boards.greenhouse.io/snyk?gh_src=3f9b65652us', headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(req.text, 'lxml')
-    list = []
 
     jobs = soup.find_all('div', class_='opening')
 
     for job in jobs:
         title = job.find('a').text
-        link = job.find('a')['href']
-        location = job.find('span', class_='location').text.split()[0].strip(',')
+        link = 'https://boards.greenhouse.io/' + job.find('a')['href']
+        locations = job.find('span', class_='location').text.split()
+        cities = []
 
-        if 'Remote' in job.find('span', class_='location').text:
-            remote = 'remote'
-        else:
-            remote = 'on-site'
+        for location in locations:
+            if 'Cluj' in location:
+                cities.append('Cluj Napoca')
+            elif 'Bucharest' in location:
+                cities.append('Bucuresti')
 
-        if 'Cluj' in location or 'Bucharest' in location:
-            list.append({
-                "id": str(uuid.uuid4()),
+        if cities:
+            job_type = get_job_type(link)
+
+            jobs_list.append({
                 "job_title": title,
                 "job_link": 'https://boards.greenhouse.io/' + link,
                 "company": "Snyk",
                 "country": "Romania",
-                "city": location,
-                "remote": remote
-
+                "city": cities,
+                "remote": job_type
             })
 
-    return list
+    return jobs_list
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
