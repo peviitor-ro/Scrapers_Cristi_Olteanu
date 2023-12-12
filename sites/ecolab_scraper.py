@@ -7,7 +7,6 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import re
 import requests
-import uuid
 
 session = requests.Session()
 
@@ -20,7 +19,7 @@ def get_cookies():
 
     play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
     ts = re.search(r"TS014c1515=([^;]+);", str(response)).group(0)
-    wday_vps = re.search(r"wday_vps_cookie=([^;]+);", str(response)).group(0)
+    wday_vps = re.search(r"wday_vps_cookie=([^;]+);", str(response))
     wd_browser_id = re.search(r"wd-browser-id=([^;]+);", str(response)).group(0)
 
     return play_session, ts, wday_vps, wd_browser_id
@@ -79,7 +78,6 @@ def get_jobs():
 
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "ECOLAB",
