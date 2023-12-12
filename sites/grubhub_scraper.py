@@ -18,10 +18,11 @@ def get_cookies() -> tuple:
 
     play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
     ts_id = re.search(r"TS014c1515=([^;]+);", str(response)).group(0)
-    wday_vps = re.search(r"wday_vps_cookie=([^;]+);", str(response)).group(0)
+    wday_vps = re.search(r"wday_vps_cookie=([^;]+);", str(response))
     wd_browser_id = re.search(r"wd-browser-id=([^;]+);", str(response)).group(0)
 
     return play_session, ts_id, wday_vps, wd_browser_id
+
 
 def prepare_post():
 
@@ -50,6 +51,7 @@ def prepare_post():
         "sec-ch-ua-platform": "Windows",
     }
     return url,payload, headers
+
 
 def get_jobs():
 
