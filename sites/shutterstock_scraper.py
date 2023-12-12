@@ -4,7 +4,6 @@
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
-import uuid
 import requests
 import re
 
@@ -21,7 +20,7 @@ def get_cookies():
     play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
     phpppe_act = re.search(r"PHPPPE_ACT=([^;]+);", str(response)).group(0)
 
-    return play_session,phpppe_act
+    return play_session, phpppe_act
 
 
 def prepare_post():
@@ -83,18 +82,17 @@ def get_jobs():
         city = job['city'].split(',')[0]
         link = f'https://careers.shutterstock.com/us/en/job/{id}'
         try:
-            type = job['multi_location'][1].split(',')[0]
+            job_type = job['multi_location'][1].split(',')[0]
         except:
-            type = 'on-site'
+            job_type = 'on-site'
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "Shutterstock",
             "country": "Romania",
             "city": city,
-            "remote":type
+            "remote": job_type
         })
     return list_jobs
 
@@ -104,7 +102,6 @@ def scrape_and_update_peviitor(company_name, data_list):
     """
     Update data on peviitor API!
     """
-
     return data_list
 
 
