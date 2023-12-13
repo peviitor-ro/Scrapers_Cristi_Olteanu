@@ -4,9 +4,9 @@
 #
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
-import uuid
 from bs4 import BeautifulSoup
 import requests
+
 
 def get_soup(url):
 
@@ -15,11 +15,13 @@ def get_soup(url):
     soup = BeautifulSoup(response.text,'lxml')
     return soup
 
+
 def get_nr_pages():
 
     soup_pages = get_soup('https://www.antal.com/jobs?keywords=&sector=&location=1721&type=&page=')
     nr_pages = int(soup_pages.find('a',class_='next text page-numbers')['href'].split('=')[-1])
     return nr_pages
+
 
 def get_jobs():
 
@@ -40,7 +42,7 @@ def get_jobs():
                 except:
                     city = job.find('ul',class_='job-card__details').text.split(',')[-1].split()[-1]
                 if 'Neamt' in city or 'Neamţ' in city:
-                    city = 'Piatra Neamt'
+                    city = 'Piatra-Neamt'
                 elif 'Harghita' in city:
                     city = 'Miercurea Ciuc'
                 elif 'Dolj' in city:
