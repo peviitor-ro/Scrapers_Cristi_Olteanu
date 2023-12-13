@@ -59,7 +59,7 @@ def get_jobs():
                 city = 'Satu Mare'
             elif 'cluj' in city.lower():
                 city = 'Cluj-Napoca'
-            elif 'Bolintin' in city.lower():
+            elif 'bolintin' in city.lower():
                 city = 'Bolintin-Deal'
             elif 'ilfov' in city.lower():
                 city = 'Buftea'
