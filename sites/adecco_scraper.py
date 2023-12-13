@@ -6,7 +6,6 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
-import uuid
 
 
 def get_soup(url: str):
@@ -53,13 +52,21 @@ def get_jobs():
             elif 'Bucuresti' in city or '104H' in city or 'Bucharest' in city:
                 city = 'Bucuresti'
             elif 'Mures' in city:
-                city = 'Targu Mures'
+                city = 'Targu-Mures'
             elif 'stefanesti' in city.lower():
                 city = 'Stefanestii de Jos'
             elif 'Satu' in city:
                 city = 'Satu Mare'
             elif 'cluj' in city.lower():
                 city = 'Cluj-Napoca'
+            elif 'Bolintin' in city.lower():
+                city = 'Bolintin-Deal'
+            elif 'ilfov' in city.lower():
+                city = 'Buftea'
+            elif 'Ialomita' in city.lower():
+                city = 'Slobozia'
+            elif 'Prahova' in city.lower():
+                city = 'Ploiesti'
 
             list_jobs.append({
                 "job_title": title,
