@@ -63,22 +63,21 @@ def get_jobs():
                     city = 'Slobozia'
 
                 if 'on site' in title.lower() or 'on-site' in title.lower():
-                    type = 'on-site'
+                    job_type = 'on-site'
                 elif 'hybrid' in title.lower() or 'hibrid' in title.lower():
-                    type = 'hybrid'
+                    job_type = 'hybrid'
                 elif 'remote' in title.lower() or 'Remote' in title.lower() or 'ful-remote' in title.lower():
-                    type = 'remote'
+                    job_type = 'remote'
                 else:
-                    type = 'on-site'
+                    job_type = 'on-site'
 
                 list_jobs.append({
-                    "id": str(uuid.uuid4()),
                     "job_title": title,
                     "job_link": link,
                     "company": "Antal",
                     "country": "Romania",
                     "city": city,
-                    "remote": type
+                    "remote": job_type
                 })
     return list_jobs
 
