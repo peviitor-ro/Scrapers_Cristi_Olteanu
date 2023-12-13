@@ -63,9 +63,9 @@ def get_jobs():
                 city = 'Bolintin-Deal'
             elif 'ilfov' in city.lower():
                 city = 'Buftea'
-            elif 'Ialomita' in city.lower():
+            elif 'ialomita' in city.lower():
                 city = 'Slobozia'
-            elif 'Prahova' in city.lower():
+            elif 'prahova' in city.lower():
                 city = 'Ploiesti'
 
             list_jobs.append({
