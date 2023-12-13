@@ -6,7 +6,6 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
 
 
 def get_soup(url):
@@ -26,18 +25,16 @@ def get_jobs():
 
         title = job.find('span', class_='text-block-base-link company-link-style')['title']
         link = job.find('a')['href']
-        city = job.find('div', class_='mt-1 text-md').text.split()[-1]
 
         soup_job_type = get_soup(link)
         job_type = soup_job_type.find('dl', class_='md:max-w-[70%] mx-auto text-md gap-y-0 md:gap-y-5 flex flex-wrap flex-col md:flex-row company-links').text.split()[-1]
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "ascom",
             "country": "Romania",
-            "city": city,
+            "city": 'Cluj-Napoca',
             "remote": job_type
         })
     return list_jobs
