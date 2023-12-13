@@ -6,7 +6,7 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
+
 
 
 def get_soup(url):
@@ -45,19 +45,18 @@ def get_jobs():
                 title = text.find('a').text
                 city = job.findNext('td', class_='views-field views-field-field-location-city').find('a').text
 
-                if 'Bucharest' in city:
-                    city = 'Bucharest'
+                if 'Dobroesti-Bucharest' in city:
+                    city = 'Dobroesti'
 
                 list_jobs.append({
-                    "id": str(uuid.uuid4()),
                     "job_title": title,
                     "job_link": link,
                     "company": "alpla",
                     "country": "Romania",
                     "city": city,
                 })
-
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
