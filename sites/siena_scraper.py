@@ -4,7 +4,6 @@
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api
 from L_00_logo import update_logo
-import uuid
 import requests
 
 session = requests.Session()
@@ -60,7 +59,7 @@ def get_jobs():
         if 'remote' in title.lower():
             job_type = 'remote'
         else:
-            job_type = 'on-site'
+            job_type = 'hibrid'
 
         for location in locations:
             secondary_location = location['locationName']
@@ -77,7 +76,6 @@ def get_jobs():
 
         if cities:
             list_jobs.append({
-                "id": str(uuid.uuid4()),
                 "job_title": title,
                 "job_link": link,
                 "company": "siena",
