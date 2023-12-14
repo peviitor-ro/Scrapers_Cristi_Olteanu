@@ -16,14 +16,15 @@ def get_jobs():
                             headers=DEFAULT_HEADERS)
 
     soup = BeautifulSoup(response.text,'lxml')
-    jobs = soup.find_all('div',class_='opening')
+    jobs = soup.find_all('div', class_='opening')
 
     for job in jobs:
         link = 'https://boards.eu.greenhouse.io/' + job.find('a')['href']
         title = job.find('a').text
-        country = job.find('span',class_='location').text
+        country = job.find('span', class_='location').text
 
         if 'Romania' in country:
+
             list_jobs.append({
                 "job_title": title,
                 "job_link": link,
@@ -33,7 +34,6 @@ def get_jobs():
             })
 
     return list_jobs
-
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
