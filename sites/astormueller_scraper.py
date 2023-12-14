@@ -27,7 +27,7 @@ def get_jobs():
             jobs_list.append({
                 "job_title": title,
                 "job_link": link,
-                "company": "Steelcase",
+                "company": "AstorMueller",
                 "country": "Romania",
                 "city": 'Oradea',
                 "remote": job_type
