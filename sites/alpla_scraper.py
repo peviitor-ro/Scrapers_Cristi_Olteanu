@@ -37,24 +37,26 @@ def get_jobs():
         jobs = soup_jobs.find_all('tr')
 
         for job in jobs:
-            country = job.findNext('td', attrs={'class': 'views-field views-field-field-location-country'}).find('a').text
-            if country == 'Romania':
 
-                text = job.findNext('td', class_='views-field views-field-title')
-                link = 'https://career.alpla.com' + text.find('a')['href']
-                title = text.find('a').text
-                city = job.findNext('td', class_='views-field views-field-field-location-city').find('a').text
+            text = job.find('td', class_='views-field views-field-title')
+            if text is not None:
+                country = job.find('td', attrs={'class': 'views-field views-field-field-location-country'}).find('a').text
+                if country == 'Romania':
 
-                if 'Dobroesti-Bucharest' in city:
-                    city = 'Dobroesti'
+                    link = 'https://career.alpla.com' + text.find('a')['href']
+                    title = text.find('a').text
+                    city = job.find('td', class_='views-field views-field-field-location-city').find('a').text
 
-                list_jobs.append({
-                    "job_title": title,
-                    "job_link": link,
-                    "company": "alpla",
-                    "country": "Romania",
-                    "city": city,
-                })
+                    if 'Dobroesti-Bucharest' in city:
+                        city = 'Dobroesti'
+
+                    list_jobs.append({
+                        "job_title": title,
+                        "job_link": link,
+                        "company": "alpla",
+                        "country": "Romania",
+                        "city": city,
+                    })
     return list_jobs
 
 
