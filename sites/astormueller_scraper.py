@@ -5,48 +5,35 @@
 from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
-import uuid
+
 
 def get_jobs():
 
-    list_jobs = []
+    jobs_list = []
     response = requests.get('https://astormueller-ag.jobs.personio.com/search.json',
                             headers=DEFAULT_HEADERS).json()
     for job in response:
-        link_ = job['id']
-        link = f'https://astormueller-ag.jobs.personio.com/job/{link_}?language=en&display=en'
 
-        try:
-            country = job['office'].split()[1]
-        except:
-            country = 'none'
-
+        link = f"https://astormueller-ag.jobs.personio.com/job/{job['id']}?language=en&display=en"
+        office_location = job['office']
         title = job['name']
-        city = job['office'].split()[0]
 
-        if city == 'Oradea':
-            country = 'Romania'
+        if 'remote' in office_location.lower():
+            job_type = 'remote'
         else:
-            pass
+            job_type = 'on-site'
 
-        if city == 'Remote':
-            city = 'Oradea'
-            type = 'remote'
-        else:
-            type = 'on-site'
-
-        if 'Romania' in country:
-            list_jobs.append({
-                "id": str(uuid.uuid4()),
+        if 'Romania' in office_location or 'Oradea' in office_location:
+            jobs_list.append({
                 "job_title": title,
                 "job_link": link,
-                "company": "AstorMueller",
+                "company": "Steelcase",
                 "country": "Romania",
-                "city": city,
-                "remote": type
+                "city": 'Oradea',
+                "remote": job_type
             })
+    return jobs_list
 
-    return list_jobs
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
