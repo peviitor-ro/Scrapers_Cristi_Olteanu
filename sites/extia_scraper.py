@@ -24,7 +24,7 @@ def get_jobs():
                             headers=DEFAULT_HEADERS).json()['pageProps']['jobOffers']
 
     for job in response:
-        title = job['attributes']['title']
+        title = job['attributes']['offer']['title']
         link = 'https://www.extia-group.com/fr-en/join-us/' + job['attributes']['slug']
         city = job['attributes']['location_cities']['data'][0]['attributes']['city']
 
