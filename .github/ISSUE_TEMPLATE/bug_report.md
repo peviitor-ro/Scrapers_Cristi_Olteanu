@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: To report any issues regarding peviitor.ro
-title: "[bug]"
+title: "[bug title]"
 labels: bug
 assignees: ''
 
@@ -9,12 +9,15 @@ assignees: ''
 
 ENVIROMENT: production
 URL: https://peviitor.ro/
-**Company_careers_url**: [**Company's name**](Company's careers URL)
-**Desktop (please complete the following information):**
- - OS: 
- - Browser:
- - Version: 
+**Company_careers_url**: [Company's _name_](Company's careers _URL_)
+ Desktop:
+```
+OS: 
+Browser:
+Version: 
+```
 
+ 
 ### **STEPS TO REPRODUCE:**
 1) ...
 2) ...
