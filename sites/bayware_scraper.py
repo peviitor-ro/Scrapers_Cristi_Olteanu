@@ -1,12 +1,11 @@
 #
-#  Company - > baywa-re
+#  Company - > bayware
 # Link -> https://jobs.baywa-re.com/job-offers.html
 #
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
 
 
 def get_soup(url):
@@ -42,10 +41,9 @@ def get_jobs():
 
                 if 'Romania' in country:
                     list_jobs.append({
-                                "id": str(uuid.uuid4()),
                                 "job_title": title,
                                 "job_link": link,
-                                "company": "BayWa-re",
+                                "company": "bayware",
                                 "country": "Romania",
                                 "city": city,
                             })
@@ -60,10 +58,10 @@ def scrape_and_update_peviitor(company_name, data_list):
 
     return data_list
 
-company_name = 'BayWa-re'
+company_name = 'bayware'
 data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
-print(update_logo('BayWa-re',
+print(update_logo('bayware',
                   'https://jobs.baywa-re.com/templates/bayware/images/Firmenlogo.png'
                   ))
