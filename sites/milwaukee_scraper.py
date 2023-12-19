@@ -23,6 +23,7 @@ def get_cookies() -> tuple:
 
     return play_session, ts_id, wday_vps, wd_browser_id
 
+
 def prepare_post():
 
     cookies = get_cookies()
