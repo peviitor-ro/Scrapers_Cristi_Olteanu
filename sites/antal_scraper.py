@@ -11,15 +11,15 @@ import requests
 def get_soup(url):
 
     session = requests.Session()
-    response = session.get(url,headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text,'lxml')
+    response = session.get(url, headers=DEFAULT_HEADERS)
+    soup = BeautifulSoup(response.text, 'lxml')
     return soup
 
 
 def get_nr_pages():
 
     soup_pages = get_soup('https://www.antal.com/jobs?keywords=&sector=&location=1721&type=&page=')
-    nr_pages = int(soup_pages.find('a',class_='next text page-numbers')['href'].split('=')[-1])
+    nr_pages = int(soup_pages.find('a', class_='next text page-numbers')['href'].split('=')[-1])
     return nr_pages
 
 
@@ -33,14 +33,14 @@ def get_jobs():
         jobs = soup_jobs.find_all('li')
 
         for job in jobs:
-            text = job.find('a',class_='job-card__link more-link')
+            text = job.find('a', class_='job-card__link more-link')
             if text is not None:
                 link = text['href']
                 title = job.find('a').text
                 try:
-                    city = job.find('ul',class_='job-card__details').text.split(',')[-2].split()[-1]
+                    city = job.find('ul', class_='job-card__details').text.split(',')[-2].split()[-1]
                 except:
-                    city = job.find('ul',class_='job-card__details').text.split(',')[-1].split()[-1]
+                    city = job.find('ul', class_='job-card__details').text.split(',')[-1].split()[-1]
                 if 'Neamt' in city or 'Neamţ' in city:
                     city = 'Piatra-Neamt'
                 elif 'Harghita' in city:
