@@ -83,20 +83,23 @@ def get_jobs():
     data = prepare_post()
 
     response = requests.request("POST", data[0], json=data[1], headers=data[2], params=data[3]
-                                ).json()['jobs']
+                                ).json()
+    if response['globals']['jobsCount'] > 0:
+        for job in response['jobs']:
+            title = job['jobFields']['jobTitle']
+            city = job['jobFields']['SLOVLIST2']
+            link = f"https://www.danieli.com/en/europe-and-usa-opportunities.htm?languageSelect=UK&jobId={job['id']}&jobTitle="
 
-    for job in response:
-        title = job['jobFields']['jobTitle']
-        city = job['jobFields']['SLOVLIST2']
-        link = f"https://www.danieli.com/en/europe-and-usa-opportunities.htm?languageSelect=UK&jobId={job['id']}&jobTitle="
+            list_jobs.append({
+                "job_title": title,
+                "job_link": link,
+                "company": "danieli",
+                "country": "Romania",
+                "city": city,
+            })
+    else:
+        pass
 
-        list_jobs.append({
-            "job_title": title,
-            "job_link": link,
-            "company": "danieli",
-            "country": "Romania",
-            "city": city,
-        })
     return list_jobs
 
 @update_peviitor_api
