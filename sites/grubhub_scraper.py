@@ -50,7 +50,7 @@ def prepare_post():
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": "Windows",
     }
-    return url,payload, headers
+    return url, payload, headers
 
 
 def get_jobs():
