@@ -5,10 +5,10 @@
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
-import uuid
 import re
 
 session = requests.Session()
+
 
 def get_ids() -> tuple:
 
@@ -22,6 +22,7 @@ def get_ids() -> tuple:
     wd_browser_id = re.search(r"wd-browser-id=([^;]+);", str(response)).group(0)
 
     return play_session, ts_id, wday_vps, wd_browser_id
+
 
 def get_jobs():
 
@@ -54,7 +55,6 @@ def get_jobs():
             city = 'Bucharest'
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "Microchip",
