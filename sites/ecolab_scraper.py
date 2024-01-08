@@ -85,24 +85,24 @@ def get_jobs():
             "city": city
         })
     return list_jobs
+get_jobs()
 
-
-@update_peviitor_api
-def scrape_and_update_peviitor(company_name, data_list):
-    """
-    Update data on peviitor API!
-    """
-
-    return data_list
-
-
-company_name = 'ECOLAB'
-data_list = get_jobs()
-scrape_and_update_peviitor(company_name, data_list)
-
-print(update_logo('ECOLAB',
-                  'https://cdn-static.findly.com/wp-content/uploads/sites/2650/2023/02/06034713/Ecolab_Logo_Blue_RGB-1.png'
-                  ))
+# @update_peviitor_api
+# def scrape_and_update_peviitor(company_name, data_list):
+#     """
+#     Update data on peviitor API!
+#     """
+#
+#     return data_list
+#
+#
+# company_name = 'ECOLAB'
+# data_list = get_jobs()
+# scrape_and_update_peviitor(company_name, data_list)
+#
+# print(update_logo('ECOLAB',
+#                   'https://cdn-static.findly.com/wp-content/uploads/sites/2650/2023/02/06034713/Ecolab_Logo_Blue_RGB-1.png'
+#                   ))
 
 
 
