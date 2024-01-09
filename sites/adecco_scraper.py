@@ -67,6 +67,10 @@ def get_jobs():
                 city = 'Slobozia'
             elif 'prahova' in city.lower():
                 city = 'Ploiesti'
+            elif 'otopeni' in city.lower():
+                city = 'Otopeni'
+            elif 'Onesti' in city.lower():
+                city =  'Onesti'
 
             list_jobs.append({
                 "job_title": title,
