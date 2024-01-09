@@ -69,7 +69,7 @@ def get_jobs():
                 city = 'Ploiesti'
             elif 'otopeni' in city.lower():
                 city = 'Otopeni'
-            elif 'Bacau/Onesti' in city.lower():
+            elif 'bacau/onesti' in city.lower():
                 city = 'Onesti'
 
             list_jobs.append({
@@ -82,7 +82,6 @@ def get_jobs():
             })
 
     return list_jobs
-
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
