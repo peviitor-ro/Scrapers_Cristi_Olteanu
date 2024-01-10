@@ -60,7 +60,6 @@ def scrape_and_update_peviitor(company_name, data_list):
     """
     Update data on peviitor API!
     """
-
     return data_list
 
 
