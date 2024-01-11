@@ -12,26 +12,25 @@ def get_jobs():
     list_jobs = []
 
     response = requests.get(
-        "https://www.careers-page.com/api/v1.0/c/ams-hr/jobs/?page_size=50&page=1&city_new__in=172,1254,2097,44432,5105,2312&organization__in=&ordering=-is_pinned_in_career_page,-last_published_at",
+        "https://www.careers-page.com/api/v1.0/c/ams-hr/jobs/?page_size=100&page=1&city_new__in=172,1254,2097,44432,5105,2312&organization__in=&ordering=-is_pinned_in_career_page,-last_published_at",
         headers=DEFAULT_HEADERS).json()['results']
 
     for job in response:
 
         title = job['position_name']
         city = job['city']
-        country = job['country']
         link = 'https://www.careers-page.com/ams-hr/job/' + job['hash']
 
-        if 'Romania' in country:
-            list_jobs.append({
-                "job_title": title,
-                "job_link": link,
-                "company": "AMS",
-                "country": "Romania",
-                "city": city
+        list_jobs.append({
+            "job_title": title,
+            "job_link": link,
+            "company": "AMS",
+            "country": "Romania",
+            "city": city
             })
-
+ 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
