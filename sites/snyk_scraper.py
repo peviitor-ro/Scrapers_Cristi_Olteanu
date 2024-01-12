@@ -37,7 +37,7 @@ def get_jobs():
 
         for location in locations:
             if 'Cluj' in location:
-                cities.append('Cluj Napoca')
+                cities.append('Cluj-Napoca')
             elif 'Bucharest' in location:
                 cities.append('Bucuresti')
 
