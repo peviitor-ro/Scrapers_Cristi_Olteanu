@@ -33,7 +33,8 @@ def get_jobs():
             "job_link": link,
             "company": "AMS",
             "country": "Romania",
-            "city": city
+            "city": city,
+            "remote": job_type
             })
 
     return list_jobs
