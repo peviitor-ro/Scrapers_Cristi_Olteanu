@@ -6,7 +6,7 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
+
 
 
 def prepare_post():
@@ -61,12 +61,11 @@ def get_jobs():
             job_type = 'on-site'
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "Edurom",
             "country": "Romania",
-            "city": city,
+            "city": city.replace("Cluj","Cluj-Napoca"),
             "remote": job_type
         })
 
