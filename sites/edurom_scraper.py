@@ -60,16 +60,25 @@ def get_jobs():
             city = list_city
             job_type = 'on-site'
 
+        if 'from' in list_city:
+            city = 'Bucuresti'
+            job_type = 'remote'
+
+        if "Cluj" in list_city:
+            list_city.remove('Cluj')
+            list_city.append("Cluj-Napoca")
+
         list_jobs.append({
             "job_title": title,
             "job_link": link,
             "company": "Edurom",
             "country": "Romania",
-            "city": city.replace("Cluj","Cluj-Napoca"),
+            "city": city,
             "remote": job_type
         })
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
