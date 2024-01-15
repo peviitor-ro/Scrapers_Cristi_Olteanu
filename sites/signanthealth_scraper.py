@@ -35,7 +35,7 @@ def get_jobs():
 
                 job_type_text = get_soup(link).find('div', class_="job-posting-section").text
 
-                if "hybrid" in job_type_text.lower():
+                if "remote" in job_type_text.lower() or  "#remote" in job_type_text.lower():
                     job_type = 'remote'
                 elif 'hybrid' in job_type_text.lower():
                     job_type = 'hybrid'
