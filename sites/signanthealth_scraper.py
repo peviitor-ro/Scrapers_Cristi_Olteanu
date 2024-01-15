@@ -6,7 +6,12 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
+
+def get_soup(link):
+
+    response = requests.get(link,headers=DEFAULT_HEADERS)
+    soup = BeautifulSoup(response.text, 'lxml')
+    return soup
 
 
 def get_jobs():
@@ -18,11 +23,8 @@ def get_jobs():
 
     while flag:
 
-        response = requests.get(f'https://globalus232.dayforcehcm.com/CandidatePortal/en-US/signanthealth?page={page}',
-                                headers=DEFAULT_HEADERS)
-
-        soup = BeautifulSoup(response.text, 'lxml')
-        jobs = soup.find_all('li', class_='search-result')
+        jobs = get_soup(f'https://globalus232.dayforcehcm.com/CandidatePortal/en-US/signanthealth?page={page}'
+                        ).find_all('li', class_='search-result')
 
         if len(jobs) > 0:
 
@@ -31,17 +33,17 @@ def get_jobs():
                 title = job.find('a').text
                 location = job.find('div', class_='posting-subtitle').text
 
-                if 'remote' in location.lower() or 'remote' in title.lower():
+                job_type_text = get_soup(link).find('div', class_="job-posting-section").text
+
+                if "hybrid" in job_type_text.lower():
                     job_type = 'remote'
-                elif 'hybrid' in location.lower() or 'hybrid' in title.lower():
+                elif 'hybrid' in job_type_text.lower():
                     job_type = 'hybrid'
                 else:
-                    job_type = 'on-site'
+                    job_type = "on-site"
 
                 if 'Romania' in location:
-
                     list_jobs.append({
-                        "id": str(uuid.uuid4()),
                         "job_title": title,
                         "job_link": link,
                         "company": "SignantHealth",
@@ -55,6 +57,7 @@ def get_jobs():
         page += 1
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
