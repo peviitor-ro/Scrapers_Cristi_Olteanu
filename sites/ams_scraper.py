@@ -21,6 +21,13 @@ def get_jobs():
         city = job['city']
         link = 'https://www.careers-page.com/ams-hr/job/' + job['hash']
 
+        if "remote" in title.lower():
+            job_type = "remote"
+        elif "hybrid" in title.lower():
+            job_type = "hybrid"
+        else:
+            job_type = "on-site"
+
         list_jobs.append({
             "job_title": title,
             "job_link": link,
@@ -28,7 +35,7 @@ def get_jobs():
             "country": "Romania",
             "city": city
             })
- 
+
     return list_jobs
 
 
