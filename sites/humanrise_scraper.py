@@ -1,6 +1,6 @@
 #
 # Company - > humanrise
-# Link -> https://www.careers-page.com/humanrise
+# Link -> https://humanrise.ro/joburi/
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
@@ -8,51 +8,37 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def get_soup(url):
-
-    response = requests.get(url, headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text, 'lxml')
-    return soup
-
-
-def get_pages():
-
-    soup_pages = get_soup(url='https://www.careers-page.com/humanrise?page=')
-    nr_jobs = int(soup_pages.find('h4', class_='positions').text.split()[0])
-    pages = int(nr_jobs/10)
-    if nr_jobs % 10 > 0:
-        pages += 1
-    return pages
-
-
 def get_jobs():
 
-    list_jobs = []
+    job_list = []
 
-    for page in range(1, get_pages()+1, 1):
+    response = requests.get('https://humanrise.ro/joburi/', headers=DEFAULT_HEADERS)
+    soup = BeautifulSoup(response.text, 'lxml')
 
-        soup_jobs = get_soup(f'https://www.careers-page.com/humanrise?page={page}')
-        jobs = soup_jobs.find_all('div', class_='media-body')
+    jobs = soup.find_all('div', class_="grid-item-cont")
 
-        for job in jobs:
-            text = job.find('a', class_='text-secondary').get('href')
+    for job in jobs:
+        title = job.find('h3', class_="entry-title de_title_module dmach-post-title").text
+        link = job.find('a', class_="et_pb_button")['href']
+        city = job.find_all('p', class_="dmach-acf-value")
+        for c in city:
+            if "Locations:" in c.text:
+                cities = c.text.split("Locations:")[1].strip().split(', ')
+        if "Remote" in cities:
+            job_type = "remote"
+            cities.remove("Remote")
+        else:
+            job_type = "on-site"
 
-            if text is not None:
-                title = str(job.find('h5')).split('>')[1].strip('</h5').strip().replace('&amp;', '&')
-                link = 'https://www.careers-page.com' + text
-                try:
-                    city = str(job.find('span')).split('</span')[0].split('i>')[1].split(',')[0].strip()
-                except:
-                    city = 'Iasi'
+        job_list.append({
+            "job_title": title,
+            "job_link": link,
+            "company": "expressvpn",
+            "country": "Romania",
+            "city": city,
+            "remote": job_type})
+    return job_list
 
-                list_jobs.append({
-                    "job_title": title,
-                    "job_link": link,
-                    "company": "Humanrise",
-                    "country": "Romania",
-                    "city": city,
-            })
-    return list_jobs
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
