@@ -33,9 +33,9 @@ def get_jobs():
         job_list.append({
             "job_title": title,
             "job_link": link,
-            "company": "expressvpn",
+            "company": "humanrise",
             "country": "Romania",
-            "city": city,
+            "city": cities,
             "remote": job_type})
     return job_list
 
