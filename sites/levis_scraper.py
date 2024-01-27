@@ -19,11 +19,11 @@ def get_ids() -> tuple:
 
     play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
     csrf_token = re.search(r"CALYPSO_CSRF_TOKEN=([^;]+);", str(response)).group(0)
-    ts_id = re.search(r"TS014c1515=([^;]+);", str(response)).group(0)
+    cf_id = re.search(r"__cf_bm=([^;]+);", str(response)).group(0)
     wday_vps = re.search(r"wday_vps_cookie=([^;]+);", str(response)).group(0)
     wd_browser_id = re.search(r"wd-browser-id=([^;]+);", str(response)).group(0)
 
-    return play_session, csrf_token, ts_id, wday_vps, wd_browser_id
+    return play_session, csrf_token, cf_id, wday_vps, wd_browser_id
 
 
 def prepare_post() -> tuple:
