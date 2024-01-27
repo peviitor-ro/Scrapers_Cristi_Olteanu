@@ -5,7 +5,7 @@
 from A_OO_get_post_soup_update_dec import update_peviitor_api
 from L_00_logo import update_logo
 import requests
-import uuid
+
 
 def get_jobs():
 
@@ -28,23 +28,23 @@ def get_jobs():
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
     }
     data = {"city":["Bucharest"],"from":0,"size":10}
+    try:
+        response = session.post(url=url, headers=headers, json=data).json()['jobDetails']
 
-    response = session.post(url=url, headers=headers, json=data).json()['jobDetails']
+        for job in response:
 
-    for job in response:
-
-        region = job['region']
-
-        if 'Bucharest' or 'Romania' in region.lower():
+            region = job['region']
             list_jobs.append({
-                "id": str(uuid.uuid4()),
                 "job_title": job['jobTitle'],
                 "job_link": 'https://usa.visa.com/en_us/jobs/' + job['refNumber'],
                 "company": "Visa",
                 "country": "Romania",
-                "city": job['city']
-            })
-    return list_jobs
+                "city": job['city']})
+
+        return list_jobs
+    except:
+        print("No more jobs")
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
