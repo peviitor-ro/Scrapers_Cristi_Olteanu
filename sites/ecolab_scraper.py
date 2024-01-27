@@ -70,12 +70,16 @@ def get_jobs():
         city = location.split('-')[-1].strip()
 
         if 'locations' in location.lower():
-            additional_locations = session.get(f"https://ecolab.wd1.myworkdayjobs.com/wday/cxs/ecolab/Ecolab_External{job['externalPath']}",
-                                               headers=data[2]).json()['jobPostingInfo']['additionalLocations']
-            for additional_location in additional_locations:
-                if 'ROU' in additional_location:
-                    city = additional_location.split('-')[-1].strip()
+            base_url_location = session.get(f"https://ecolab.wd1.myworkdayjobs.com/wday/cxs/ecolab/Ecolab_External{job['externalPath']}",
+                                               headers=data[2]).json()['jobPostingInfo']
+            additional_locations = base_url_location['additionalLocations']
 
+            if 'ROU' in base_url_location['location']:
+                city = base_url_location['location'].split('-')[-1].strip()
+            else:
+                for additional_location in additional_locations:
+                    if 'ROU' in additional_location:
+                        city = additional_location.split('-')[-1].strip()
 
         list_jobs.append({
             "job_title": title,
