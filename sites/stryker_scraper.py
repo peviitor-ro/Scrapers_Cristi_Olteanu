@@ -33,7 +33,7 @@ def prepare_post():
         "searchText": ""
     }
     headers = {
-        "cookie": f"{cookies[0]}{cookies[1]}{cookies[2]}{cookies[3]}{cookies[4]}{cookies[5]}",
+        "cookie": f"{cookies[0]}{cookies[1]}{cookies[2]}{cookies[3]}{cookies[4]}",
         "Content-Type": "application/json",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
