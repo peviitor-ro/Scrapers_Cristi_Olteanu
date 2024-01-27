@@ -18,11 +18,11 @@ def get_ids() -> tuple:
         headers=DEFAULT_HEADERS).headers
 
     play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
-    ts_id = re.search(r"TS014c1515=([^;]+);", str(response)).group(0)
+    cf_id = re.search(r"__cf_bm=([^;]+);", str(response)).group(0)
     wday_vps = re.search(r"wday_vps_cookie=([^;]+);", str(response)).group(0)
     wd_browser_id = re.search(r"wd-browser-id=([^;]+);", str(response)).group(0)
 
-    return play_session,ts_id, wday_vps, wd_browser_id
+    return play_session, cf_id, wday_vps, wd_browser_id
 
 
 def prepare_post():
@@ -86,6 +86,7 @@ def get_jobs():
             "remote": job_type
         })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
