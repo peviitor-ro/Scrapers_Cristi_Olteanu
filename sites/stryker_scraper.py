@@ -14,13 +14,12 @@ def get_cookies() -> tuple:
         headers=DEFAULT_HEADERS).headers
 
     play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
-    ts_id = re.search(r"TS014c1515=([^;]+);", str(response)).group(0)
     wday_vps = re.search(r"wday_vps_cookie=([^;]+);", str(response))
     wd_browser_id = re.search(r"wd-browser-id=([^;]+);", str(response)).group(0)
     cf_bm = re.search(r"__cf_bm=([^;]+);", str(response))
     cflb = re.search(r"__cflb=([^;]+);", str(response))
 
-    return play_session, ts_id, wday_vps, wd_browser_id, cflb, cf_bm
+    return play_session, wday_vps, wd_browser_id, cflb, cf_bm
 
 
 def prepare_post():
@@ -80,7 +79,6 @@ def get_jobs():
         })
 
     return jobs_list
-
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
