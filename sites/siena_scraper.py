@@ -65,7 +65,7 @@ def get_jobs():
             secondary_location = location['locationName']
 
             if 'Cluj' in secondary_location:
-                cities.append('Cluj')
+                cities.append('Cluj-Napoca')
             if 'Bucharest' in secondary_location:
                 cities.append('Bucharest')
             if 'Iasi' in secondary_location:
@@ -85,6 +85,7 @@ def get_jobs():
             })
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
