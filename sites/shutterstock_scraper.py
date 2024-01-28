@@ -81,10 +81,12 @@ def get_jobs():
         title = job['title']
         city = job['city'].split(',')[0]
         link = f'https://careers.shutterstock.com/us/en/job/{id}'
-        try:
-            job_type = job['multi_location'][1].split(',')[0]
-        except:
-            job_type = 'on-site'
+
+        for skill in job['ml_skills']:
+            if 'hybrid' in skill:
+                job_type = 'hybrid'
+            else:
+                job_type = 'on-site'
 
         list_jobs.append({
             "job_title": title,
