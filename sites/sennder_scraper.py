@@ -6,33 +6,30 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
-import uuid
+
 
 def get_jobs():
     list_jobs = []
 
-    req = requests.get("https://www.sennder.com/open-positions",headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(req.text, "lxml")
-
-    jobs = soup.find_all('a')
+    response = requests.get("https://www.sennder.com/open-positions/departments/all/locations/bucharest-romania"
+                            , headers=DEFAULT_HEADERS)
+    soup = BeautifulSoup(response.text, "lxml")
+    jobs = soup.find_all('li', class_="mb-8")
 
     for job in jobs:
-        text = job.text
+        title = job.find('div', class_="text-subsection-title mb-2 text-foreground-primary").text
+        link = 'https://www.sennder.com/open-positions' + job.find('a')['href']
+        city = job.find('span', class_="text-foreground-secondary").text.split(',')[0]
 
-        if 'Romania' in text and 'Romanian' not in text:
-            title = text.split('-')[0]
-            city = text.split()[-2].strip(',')
-            link = 'https://www.sennder.com' + job.get('href')
-
-            list_jobs.append({
-                "id": str(uuid.uuid4()),
-                "job_title": title,
-                "job_link": link,
-                "company": "Sennder",
-                "country": "Romania",
-                "city": city,
-            })
+        list_jobs.append({
+            "job_title": title,
+            "job_link": link,
+            "company": "Sennder",
+            "country": "Romania",
+            "city": city,
+        })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
