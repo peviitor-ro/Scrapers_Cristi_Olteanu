@@ -43,7 +43,7 @@ def get_jobs():
             list_jobs.append({
                 "job_title": job['data']['title'],
                 "job_link": job['data']['meta_data']['canonical_url'],
-                "company": "S&P",
+                "company": "SandP",
                 "country": "Romania",
                 "city": city
             })
@@ -60,7 +60,7 @@ def scrape_and_update_peviitor(company_name, data_list):
     return data_list
 
 
-company_name = 'S&P'  # add test comment
+company_name = 'SandP'  # add test comment
 data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
