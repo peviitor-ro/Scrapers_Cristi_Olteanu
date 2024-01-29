@@ -27,7 +27,7 @@ def get_jobs():
 
     list_jobs = []
 
-    for page in range(1,get_nr_pages()+1,1):
+    for page in range(1, get_nr_pages()+1, 1):
 
         soup_jobs = get_soup(f'https://www.antal.com/jobs?keywords=&sector=&location=1721&type=&page={page}')
         jobs = soup_jobs.find_all('li')
@@ -41,6 +41,7 @@ def get_jobs():
                     city = job.find('ul', class_='job-card__details').text.split(',')[-2].split()[-1]
                 except:
                     city = job.find('ul', class_='job-card__details').text.split(',')[-1].split()[-1]
+
                 if 'Neamt' in city or 'Neamţ' in city:
                     city = 'Piatra-Neamt'
                 elif 'Harghita' in city:
@@ -57,10 +58,12 @@ def get_jobs():
                     city = 'Targu Mures'
                 elif 'Mare' in city:
                     city = 'Satu Mare'
-                elif city.lower() in ['romania', 'negotiable', 'ilfov', '€150']:
+                elif city.lower() in ['romania', 'negotiable', 'ilfov', '€150', '~156']:
                     city = 'Bucuresti'
                 elif 'Ialomita' in city or 'Ialomița' in city:
                     city = 'Slobozia'
+                elif 'Bihor' in city:
+                    city = 'Oradea'
 
                 if 'on site' in title.lower() or 'on-site' in title.lower():
                     job_type = 'on-site'
@@ -80,6 +83,7 @@ def get_jobs():
                     "remote": job_type
                 })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
