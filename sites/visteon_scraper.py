@@ -4,7 +4,6 @@
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api
 from L_00_logo import update_logo
-import uuid
 import requests
 
 session = requests.session()
@@ -102,7 +101,6 @@ def get_jobs():
             city = secondary_city
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "Visteon",
