@@ -5,13 +5,14 @@
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
-import uuid
 
 
 def get_jobs():
-    response = requests.get(
-        'https://www.hitachienergy.com/careers/open-jobs/_jcr_content/root/container/content_1/content/grid_0/joblist.listsearchresults.json?offset=0&location=Romania%2FBucharest++Ilfov&calculatedOffset=0',
-        headers=DEFAULT_HEADERS).json()['items']
+    url = "https://www.hitachienergy.com/careers/open-jobs/_jcr_content/root/container/content_1/content/grid_0/joblist.listsearchresults.json"
+
+    querystring = {"location": ["Romania/Bucharest New", "Romania/Bucharest  Ilfov"], "offset": "0",
+                   "calculatedOffset": "0"}
+    response = requests.get(url=url, params=querystring, headers=DEFAULT_HEADERS).json()['items']
 
     list_jobs = []
 
@@ -19,10 +20,8 @@ def get_jobs():
         location = job['location']
 
         if 'Bucharest' in location:
-            city = 'Bucharest'
-
+            city = 'Bucuresti'
             list_jobs.append({
-                "id": str(uuid.uuid4()),
                 "job_title": job['title'],
                 "job_link": job['url'],
                 "company": "hitachienergy",
@@ -30,6 +29,7 @@ def get_jobs():
                 "city": city
             })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
