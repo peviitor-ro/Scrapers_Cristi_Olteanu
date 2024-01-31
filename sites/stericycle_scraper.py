@@ -6,13 +6,12 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
 
 
 def get_soup(url: str):
 
     res = requests.get(url, headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(res.text,'lxml')
+    soup = BeautifulSoup(res.text, 'lxml')
     return soup
 
 
@@ -42,7 +41,6 @@ def get_jobs():
                 city = job.find('span', class_='jobLocation').text.split(',')[0].strip()
 
                 list_jobs.append({
-                    "id": str(uuid.uuid4()),
                     "job_title": title,
                     "job_link": link,
                     "company": "Stericycle",
