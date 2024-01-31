@@ -58,8 +58,10 @@ def get_jobs():
 
         if 'remote' in title.lower():
             job_type = 'remote'
-        else:
+        elif 'hybrid' in title.lower():
             job_type = 'hibrid'
+        else:
+            job_type = 'on-site'
 
         for location in locations:
             secondary_location = location['locationName']
