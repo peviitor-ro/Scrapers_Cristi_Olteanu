@@ -5,7 +5,7 @@
 from A_OO_get_post_soup_update_dec import update_peviitor_api
 from L_00_logo import update_logo
 import requests
-import uuid
+
 
 def get_jobs():
     '''
@@ -19,10 +19,8 @@ def get_jobs():
     list_jobs = []
 
     for job in response:
-
         list_jobs.append({
-            "id": str(uuid.uuid4()),
-            "job_title": job['title'],
+            "job_title": job['title'].split('-')[0],
             "job_link": 'https://jobs.redbull.com/ro-ro/' + job['slug'],
             "company": "RedBull",
             "country": "Romania",
@@ -30,6 +28,7 @@ def get_jobs():
         })
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
