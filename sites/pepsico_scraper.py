@@ -5,13 +5,9 @@
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
-import uuid
+
 
 def get_jobs():
-    """
-       ... this func() make a simple requests
-       and collect data from Pepsico API.
-    """
 
     response = requests.get('https://www.pepsicojobs.com/api/jobs?page=1&limit=100&country=Romania&sortBy=relevance&descending=false&internal=false').json()['jobs']
     list_jobs = []
@@ -19,22 +15,20 @@ def get_jobs():
 
         country = job['data']['country']
         other_city = job['data']['full_location'].split(';')[-1].split(',')[0].strip()
-
         if country == 'Romania':
-            city = job['data']['city']
+            city = job['data']['city'].split('Com.')[-1].strip()
         else:
             city = other_city
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": job['data']['title'],
             "job_link": job['data']['meta_data']['canonical_url'],
             "company": "Pepsico",
             "country": "Romania",
-            "city": city.strip('Com.').strip(),
+            "city": city
         })
-
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
