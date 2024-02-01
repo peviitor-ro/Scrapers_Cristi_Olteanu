@@ -20,6 +20,9 @@ def get_jobs():
         else:
             city = other_city
 
+        if 'Cluj Napoca' in city:
+            city = 'Cluj-Napoca'
+            
         list_jobs.append({
             "job_title": job['data']['title'],
             "job_link": job['data']['meta_data']['canonical_url'],
