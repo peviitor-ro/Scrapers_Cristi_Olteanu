@@ -6,7 +6,6 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
 
 
 def get_soup(url):
