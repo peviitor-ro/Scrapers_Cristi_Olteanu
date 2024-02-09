@@ -4,7 +4,6 @@
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
-import uuid
 import requests
 from bs4 import BeautifulSoup
 
@@ -28,39 +27,39 @@ def get_jobs():
         if text is not None:
             title = text['title'].split('-')[-1].strip()
             link = text['href']
-            city = job.find('div', class_='col-xs-6 header left').text.split()[-1].split('-')[-1]
+            city = job.find('div', class_='col-xs-6 header left').text
 
-            if city == 'Remote':
+            if 'RO-Iasi' in city:
                 city = 'Iasi'
-                job_type = 'remote'
-            else:
-                job_type = 'on-site'
+            elif 'RO-Bucharest' in city:
+                city = 'Bucuresti'
+
+            print(city)
 
             list_jobs.append({
-                "id": str(uuid.uuid4()),
                 "job_title": title,
                 "job_link": link,
                 "company": "mambu",
                 "country": "Romania",
                 "city": city,
-                "remote": job_type
+                "remote": 'on-site'
             })
 
     return list_jobs
-
-@update_peviitor_api
-def scrape_and_update_peviitor(company_name, data_list):
-    """
-    Update data on peviitor API!
-    """
-
-    return data_list
-
-
-company_name = 'mambu'  # add test comment
-data_list = get_jobs()
-scrape_and_update_peviitor(company_name, data_list)
-
-print(update_logo('mambu',
-                  'https://c-12720-20230802-mambu-com.i.icims.com/images/logo/mambu-logo-2023.svg'
-                  ))
+get_jobs()
+# @update_peviitor_api
+# def scrape_and_update_peviitor(company_name, data_list):
+#     """
+#     Update data on peviitor API!
+#     """
+#
+#     return data_list
+#
+#
+# company_name = 'mambu'  # add test comment
+# data_list = get_jobs()
+# scrape_and_update_peviitor(company_name, data_list)
+#
+# print(update_logo('mambu',
+#                   'https://c-12720-20230802-mambu-com.i.icims.com/images/logo/mambu-logo-2023.svg'
+#                   ))
