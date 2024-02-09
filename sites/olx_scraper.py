@@ -28,7 +28,7 @@ def get_jobs():
             list_jobs.append({
                 "job_title": title,
                 "job_link": link,
-                "company": "OlxGroup",
+                "company": "Olx",
                 "country": "Romania",
                 "city": 'Bucuresti',
                 "remote": job_type
@@ -42,10 +42,10 @@ def scrape_and_update_peviitor(company_name, data_list):
     """
     return data_list
 
-company_name = 'OlxGroup'  # add test comment
+company_name = 'Olx'  # add test comment
 data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
-print(update_logo('OlxGroup',
+print(update_logo('Olx',
                   'https://seeklogo.com/images/O/olx-group-logo-D786F321B8-seeklogo.com.png'
                   ))
