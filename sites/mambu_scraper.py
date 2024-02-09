@@ -34,8 +34,6 @@ def get_jobs():
             elif 'RO-Bucharest' in city:
                 city = 'Bucuresti'
 
-            print(city)
-
             list_jobs.append({
                 "job_title": title,
                 "job_link": link,
@@ -46,20 +44,21 @@ def get_jobs():
             })
 
     return list_jobs
-get_jobs()
-# @update_peviitor_api
-# def scrape_and_update_peviitor(company_name, data_list):
-#     """
-#     Update data on peviitor API!
-#     """
-#
-#     return data_list
-#
-#
-# company_name = 'mambu'  # add test comment
-# data_list = get_jobs()
-# scrape_and_update_peviitor(company_name, data_list)
-#
-# print(update_logo('mambu',
-#                   'https://c-12720-20230802-mambu-com.i.icims.com/images/logo/mambu-logo-2023.svg'
-#                   ))
+
+
+@update_peviitor_api
+def scrape_and_update_peviitor(company_name, data_list):
+    """
+    Update data on peviitor API!
+    """
+
+    return data_list
+
+
+company_name = 'mambu'  # add test comment
+data_list = get_jobs()
+scrape_and_update_peviitor(company_name, data_list)
+
+print(update_logo('mambu',
+                  'https://c-12720-20230802-mambu-com.i.icims.com/images/logo/mambu-logo-2023.svg'
+                  ))
