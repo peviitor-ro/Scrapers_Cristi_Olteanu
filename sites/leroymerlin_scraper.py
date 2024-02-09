@@ -40,6 +40,8 @@ def get_jobs():
             location = job.find('div', class_='mt-1 text-md').text.split('·')[1].strip()
             if 'Târgu Mureș' in location:
                 city = 'Târgu-Mureș'
+            elif 'Cluj' in location:
+                 city = 'Cluj-Napoca'
             else:
                 city = location.split()[0]
 
