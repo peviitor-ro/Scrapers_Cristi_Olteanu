@@ -6,7 +6,6 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
-import uuid
 
 
 def get_jobs():
@@ -27,10 +26,12 @@ def get_jobs():
 
         city = job.find('span',class_='custom-css-style-job-location-city').text.split(' or ')
         country = job.find('span',class_='custom-css-style-job-location-country').text
+        if 'Cluj' in city:
+            city = 'Cluj-Napoca'
+
         if country == 'Romania':
 
             list_jobs.append({
-                "id": str(uuid.uuid4()),
                 "job_title": title,
                 "job_link": link,
                 "company": "mobilexpense",
@@ -39,6 +40,7 @@ def get_jobs():
                 "remote": remote
             })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
