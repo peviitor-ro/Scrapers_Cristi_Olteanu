@@ -9,7 +9,7 @@ import requests
 
 def get_jobs():
 
-    url = "https://boards-api.greenhouse.io/v1/boards/moduscreate/jobs/"
+    url = "https://boards-api.greenhouse.io/v1/boards/moduscreate/jobs/?content=true"
 
     querystring = {"content": "true"}
 
@@ -25,22 +25,19 @@ def get_jobs():
 
         link = job['absolute_url']
         title = job['title']
-        offices = job['offices']
-        for office in offices:
-            if 'Romania' in office['name']:
-                city = 'Cluj-Napoca'
-                job_type = 'remote'
 
-                list_jobs.append({
-                    "job_title": title,
-                    "job_link": link,
-                    "company": "ModusCreate",
-                    "country": "Romania",
-                    "city": city,
-                    "remote": job_type
-                })
+        if 'Romania' in job['location']['name']:
+            city = 'Cluj-Napoca'
 
+            list_jobs.append({
+                "job_title": title,
+                "job_link": link,
+                "company": "ModusCreate",
+                "country": "Romania",
+                "city": city,
+            })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
