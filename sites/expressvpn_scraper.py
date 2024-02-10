@@ -37,7 +37,8 @@ def get_jobs():
                 "company": "expressvpn",
                 "country": "Romania",
                 "city": city,
-                "remote": job_type})
+                "remote": job_type
+            })
 
     return list_jobs
 
