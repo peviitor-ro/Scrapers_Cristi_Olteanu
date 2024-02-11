@@ -10,7 +10,7 @@ import requests
 
 def get_jobs():
 
-    req = requests.get('https://jobs.lever.co/caseware?location=Cluj%2C%20Romania', headers=DEFAULT_HEADERS)
+    req = requests.get('https://jobs.lever.co/caseware?', headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(req.text, 'lxml')
     jobs = soup.find_all('div', class_='posting')
 
@@ -20,20 +20,24 @@ def get_jobs():
 
         link = job.find('a', class_='posting-title')['href']
         title = job.find('h5').text
-        city = job.find('span', class_='sort-by-location posting-category small-category-label location').text.split(',')[0]
+        city = job.find('span', class_='sort-by-location posting-category small-category-label location').text
         job_type = job.find('span', class_='display-inline-block small-category-label workplaceTypes').text
+        cities = []
 
         if "Cluj" in city:
-            city = "Cluj-Napoca"
+            cities.append("Cluj-Napoca")
+        if 'Bucharest' in city:
+            cities.append('Bucuresti')
 
-        list_jobs.append({
-            "job_title": title,
-            "job_link": link,
-            "company": "caseware",
-            "country": "Romania",
-            "city": city,
-            "remote": job_type
-        })
+        if cities:
+            list_jobs.append({
+                "job_title": title,
+                "job_link": link,
+                "company": "caseware",
+                "country": "Romania",
+                "city": city,
+                "remote": job_type
+            })
 
     return list_jobs
 
