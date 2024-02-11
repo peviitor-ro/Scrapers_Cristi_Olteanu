@@ -35,7 +35,7 @@ def get_jobs():
                 "job_link": link,
                 "company": "caseware",
                 "country": "Romania",
-                "city": city,
+                "city": cities,
                 "remote": job_type
             })
 
