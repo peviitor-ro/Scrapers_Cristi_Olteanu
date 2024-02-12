@@ -8,17 +8,13 @@ import requests
 
 
 def get_jobs():
-
-    response = requests.get('https://www.pepsicojobs.com/api/jobs?page=1&limit=100&country=Romania&sortBy=relevance&descending=false&internal=false').json()['jobs']
+    url = 'https://www.pepsicojobs.com/api/jobs?page=1&limit=100&country=Romania&sortBy=relevance&descending=false&internal=false'
+    response = requests.get(url, headers=DEFAULT_HEADERS).json()['jobs']
     list_jobs = []
     for job in response:
 
         country = job['data']['country']
-        other_city = job['data']['full_location'].split(';')[-1].split(',')[0].strip()
-        if country == 'Romania':
-            city = job['data']['city'].split('Com.')[-1].strip()
-        else:
-            city = other_city
+        city = job['data']['city'].split('Com.')[-1].strip()
 
         if 'Cluj Napoca' in city:
             city = 'Cluj-Napoca'
@@ -47,6 +43,5 @@ data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
 print(update_logo('Pepsico',
-                  'https://cms.jibecdn.com/prod/pepsico-stg/assets/V2-HEADER-NAV_LOGO-en-us-1674467727089.svg'
-                  ))
+                  'https://cms.jibecdn.com/prod/pepsico-stg/assets/V2-HEADER-NAV_LOGO-en-us-1674467727089.svg'))
 
