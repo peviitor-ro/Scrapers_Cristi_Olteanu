@@ -18,6 +18,8 @@ def get_jobs():
 
         if 'Cluj Napoca' in city:
             city = 'Cluj-Napoca'
+        elif 'Vitoria' in city:
+            city = 'Victoria'
             
         list_jobs.append({
             "job_title": job['data']['title'],
