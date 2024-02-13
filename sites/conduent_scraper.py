@@ -6,7 +6,6 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import re
 import requests
-import uuid
 
 session = requests.Session()
 
@@ -81,14 +80,13 @@ def get_jobs():
         link = 'https://careers.conduent.com/us/en/job/' + job['jobId']
         city = job['city']
 
-        if 'Remote Romania' in city:
+        if 'Remote Romania' in city or 'Remote' in title:
             city = 'Iasi'
             job_type = 'remote'
         else:
             job_type = 'on-site'
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "Conduent",
