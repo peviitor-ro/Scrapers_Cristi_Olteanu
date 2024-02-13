@@ -50,9 +50,11 @@ def get_jobs():
                 "job_link": link,
                 "company": "Edenred",
                 "country": "Romania",
-                "city": cities
+                "city": cities,
+                "remote": 'hibrid'
             })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
