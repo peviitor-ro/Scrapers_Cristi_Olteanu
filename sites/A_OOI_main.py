@@ -12,16 +12,9 @@ exclude = ['__init__.py',
            'A_OOI_main.py',
            '000_delete_api_data.py',
            'L_00_logo.py',
-           'connect44_scraper.py',
-           'proctergamble_scraper.py',
-           'globallogic_scraper.py',
-           'kenvue_scraper.py',
-           'test_rolandberger.py',
-           'test_masabi_scraper.py',
-           'masabi_scraper.py',
-           'test_raben.py',
-           'test_hrsro.py',
-           'test_vitesco.py',]
+           'damen_scraper.py',
+
+           ]
 
 path = os.path.dirname(os.path.abspath(__file__))
 
