@@ -29,7 +29,11 @@ def get_jobs():
     url = "https://dennemeyer.wd3.myworkdayjobs.com/wday/cxs/dennemeyer/dennemeyer_careers/jobs"
 
     payload = {
-        "appliedFacets": {"locations": ["99c9060b642e1001e86635de40a00000","023dd96435d8016f98adf461d036dbdb"]},
+        "appliedFacets": {"locations": [
+            "023dd96435d8016f98adf461d036dbdb",
+            "08c8c9a677fd1001ea92225ba5d90000",
+            "99c9060b642e1001e86635de40a00000"
+        ]},
         "limit": 20,
         "offset": 0,
         "searchText": ""
