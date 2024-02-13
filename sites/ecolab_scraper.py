@@ -31,8 +31,12 @@ def prepare_post():
     url = "https://ecolab.wd1.myworkdayjobs.com/wday/cxs/ecolab/Ecolab_External/jobs"
 
     payload = {
-        "appliedFacets": {"locations": ["88d5fb29f85801018b6c2ac810e20000", "292b680d80510154ed793effa574d767",
-                                        "8ad79cd2b0580101f03004df87fb0000"]},
+        "appliedFacets": {"locations": [
+            "292b680d8051016717a920ffa574cd67",
+            "88d5fb29f85801018b6c2ac810e20000",
+            "292b680d80510154ed793effa574d767",
+            "8ad79cd2b0580101f03004df87fb0000"
+        ]},
         "limit": 20,
         "offset": 0,
         "searchText": ""
