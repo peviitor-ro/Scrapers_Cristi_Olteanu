@@ -80,8 +80,10 @@ def get_jobs():
         link = 'https://careers.conduent.com/us/en/job/' + job['jobId']
         city = job['city']
 
-        if 'Remote Romania' in city or 'Remote' in title:
+        if 'Remote Romania' in city:
             city = 'Iasi'
+            job_type = 'remote'
+        elif 'remote' in title.lower().strip('('):
             job_type = 'remote'
         else:
             job_type = 'on-site'
