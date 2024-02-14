@@ -68,17 +68,20 @@ def get_jobs():
         title = job['title']
         link_job_info = 'https://stryker.wd1.myworkdayjobs.com/wday/cxs/stryker/StrykerCareers' + job['externalPath']
         job_type = get_info(link_job_info)
+        city = job['locationsText'].split(',')[0]
 
-        jobs_list.append({
-            "job_title": title,
-            "job_link": link,
-            "company": "stryker",
-            "country": "Romania",
-            "city": 'Bucuresti',
-            "remote": job_type
-        })
+        if 'Bucharest' in city or 'Romania' in city:
 
+            jobs_list.append({
+                "job_title": title,
+                "job_link": link,
+                "company": "stryker",
+                "country": "Romania",
+                "city": 'Bucuresti',
+                "remote": job_type
+            })
     return jobs_list
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
