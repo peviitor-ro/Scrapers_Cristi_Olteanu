@@ -28,7 +28,7 @@ def get_jobs():
         else:
             job_type = 'on-site'
 
-        if 'Bucharest' in city or 'Romania' in city:
+        if 'Bucharest' in city:
             city = 'Bucharest'
 
             list_jobs.append({
@@ -39,7 +39,6 @@ def get_jobs():
                 "city": city,
                 "remote": job_type
             })
-
     return list_jobs
 
 
