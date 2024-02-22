@@ -69,15 +69,22 @@ def get_jobs():
                     city = city.split(', ')
                 except:
                     pass
+                if 'Mureș' in city:
+                    city = 'Targu-Mures'
+                elif 'Turzii' in city:
+                    city = 'Câmpia Turzii'
+                elif 'Multiple locations' in city:
+                    city = 'Bucuresti'
 
-                list_jobs.append({
-                    "job_title": title,
-                    "job_link": link,
-                    "company": "salesconsulting",
-                    "country": "Romania",
-                    "city": city,
-                    "remote": job_type
-                })
+                if city not in ['Chisinau','Ruse']:
+                    list_jobs.append({
+                        "job_title": title,
+                        "job_link": link,
+                        "company": "salesconsulting",
+                        "country": "Romania",
+                        "city": city,
+                        "remote": job_type
+                    })
 
     return list_jobs
 
