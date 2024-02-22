@@ -76,7 +76,7 @@ def get_jobs():
                 elif 'Multiple locations' in city:
                     city = 'Bucuresti'
 
-                if city not in ['Chisinau','Ruse']:
+                if city not in [['Chisinau'],['Ruse']]:
                     list_jobs.append({
                         "job_title": title,
                         "job_link": link,
