@@ -18,7 +18,8 @@ def get_soup(url: str):
 
 def get_pages():
     soup_pages = get_soup(url='https://fltechnics.com/careers/?c-ctry=29&c-search=#career-list')
-    nr_jobs = int(soup_pages.find('div', class_='info').find('span').text)
+    nr_jobs = int(soup_pages.find('div', class_='vc_col-md-12 vc_col-sm-12 vc_col-xs-12 wpb_column column_container vc_column_container col child_column no-extra-padding inherit_tablet inherit_phone'
+                                  ).text.split()[0])
     nr_pages = int(nr_jobs / 10)
     if int(int(nr_jobs % 10) > 0):
         nr_pages += 1
