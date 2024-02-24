@@ -46,6 +46,9 @@ def get_jobs():
                 if city == filtered_city['hs_id']:
                     romanian_cities.append(filtered_city['name'])
 
+        if 'Targu Mures' in romanian_cities:
+            romanian_cities[romanian_cities.index('Targu Mures')] = 'Targu-Mures'
+
         if 'Other Romanian Locations' in romanian_cities:
             romanian_cities.remove('Other Romanian Locations')
             job_type = 'remote'
