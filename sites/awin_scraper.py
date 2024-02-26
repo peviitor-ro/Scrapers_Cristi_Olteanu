@@ -33,19 +33,19 @@ def get_jobs():
     return list_jobs
 
 
-# @update_peviitor_api
-# def scrape_and_update_peviitor(company_name, data_list):
-#     """
-#     Update data on peviitor API!
-#     """
-#
-#     return data_list
-#
-#
-# company_name = 'Awin'  # add test comment
-# data_list = get_jobs()
-# scrape_and_update_peviitor(company_name, data_list)
-#
-# print(update_logo('Awin',
-#                   'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Logo-awin-black.svg/177px-Logo-awin-black.svg.png'
-#                   ))
+@update_peviitor_api
+def scrape_and_update_peviitor(company_name, data_list):
+    """
+    Update data on peviitor API!
+    """
+
+    return data_list
+
+
+company_name = 'Awin'  # add test comment
+data_list = get_jobs()
+scrape_and_update_peviitor(company_name, data_list)
+
+print(update_logo('Awin',
+                  'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Logo-awin-black.svg/177px-Logo-awin-black.svg.png'
+                  ))
