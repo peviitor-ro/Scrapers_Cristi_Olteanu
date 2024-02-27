@@ -46,7 +46,7 @@ def get_jobs():
                 list_jobs.append({
                     "job_title": title,
                     "job_link": link,
-                    "company": "FlTechincs",
+                    "company": "FlTechnics",
                     "country": "Romania",
                     "city": city
                 })
@@ -62,11 +62,11 @@ def scrape_and_update_peviitor(company_name, data_list):
     return data_list
 
 
-company_name = 'FlTechincs'
+company_name = 'FlTechnics'
 data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
-print(update_logo('FlTechincs',
+print(update_logo('FlTechnics',
                   'https://fltechnics.com/wp-content/uploads/2021/07/flt-logo-org.svg'
                   ))
 
