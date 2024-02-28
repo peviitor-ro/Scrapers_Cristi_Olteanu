@@ -6,7 +6,6 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
-import uuid
 
 
 def get_soup(url: str):
@@ -40,7 +39,6 @@ def get_jobs():
             city = job.find('span', class_='jobLocation').text.split(',')[0].strip()
 
             list_jobs.append({
-                "id": str(uuid.uuid4()),
                 "job_title": title,
                 "job_link": link,
                 "company": "Bonduelle",
@@ -48,6 +46,7 @@ def get_jobs():
                 "city": city,
                 })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
