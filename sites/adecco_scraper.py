@@ -51,7 +51,7 @@ def get_jobs():
                 city = city.split()[0]
             elif 'Bucuresti' in city or '104H' in city or 'Bucharest' in city:
                 city = 'Bucuresti'
-            elif 'Mures' in city:
+            elif 'Mures' in city or 'Tirgu' in city:
                 city = 'Targu-Mures'
             elif 'stefanesti' in city.lower():
                 city = 'Stefanestii de Jos'
@@ -71,6 +71,8 @@ def get_jobs():
                 city = 'Otopeni'
             elif 'bacau/onesti' in city.lower():
                 city = 'Onesti'
+            elif 'berceni' in city:
+                city = 'Bucuresti'
 
             list_jobs.append({
                 "job_title": title,
