@@ -6,7 +6,7 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
-import uuid
+
 
 def get_jobs():
 
@@ -19,12 +19,11 @@ def get_jobs():
     jobs = soup.find_all('tr', class_="data-row")
 
     for job in jobs:
-        link = 'https://careers.plasticomnium.com/' + job.find('a',class_='jobTitle-link')['href']
-        title = job.find('a',class_='jobTitle-link').text
-        city = job.find('span',class_='jobLocation').text.split(',')[0].strip()
+        link = 'https://careers.plasticomnium.com/' + job.find('a', class_='jobTitle-link')['href']
+        title = job.find('a', class_='jobTitle-link').text
+        city = job.find('span', class_='jobLocation').text.split(',')[0].strip()
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "PlasticOmnium",
@@ -32,6 +31,7 @@ def get_jobs():
             "city": city,
         })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
