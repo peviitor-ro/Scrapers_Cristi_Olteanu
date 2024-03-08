@@ -4,7 +4,6 @@
 #
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
-import uuid
 import requests
 
 
@@ -37,7 +36,6 @@ def get_jobs():
                 city = job['location'].split(',')[0]
                 link = f"https://jobs.bookingholdings-coe.com/careers?query=%2A&location=Bucharest%2C%20Romania&pid={job['id']}&domain=booking.com&sort_by=relevance&microsite=microsite_1"
                 list_jobs.append({
-                    "id": str(uuid.uuid4()),
                     "job_title": title,
                     "job_link": link,
                     "company": "BookingHoldings",
@@ -49,6 +47,7 @@ def get_jobs():
         page += 10
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
