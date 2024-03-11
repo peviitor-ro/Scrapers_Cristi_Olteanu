@@ -90,6 +90,9 @@ def get_jobs():
             city = job['jobFields']['SLOVLIST2']
             link = f"https://www.danieli.com/en/europe-and-usa-opportunities.htm?languageSelect=UK&jobId={job['id']}&jobTitle="
 
+            if 'Cluj Napoca' in city:
+                city = 'Cluj-Napoca'
+
             list_jobs.append({
                 "job_title": title,
                 "job_link": link,
@@ -101,6 +104,7 @@ def get_jobs():
         pass
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
