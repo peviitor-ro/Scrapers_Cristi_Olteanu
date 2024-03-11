@@ -75,6 +75,8 @@ def get_jobs():
                 city = 'Bucuresti'
             elif 'Mioveni - Pitesti' in city:
                 city = city.split(' - ')
+            elif 'bihor' in city.lower():
+                city = 'Oradea'
 
             list_jobs.append({
                 "job_title": title,
