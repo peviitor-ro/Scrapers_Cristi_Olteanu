@@ -25,14 +25,18 @@ def get_jobs():
         text = job.find('a', class_='iCIMS_Anchor')
 
         if text is not None:
-            title = text['title'].split('-')[-1].strip()
+            title = job.find('h3').text.strip()
             link = text['href']
-            city = job.find('div', class_='col-xs-6 header left').text
+            city = job.find('div', class_='col-xs-6 header left').text.split('Job Locations')[-1].strip()
+            job_type = 'on-site'
 
             if 'RO-Iasi' in city:
                 city = 'Iasi'
             elif 'RO-Bucharest' in city:
                 city = 'Bucuresti'
+            elif'RO-Remote' in city:
+                city = 'Iasi'
+                job_type = 'remote'
 
             list_jobs.append({
                 "job_title": title,
@@ -40,7 +44,7 @@ def get_jobs():
                 "company": "mambu",
                 "country": "Romania",
                 "city": city,
-                "remote": 'on-site'
+                "remote": job_type
             })
 
     return list_jobs
