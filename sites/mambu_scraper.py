@@ -13,7 +13,6 @@ def get_jobs():
     list_jobs = []
 
     querystring = {"ss": "1", "searchLocation": "13526--", "in_iframe": "1"}
-
     response = requests.get('https://careers-mambu.icims.com/jobs/search#iCIMS_Header',
                             headers=DEFAULT_HEADERS,
                             params=querystring)
