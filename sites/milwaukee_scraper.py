@@ -65,10 +65,10 @@ def get_jobs():
             "job_link": 'https://ttiemea.wd3.myworkdayjobs.com/ro-RO/TTI'+job['externalPath'],
             "company": "Milwaukee",
             "country": "Romania",
-            "city": 'Bucuresti',
+            "city": 'Cluj-Napoca',
+            "remote": 'remote'
         })
     return list_jobs
-
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
