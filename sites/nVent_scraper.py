@@ -66,6 +66,11 @@ def get_job_type(url):
     return job_type
 
 
+def get_city(url):
+    city = requests.get(url, headers=DEFAULT_HEADERS).json()['jobPostingInfo']['location']
+    return city
+
+
 def get_jobs():
 
     url, headers, data = prepare_post()
@@ -73,9 +78,9 @@ def get_jobs():
 
     list_jobs = []
     for job in response['jobPostings']:
-        city = job['locationsText'].split(',')[0].strip()
         link_request = 'https://nvent.wd5.myworkdayjobs.com/wday/cxs/nvent/nVent' + job['externalPath']
         job_type = get_job_type(link_request)
+        city = get_city(link_request).split(',')[0]
 
         list_jobs.append({
             "job_title": job['title'],
@@ -87,7 +92,6 @@ def get_jobs():
         })
 
     return list_jobs
-
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
