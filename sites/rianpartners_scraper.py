@@ -22,6 +22,7 @@ def get_jobs():
         city = job.findNext('td',class_='location').text.split(',')[0].split('/ ')
 
         for i in city:
+            i.strip()
             if 'CLUJ' in i:
                 city[city.index(i)] = 'CLuj-Napoca'
             elif 'CAMPULUNG MUSCEL' in i:
