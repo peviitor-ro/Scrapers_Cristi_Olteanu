@@ -19,14 +19,14 @@ def get_jobs():
     for job in jobs:
         title = job.findNext('td').text
         link = job.findNext('a')['href']
-        city = job.findNext('td',class_='location').text.split(',')[0].split('/ ')
+        city = job.findNext('td',class_='location').text.split(',')[0].split('/')
 
-        for i in city:
-            i.strip()
-            if 'CLUJ' in i:
-                city[city.index(i)] = 'CLuj-Napoca'
-            elif 'CAMPULUNG MUSCEL' in i:
-                city[city.index(i)] = 'CAMPULUNG'
+        for i in range(len(city)):
+            city[i] = city[i].strip()
+            if 'CLUJ' in city[i]:
+                city[i] = 'CLuj-Napoca'
+            elif 'CAMPULUNG MUSCEL' in city[i]:
+                city[i] = 'CAMPULUNG'
 
         list_jobs.append({
             "job_title": title,
