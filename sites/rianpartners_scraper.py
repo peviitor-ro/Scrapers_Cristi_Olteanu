@@ -19,7 +19,13 @@ def get_jobs():
     for job in jobs:
         title = job.findNext('td').text
         link = job.findNext('a')['href']
-        city = job.findNext('td',class_='location').text.split(',')[0]
+        city = job.findNext('td',class_='location').text.split(',')[0].split('/ ')
+
+        for i in city:
+            if 'CLUJ' in i:
+                city[city.index(i)] = 'CLuj-Napoca'
+            elif 'CAMPULUNG MUSCEL' in i:
+                city[city.index(i)] = 'CAMPULUNG'
 
         list_jobs.append({
             "job_title": title,
@@ -30,6 +36,7 @@ def get_jobs():
         })
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
