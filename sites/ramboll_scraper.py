@@ -6,32 +6,39 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
 
 
 def get_jobs():
 
     list_jobs = []
-    response = requests.get('https://careers.smartrecruiters.com/Ramboll3?search=Romania',
-                            headers=DEFAULT_HEADERS)
+    page = 0
+    flag = True
+    url = "https://careers.smartrecruiters.com/Ramboll3/api/more"
 
-    soup = BeautifulSoup(response.text, 'lxml')
+    while flag:
 
-    jobs = soup.find_all('li', class_='opening-job job column wide-7of16 medium-1of2')
+        querystring = {"search": "Romania", "type": "location", "value": "București, RO", "page": f"{page}"}
+        response = requests.get(url=url, headers=DEFAULT_HEADERS, params=querystring)
 
-    for job in jobs:
-        link = job.find('a', class_='link--block details')['href']
-        title = job.find('h4', class_='details-title job-title link--block-target').text
+        soup = BeautifulSoup(response.text, 'lxml')
+        jobs = soup.find_all('li', class_='opening-job job column wide-7of16 medium-1of2')
 
-        list_jobs.append({
-            "id": str(uuid.uuid4()),
-            "job_title": title,
-            "job_link": link,
-            "company": "Ramboll",
-            "country": "Romania",
-            "city": 'Bucuresti',
-        })
+        if len(jobs) > 0:
 
+            for job in jobs:
+                link = job.find('a', class_='link--block details')['href']
+                title = job.find('h4', class_='details-title job-title link--block-target').text
+
+                list_jobs.append({
+                    "job_title": title,
+                    "job_link": link,
+                    "company": "Ramboll",
+                    "country": "Romania",
+                    "city": 'Bucuresti',
+                })
+            page += 1
+        else:
+            flag = False
     return list_jobs
 
 
