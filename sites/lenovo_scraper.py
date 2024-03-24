@@ -6,7 +6,7 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
+
 
 def get_jobs():
     list_jobs = []
@@ -20,12 +20,11 @@ def get_jobs():
     for job in jobs:
         link = job.find('a')['href']
         title = job.find('a').text.strip()
-        city = job.find('div',class_='article__header__text__subtitle').find('span').text.strip().split(', ')[-1]
-        location = job.find('div',class_='article__header__text__subtitle').find('span').text.strip().split(', ')[-0]
+        city = job.find('div', class_='article__header__text__subtitle').find('span').text.strip().split(', ')[-1]
+        location = job.find('div', class_='article__header__text__subtitle').find('span').text.strip().split(', ')[-0]
 
         if location == 'Romania':
             list_jobs.append({
-                "id": str(uuid.uuid4()),
                 "job_title": title,
                 "job_link": link,
                 "company": "Lenovo",
