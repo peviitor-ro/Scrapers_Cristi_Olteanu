@@ -5,7 +5,6 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
 
 session = requests.Session()
 
@@ -62,7 +61,6 @@ def get_jobs():
 
                 if 'Romania' in text:
                     list_jobs.append({
-                        "id": str(uuid.uuid4()),
                         "job_title": title,
                         "job_link": link,
                         "company": "globalstep",
@@ -75,6 +73,7 @@ def get_jobs():
         page += 1
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
