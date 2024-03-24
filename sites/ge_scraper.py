@@ -6,7 +6,6 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import re
 import requests
-import uuid
 
 session = requests.Session()
 
@@ -90,7 +89,6 @@ def get_jobs():
             job_type = 'on-site'
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "GE",
@@ -100,6 +98,7 @@ def get_jobs():
         })
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
