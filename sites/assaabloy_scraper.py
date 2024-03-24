@@ -10,10 +10,7 @@ from bs4 import BeautifulSoup
 
 
 def get_jobs():
-    """
-     ... this func() make a simple requests
-        and collect data from assaabloy API.
-    """
+
     res = requests.get(
         'https://assaabloy.jobs2web.com/search/?searchby=location&createNewAlert=false&q=&locationsearch=Romania&geolocation=&optionsFacetsDD_country=&optionsFacetsDD_state=&optionsFacetsDD_department=&optionsFacetsDD_lang=',
         headers=DEFAULT_HEADERS)
@@ -24,8 +21,8 @@ def get_jobs():
     jobs = soup.find_all('tr', class_='data-row')
 
     for job in jobs:
-        title = job.find('a',class_='jobTitle-link').text
-        link = 'https://assaabloy.jobs2web.com/' + job.find('a',class_='jobTitle-link')['href']
+        title = job.find('a', class_='jobTitle-link').text
+        link = 'https://assaabloy.jobs2web.com/' + job.find('a', class_='jobTitle-link')['href']
 
         list_jobs.append({
             "job_title": title,
