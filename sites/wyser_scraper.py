@@ -6,7 +6,6 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
 
 
 def get_jobs():
@@ -17,14 +16,13 @@ def get_jobs():
                             headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(response.text, 'lxml')
 
-    jobs = soup.find_all('article',class_='px-0 col-12 col-sm-6 col-xl-4 py-3 card-job')
+    jobs = soup.find_all('article', class_='px-0 col-12 col-sm-6 col-xl-4 py-3 card-job')
 
     for job in jobs:
         link = job.find('a',class_='dettaglio')['href']
-        title = job.find('div',class_='col-10').text.strip()
+        title = job.find('div', class_='col-10').text.strip()
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "wyser",
