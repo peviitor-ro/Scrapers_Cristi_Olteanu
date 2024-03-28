@@ -5,7 +5,6 @@
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
-import uuid
 
 
 def get_jobs():
@@ -18,7 +17,6 @@ def get_jobs():
     for job in response:
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": job['Title'],
             "job_link": f"https://eedu.fa.em3.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1003/job/{job['Id']}/?lastSelectedFacet=LOCATIONS&selectedLocationsFacet=300000000346767",
             "company": "wtw",
@@ -27,6 +25,7 @@ def get_jobs():
         })
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
