@@ -14,18 +14,18 @@ def get_jobs():
 
     list_jobs = []
 
-    jobs = soup.find_all('div',class_='sc-465zle-1 eifEKW')
+    jobs = soup.find_all('div', class_='sc-465zle-1 eifEKW')
 
     for job in jobs:
-        link = 'https://mobilexpense.recruitee.com/' + job.find('a',class_='sc-465zle-2 bCpqiX')['href']
-        title = job.find('a',class_='sc-465zle-2 bCpqiX').text
+        link = 'https://mobilexpense.recruitee.com/' + job.find('a', class_='sc-465zle-2 bCpqiX')['href']
+        title = job.find('a', class_='sc-465zle-2 bCpqiX').text
         try:
-            remote = job.find('span',class_='sc-1s8re0d-0 feitSf').text
+            remote = job.find('span', class_='sc-1s8re0d-0 feitSf').text
         except:
             remote = 'on-site'
 
-        city = job.find('span',class_='custom-css-style-job-location-city').text.split(' or ')
-        country = job.find('span',class_='custom-css-style-job-location-country').text
+        city = job.find('span', class_='custom-css-style-job-location-city').text.split(' or ')
+        country = job.find('span', class_='custom-css-style-job-location-country').text
         if 'Cluj' in city:
             city = 'Cluj-Napoca'
 
