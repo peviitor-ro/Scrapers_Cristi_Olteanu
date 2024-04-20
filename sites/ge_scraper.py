@@ -13,11 +13,11 @@ session = requests.Session()
 def get_cookies() -> tuple:
 
     response = session.head(
-        url='https://jobs.gecareers.com/global/en/search-results?qcountry=Romania',
+        url='https://jobs.gecareers.com/',
         headers=DEFAULT_HEADERS).headers
 
-    play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
-    phpppe_act = re.search(r"PHPPPE_ACT=([^;]+);", str(response)).group(0)
+    play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group()
+    phpppe_act = re.search(r"PHPPPE_ACT=([^;]+);", str(response)).group()
     return play_session, phpppe_act
 
 
