@@ -41,13 +41,16 @@ def update_peviitor_api(original_function):
         clean_request = requests.post(CLEAN_URL, headers=clean_header, data={'company': company_name})
 
         time.sleep(0.2)
-
+        token = get_token()
         post_header = {
             'Content-Type': 'application/json',
-            'apikey': API_KEY
+            'Authorization': f'Bearer {token}'
             }
+        validator_endpoint = 'https://api.peviitor.ro/v5/add/'
 
-        post_request_to_server = requests.post('https://api.peviitor.ro/v4/update/', headers=post_header, data=json.dumps(data_list))
+        res = requests.post(validator_endpoint, json=data_list, headers=post_header)
+        #print(res.status_code)
+        #post_request_to_server = requests.post('https://api.peviitor.ro/v4/update/', headers=post_header, data=json.dumps(data_list))
         print(json.dumps(data_list, indent=4))
 
         # don't delete this lines if you want to see the graph on scraper's page
@@ -60,3 +63,12 @@ def update_peviitor_api(original_function):
         return original_function(*args, **kwargs)
 
     return new_function
+
+
+def get_token():
+    token_endpoint = 'https://api.peviitor.ro/v5/get_token/'
+    token = requests.post(token_endpoint, json={
+        "email": "cristiolteanu1892@gmail.com"
+    })
+
+    return token.json()['access']
