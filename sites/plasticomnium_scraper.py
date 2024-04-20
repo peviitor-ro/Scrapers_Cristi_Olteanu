@@ -13,7 +13,7 @@ def get_jobs():
     list_jobs = []
 
     req = requests.get("https://careers.plasticomnium.com/search/?createNewAlert=false&optionsFacetsDD_customfield1=&optionsFacetsDD_customfield2=Romania&optionsFacetsDD_customfield3=",
-                       headers=DEFAULT_HEADERS)
+                       headers=DEFAULT_HEADERS, verify=False)
     soup = BeautifulSoup(req.text, "lxml")
 
     jobs = soup.find_all('tr', class_="data-row")
