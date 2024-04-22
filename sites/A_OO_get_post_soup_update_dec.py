@@ -38,7 +38,7 @@ def update_peviitor_api(original_function):
             'apikey': API_KEY
             }
 
-        clean_request = requests.post(CLEAN_URL, headers=clean_header, data={'company': company_name})
+        #clean_request = requests.post(CLEAN_URL, headers=clean_header, data={'company': company_name})
 
         time.sleep(0.2)
         token = get_token()
