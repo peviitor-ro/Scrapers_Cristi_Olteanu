@@ -13,7 +13,8 @@ exclude = ['__init__.py',
            '000_delete_api_data.py',
            'L_00_logo.py',
            'damen_scraper.py',
-           'talentkompass_scraper.py'
+           'talentkompass_scraper.py',
+           'ascom_scraper'
 
            ]
 
