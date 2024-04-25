@@ -14,7 +14,8 @@ exclude = ['__init__.py',
            'L_00_logo.py',
            'damen_scraper.py',
            'talentkompass_scraper.py',
-           'ascom_scraper'
+           'ascom_scraper',
+           'globalstep_scraper'
 
            ]
 
