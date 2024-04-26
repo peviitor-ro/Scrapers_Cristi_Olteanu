@@ -11,28 +11,35 @@ from bs4 import BeautifulSoup
 def get_jobs():
     list_jobs = []
 
-    req = requests.get(
-        'https://jobs.lenovo.com/en_US/careers/SearchJobs/?13036=%5B12016749%5D&13036_format=6621&listFilterMode=1&jobRecordsPerPage=10&sort=relevancy',headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(req.text, 'lxml')
+    page = 0
+    flag = True
 
-    jobs = soup.find_all('div', class_='article__header')
+    while flag:
 
-    for job in jobs:
-        link = job.find('a')['href']
-        title = job.find('a').text.strip()
-        city = job.find('div', class_='article__header__text__subtitle').find('span').text.strip().split(', ')[-1]
-        location = job.find('div', class_='article__header__text__subtitle').find('span').text.strip().split(', ')[-0]
+        req = requests.get(
+            f'https://jobs.lenovo.com/en_US/careers/SearchJobs/?13036=%5B12016749%5D&13036_format=6621&listFilterMode=1&jobSort=relevancy&jobRecordsPerPage=10&jobOffset={page}&sort=relevancy',
+            headers=DEFAULT_HEADERS)
+        soup = BeautifulSoup(req.text, 'lxml')
+        jobs = soup.find_all('div', class_='article__header')
 
-        if location == 'Romania':
-            list_jobs.append({
-                "job_title": title,
-                "job_link": link,
-                "company": "Lenovo",
-                "country": "Romania",
-                "city": city
-            })
+        for job in jobs:
+            text_info = job.find('h3', class_="article__header__text__title article__header__text__title--4")
+            if text_info is not None:
+                link = job.find('a')['href']
+                title = text_info.text.strip()
 
+                list_jobs.append({
+                    "job_title": title,
+                    "job_link": link,
+                    "company": "Lenovo",
+                    "country": "Romania",
+                    "city": 'Bucuresti',
+                    })
+            else:
+                flag = False
+        page += 10
     return list_jobs
+get_jobs()
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
