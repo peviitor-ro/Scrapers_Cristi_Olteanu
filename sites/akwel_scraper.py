@@ -12,18 +12,17 @@ def get_jobs():
 
     list_jobs = []
 
-    response = requests.get('https://akwel-automotive.com/en/careers/job-opportunities/',headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text,'lxml')
+    response = requests.get('https://akwel-automotive.com/en/careers/job-opportunities/', headers=DEFAULT_HEADERS)
+    soup = BeautifulSoup(response.text, 'lxml')
 
-    jobs = soup.find_all('div',class_='job-offer-list-item')
+    jobs = soup.find_all('div', class_='job-offer-list-item')
 
     for job in jobs:
 
-        link = job.find('a',class_='btn btn-block btn-sm btn-outline-secondary-reverse')['href']
-        title = job.find('div',class_='job-offer-list-item__title').text
-        city = job.find('div',class_='value').text.split(',')[0]
-        country = job.find('div',class_='value').text.split(',')[-1].strip()
-
+        link = job.find('a', class_='btn btn-block btn-sm btn-outline-secondary-reverse')['href']
+        title = job.find('div', class_='job-offer-list-item__title').text
+        city = job.find('div', class_='value').text.split(',')[0]
+        country = job.find('div', class_='value').text.split(',')[-1].strip()
         if country == 'Roumania' or country == 'Romania':
             list_jobs.append({
                 "job_title": title,
@@ -33,6 +32,7 @@ def get_jobs():
                 "city": city
             })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
