@@ -16,7 +16,6 @@ exclude = ['__init__.py',
            'talentkompass_scraper.py',
            'ascom_scraper',
            'globalstep_scraper'
-
            ]
 
 path = os.path.dirname(os.path.abspath(__file__))

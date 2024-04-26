@@ -39,7 +39,7 @@ def get_jobs():
                 flag = False
         page += 10
     return list_jobs
-get_jobs()
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
