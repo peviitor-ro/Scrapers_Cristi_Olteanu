@@ -31,6 +31,9 @@ exclude = ['__init__.py',
             'ses_scraper.py',
             'sennder_scraper.py',
             'rws_scraper.py',
+           'riverbed_scraper.py',
+           'rianpartners_scraper.py'
+
            ]
 
 path = os.path.dirname(os.path.abspath(__file__))
