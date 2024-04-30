@@ -6,6 +6,8 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
+from _validate_city import validate_city
+from _county import get_county
 
 
 def get_soup(url):
@@ -42,16 +44,20 @@ def get_jobs():
                 for item in cities:
                     if 'RO' in item.text:
                         city = item.text.split(',')[0].strip('\n')
+            city = validate_city(city)
 
             list_jobs.append({
                 "job_title": title,
                 "job_link": link,
                 "company": "teneco",
                 "country": "Romania",
-                "city": city
+                "city": city,
+                "county": get_county(city),
+                "remote": "on-site"
                 })
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
