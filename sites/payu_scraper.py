@@ -6,6 +6,8 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
+from _county import get_county
+from _validate_city import validate_city
 
 
 def get_soup(url):
@@ -38,7 +40,7 @@ def get_jobs():
 
         link = job.find('a', class_='title')['href']
         title = job.find('h3').text
-        city = job.find('a').text.split(',')[-2].split()[-1]
+        city = validate_city(job.find('a').text.split(',')[-2].split()[-1])
         job_type = get_job_type(link)
 
         jobs_list.append({
@@ -47,10 +49,12 @@ def get_jobs():
             "company": "PayU",
             "country": "Romania",
             "city": city,
+            "county": get_county(city),
             "remote": job_type
         })
 
     return jobs_list
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):

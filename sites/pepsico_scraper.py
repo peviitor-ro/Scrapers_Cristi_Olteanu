@@ -5,28 +5,32 @@
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
+from _county import get_county
+from _validate_city import validate_city
 
 
 def get_jobs():
     url = 'https://www.pepsicojobs.com/api/jobs?page=1&limit=100&country=Romania&sortBy=relevance&descending=false&internal=false'
     response = requests.get(url, headers=DEFAULT_HEADERS).json()['jobs']
     list_jobs = []
+
     for job in response:
 
-        country = job['data']['country']
-        city = job['data']['city'].split('Com.')[-1].strip()
+        full_location = str(job['data']['full_location']).split(';')
+        city = ''
 
-        if 'Cluj Napoca' in city:
-            city = 'Cluj-Napoca'
-        elif 'Vitoria' in city:
-            city = 'Victoria'
-            
+        for loc in full_location:
+            if 'Romania' in loc:
+                city = validate_city(loc.strip().split(',')[0])
+
         list_jobs.append({
             "job_title": job['data']['title'],
             "job_link": job['data']['meta_data']['canonical_url'],
             "company": "Pepsico",
             "country": "Romania",
-            "city": city
+            "city": city,
+            "county": get_county(city),
+            "remote": 'on-site'
         })
     return list_jobs
 
