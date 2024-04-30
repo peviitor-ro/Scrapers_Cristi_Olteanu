@@ -35,6 +35,7 @@ def get_jobs():
                 "company": "ModusCreate",
                 "country": "Romania",
                 "city": city,
+                "county": 'Cluj',
             })
     return list_jobs
 

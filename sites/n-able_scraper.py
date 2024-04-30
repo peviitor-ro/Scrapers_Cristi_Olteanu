@@ -5,6 +5,8 @@
 from A_OO_get_post_soup_update_dec import update_peviitor_api
 from L_00_logo import update_logo
 import requests
+from _county import get_county
+from  _validate_city import validate_city
 
 
 def get_jobs():
@@ -18,13 +20,15 @@ def get_jobs():
                             ).json()['jobs']
 
     for job in response:
+        city = validate_city(job['data']['city'])
 
         list_jobs.append({
             "job_title": job['data']['title'],
             "job_link": job['data']['meta_data']['canonical_url'],
             "company": "n-able",
             "country": "Romania",
-            "city": job['data']['city'],
+            "city": city,
+            "county": get_county(city),
             "remote": "hybrid"
         })
 
