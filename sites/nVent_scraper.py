@@ -6,6 +6,8 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 import re
+from _validate_city import validate_city
+from _county import get_county
 
 session = requests.Session()
 
@@ -67,7 +69,15 @@ def get_job_type(url):
 
 
 def get_city(url):
-    city = requests.get(url, headers=DEFAULT_HEADERS).json()['jobPostingInfo']['location']
+    response = requests.get(url, headers=DEFAULT_HEADERS).json()['jobPostingInfo']
+    city = response['location']
+    if 'RO' not in city:
+        try:
+            for l in response['additionalLocations']:
+                if 'RO' in l:
+                    city = l.split(',')[0]
+        except:
+            pass
     return city
 
 
@@ -88,10 +98,12 @@ def get_jobs():
             "company": "nVent",
             "country": "Romania",
             "city": city,
+            "county": get_county(city),
             "remote": job_type
         })
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):

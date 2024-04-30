@@ -6,6 +6,7 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
+from _county import get_county
 
 
 
@@ -60,6 +61,7 @@ def get_jobs():
                 "company": "opentext",
                 "country": "Romania",
                 "city": city,
+                "county": get_county(city),
                 "remote": job_type
                 })
 

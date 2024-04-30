@@ -7,6 +7,7 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
 import re
+from _county import get_county
 
 session = requests.Session()
 
@@ -83,6 +84,7 @@ def get_jobs():
             "company": "NN",
             "country": "Romania",
             "city": city,
+            "county": get_county(city),
             "remote": job_type
         })
     return list_jobs
