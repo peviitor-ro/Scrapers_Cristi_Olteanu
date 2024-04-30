@@ -7,6 +7,7 @@ from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
 import re
+from _county import get_county
 
 
 def get_token():
@@ -30,7 +31,6 @@ def get_cookies():
     response = requests.head(url='https://global3.recruitmentplatform.com/fo/rest/jobs?firstResult=0&maxResults='
                                  '50&sortBy=sJobTitle&sortOrder=asc', headers=DEFAULT_HEADERS)
     response_text = str(response.headers)
-
     cookie = re.search(r'AWSALBCORS=(.*?)(?:[;]|$)', response_text).group(0)
     return cookie
 
@@ -106,9 +106,11 @@ def get_jobs():
             "company": "qiagen",
             "country": "Romania",
             "city": city,
+            "county": get_county(city),
             "remote": job_type
         })
     return jobs_list
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):

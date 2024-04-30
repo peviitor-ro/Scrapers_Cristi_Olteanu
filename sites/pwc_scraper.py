@@ -6,9 +6,11 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
 import re
-import uuid
+from _county import get_county
+from _validate_city import validate_city
 
 session = requests.Session()
+
 
 def get_cookies() -> tuple:
 
@@ -79,18 +81,20 @@ def get_jobs():
 
     for job in response:
         title = job['title']
-        city = job['city'].split()[0]
+        city = validate_city(job['city'].split()[0])
         link = f"https://jobs-cee.pwc.com/ce/en/job/{job['jobId']}"
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "pwc",
             "country": "Romania",
             "city": city,
+            "county": get_county(city),
+            "remote": 'on-site'
         })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):

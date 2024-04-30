@@ -62,6 +62,11 @@ def get_jobs():
     for job in response:
         title = job['title']
         link = 'https://prysmiangroup.wd3.myworkdayjobs.com/en-US/Careers' + job['externalPath']
+        try:
+            if 'Hybrid' in job['remoteType']:
+                job_type = 'hibrid'
+        except:
+            job_type = 'on-site'
 
         list_jobs.append({
             "job_title": title,
@@ -69,6 +74,8 @@ def get_jobs():
             "company": "Prysmian",
             "country": "Romania",
             "city": 'Slatina',
+            "county": 'Olt',
+            "remote": job_type
         })
     return list_jobs
 

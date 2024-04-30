@@ -35,6 +35,8 @@ def get_jobs():
                     "company": "Ramboll",
                     "country": "Romania",
                     "city": 'Bucuresti',
+                    "county": 'Bucuresti',
+                    "remote": 'on-site'
                 })
             page += 1
         else:
