@@ -6,6 +6,8 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import requests
 import re
+from _county import get_county
+from _validate_city import validate_city
 
 session = requests.Session()
 
@@ -91,6 +93,7 @@ def get_jobs():
                         city = location.split(',')[0]
             except:
                 pass
+        city = validate_city(city)
 
         list_jobs.append({
             "job_title": title,
@@ -98,6 +101,8 @@ def get_jobs():
             "company": "proctorandgamble",
             "country": "Romania",
             "city": city,
+            "county": get_county(city),
+            "remote": 'on-site'
         })
     return list_jobs
 

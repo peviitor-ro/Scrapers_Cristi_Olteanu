@@ -2,20 +2,19 @@
 # Company - > PlasticOmnium
 # Link -> https://www.plasticomnium.com/en/careers/
 #
-from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
+from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
+from _county import get_county
 
 
 def get_jobs():
 
     list_jobs = []
-
-    req = requests.get("https://careers.plasticomnium.com/search/?createNewAlert=false&optionsFacetsDD_customfield1=&optionsFacetsDD_customfield2=Romania&optionsFacetsDD_customfield3=",
+    req = requests.get("https://careers.opmobility.com/search/?createNewAlert=false&optionsFacetsDD_customfield1=&optionsFacetsDD_customfield2=Romania&optionsFacetsDD_customfield3=",
                        headers=DEFAULT_HEADERS, verify=False)
     soup = BeautifulSoup(req.text, "lxml")
-
     jobs = soup.find_all('tr', class_="data-row")
 
     for job in jobs:
@@ -29,6 +28,8 @@ def get_jobs():
             "company": "PlasticOmnium",
             "country": "Romania",
             "city": city,
+            "county": get_county(city),
+            "remote": 'on-site'
         })
     return list_jobs
 
