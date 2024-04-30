@@ -2,15 +2,16 @@
 # Company - > wtw
 # Link - https://eedu.fa.em3.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1003/requisitions?lastSelectedFacet=LOCATIONS&location=Romania&locationId=300000000346767&locationLevel=country&mode=location&selectedLocationsFacet=300000000346767
 #
-from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
+from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
+from _county import get_county
 import requests
+
 
 
 def get_jobs():
 
     list_jobs = []
-
     response = requests.get('https://eedu.fa.em3.oraclecloud.com/hcmRestApi/resources/latest/recruitingCEJobRequisitions?onlyData=true&expand=requisitionList.secondaryLocations,flexFieldsFacet.values&finder=findReqs;siteNumber=CX_1003,facetsList=LOCATIONS%3BWORK_LOCATIONS%3BWORKPLACE_TYPES%3BTITLES%3BCATEGORIES%3BORGANIZATIONS%3BPOSTING_DATES%3BFLEX_FIELDS,limit=25,lastSelectedFacet=LOCATIONS,selectedLocationsFacet=300000000346767,sortBy=POSTING_DATES_DESC',
                             headers=DEFAULT_HEADERS).json()['items'][0]['requisitionList']
 
@@ -22,6 +23,8 @@ def get_jobs():
             "company": "wtw",
             "country": "Romania",
             "city": job['PrimaryLocation'].split(',')[0],
+            "county": get_county(job['PrimaryLocation'].split(',')[0]),
+            "remote": "on-site"
         })
 
     return list_jobs
