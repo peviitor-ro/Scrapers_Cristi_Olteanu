@@ -38,14 +38,16 @@ def get_jobs():
         response = get_json(page)['jobs']
 
         for job in response:
-            city = job['data']['city']
 
             list_jobs.append({
                 "job_title": job['data']['title'],
                 "job_link": job['data']['meta_data']['canonical_url'],
                 "company": "SandP",
                 "country": "Romania",
-                "city": city
+                "city": "Bucuresti",
+                "county": "Bucuresti",
+                "remote": 'on-site'
+
             })
 
     return list_jobs
