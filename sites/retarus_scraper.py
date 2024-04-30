@@ -6,7 +6,7 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
+from _county import get_county
 import re
 
 
@@ -71,7 +71,6 @@ def get_jobs():
 
     list_jobs = []
     data = prepare_post()
-
     response = requests.request("POST", data[0], json=data[1], headers=data[2]).json()['data']['requisitions']
 
     for job in response:
@@ -81,12 +80,13 @@ def get_jobs():
         city = job['locations'][0]['city']
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "retarus",
             "country": "Romania",
             "city": city,
+            "county": get_county(city),
+            "remote": 'on-site'
         })
 
     return list_jobs

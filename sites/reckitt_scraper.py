@@ -2,11 +2,12 @@
 # Company - > Reckitt
 # Link ->https://careers.reckitt.com/search/?createNewAlert=false&q=&locationsearch=Romania&optionsFacetsDD_facility=&optionsFacetsDD_country=
 #
-from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
+from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
+from _county import get_county
+
 
 def get_jobs():
     response = requests.get(
@@ -23,14 +24,16 @@ def get_jobs():
         city = job.find('span',class_='jobLocation').text.split(',')[0].strip()
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "Reckitt",
             "country": "Romania",
-            "city": city
+            "city": city,
+            "county": get_county(city),
+            "remote": 'on-site'
         })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
