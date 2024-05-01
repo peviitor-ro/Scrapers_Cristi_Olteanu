@@ -6,6 +6,8 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
+from _county import get_county
+from _validate_city import validate_city
 
 
 def get_soup(url):
@@ -31,7 +33,7 @@ def get_jobs():
         for job in jobs:
             title = job.find('a', class_='m-listicle__link')['title']
             link = job.find('a', class_='m-listicle__link')['href']
-            city = job.find('h4', class_='m-listicle__subline').text.split(',')[0].strip()
+            city = validate_city(job.find('h4', class_='m-listicle__subline').text.split(',')[0].strip())
             country = job.find('h4', class_='m-listicle__subline').text.split(',')[-1].strip()
 
             if 'Romania' in country:
@@ -41,9 +43,11 @@ def get_jobs():
                     "company": "hartrodt",
                     "country": "Romania",
                     "city": city,
+                    "county": get_county(city),
                     "remote": 'on-site'
                 })
     return job_list
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
