@@ -10,18 +10,18 @@ from bs4 import BeautifulSoup
 
 
 def get_jobs():
-    response = requests.get('https://jobs.eu.lever.co/hkr/?',headers=DEFAULT_HEADERS)
+    response = requests.get('https://jobs.eu.lever.co/hkr/?', headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(response.text, 'lxml')
 
     list_jobs = []
 
-    jobs = soup.find_all('div',class_='posting')
+    jobs = soup.find_all('div', class_='posting')
 
     for job in jobs:
-        link = job.find('a',class_='posting-title')['href']
-        title = job.find('a',class_='posting-title').find('h5').text
-        location = job.find('span',class_='sort-by-location posting-category small-category-label location').text
-        job_type = job.find('span',class_='display-inline-block small-category-label workplaceTypes').text.split()[0]
+        link = job.find('a', class_='posting-title')['href']
+        title = job.find('a', class_='posting-title').find('h5').text
+        location = job.find('span', class_='sort-by-location posting-category small-category-label location').text
+        job_type = job.find('span', class_='display-inline-block small-category-label workplaceTypes').text.split()[0]
 
         if location in ['Romania', 'Bucharest']:
 
@@ -31,6 +31,7 @@ def get_jobs():
                 "company": "Hkr",
                 "country": "Romania",
                 "city": 'Bucuresti',
+                "county": 'Bucuresti',
                 "remote": job_type
                 })
 
