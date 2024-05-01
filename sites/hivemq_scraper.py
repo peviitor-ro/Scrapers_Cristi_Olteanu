@@ -29,6 +29,7 @@ def get_jobs():
                 "company": "hiveMq",
                 "country": "Romania",
                 "city": 'Bucuresti',
+                "county": 'Bucuresti',
                 "remote": 'remote'
             })
     return list_jobs
