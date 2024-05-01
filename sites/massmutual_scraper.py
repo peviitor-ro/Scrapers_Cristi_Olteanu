@@ -6,6 +6,7 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
+from _county import get_county
 
 
 def get_jobs():
@@ -22,17 +23,26 @@ def get_jobs():
     for job in jobs:
         link = 'https://careers.massmutualromania.com' + job.find('a')['href']
         title = job.find('a').text
-        city = job.find('span', class_='job-location').text.split(',')[0].strip()
+        location = job.find('span', class_='job-location').text
+        cities = []
+
+        if 'Cluj-Napoca' in location:
+            cities.append('Cluj-Napoca')
+        if 'Bucharest' in location:
+            cities.append('Bucuresti')
 
         list_jobs.append({
             "job_title": title,
             "job_link": link,
             "company": "MassMutual",
             "country": "Romania",
-            "city": city
+            "city": cities,
+            "county": get_county(cities),
+            "remote": 'on-site'
         })
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
