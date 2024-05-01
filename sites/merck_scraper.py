@@ -5,7 +5,9 @@
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
-import uuid
+from _county import get_county
+from _validate_city import validate_city
+
 
 def get_jobs():
 
@@ -17,16 +19,20 @@ def get_jobs():
 
         id = job['jobid']
         link = f'https://www.merckgroup.com/en/careers/jobs/{id}.html?location=Romania&state=Bucuresti&city=Bucharest&functionalarea=Commercial'
+        city = validate_city(job['city'])
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": job['title'],
             "job_link": link,
             "company": "Merck",
             "country": "Romania",
-            "city": job['city']
+            "city": city,
+            "county": get_county(city),
+            "remote": 'on-site'
+
         })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
