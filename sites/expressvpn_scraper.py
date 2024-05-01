@@ -6,6 +6,9 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
+from _county import get_county
+from _validate_city import validate_city
+
 
 
 def get_jobs():
@@ -29,7 +32,7 @@ def get_jobs():
             job_type = 'on-site'
 
         if 'Bucharest' in city:
-            city = 'Bucharest'
+            city = 'Bucuresti'
 
             list_jobs.append({
                 "job_title": title,
@@ -37,6 +40,7 @@ def get_jobs():
                 "company": "expressvpn",
                 "country": "Romania",
                 "city": city,
+                "county": get_county(city),
                 "remote": job_type
             })
     return list_jobs
