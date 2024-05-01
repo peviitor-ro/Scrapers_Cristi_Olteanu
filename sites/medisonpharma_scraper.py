@@ -17,16 +17,18 @@ def get_jobs():
     jobs = soup.find_all('a', class_='comeet-position')
 
     for job in jobs:
-        link = job['href'].strip('//')
+        link = 'https:' + job['href']
         if 'romania' in link:
             title = job.find('div', class_='comeet-position-name').text.strip()
 
             list_jobs.append({
                 "job_title": title,
-                "job_link": 'https:'+link,
+                "job_link": link,
                 "company": "Medison",
                 "country": "Romania",
                 "city": 'Bucuresti',
+                "county": 'Bucuresti',
+                "remote": 'on-site'
             })
 
     return list_jobs
