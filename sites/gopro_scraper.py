@@ -6,7 +6,6 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
-import uuid
 
 sessions = requests.Session()
 
@@ -39,7 +38,6 @@ def get_jobs():
     for job in response:
         title = job['job']['title']
         link = str(job['job']['customAttributes']['url']['stringValues'][0]).replace('http','https')
-
         location_headline = get_soup(link).find('div', class_='col-md-7').find('h5').text
 
         if 'flexible' in location_headline.lower():
@@ -50,12 +48,12 @@ def get_jobs():
             job_type = 'on-site'
 
         list_jobs.append({
-                "id": str(uuid.uuid4()),
                 "job_title": title,
                 "job_link": link,
                 "company": "GoPro",
                 "country": "Romania",
                 "city": 'Bucuresti',
+                "county": 'Bucuresti',
                 "remote": job_type
             })
 
