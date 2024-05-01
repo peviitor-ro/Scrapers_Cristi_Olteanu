@@ -6,7 +6,6 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import re
 import requests
-import uuid
 
 session = requests.Session()
 
@@ -80,12 +79,13 @@ def get_jobs():
         link = 'https://careers.mastercard.com/us/en/job/' + job['jobId']
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "mastercard",
             "country": "Romania",
             "city": 'Bucuresti',
+            "county": 'Bucuresti',
+            "remote": 'on-site'
         })
     return list_jobs
 
