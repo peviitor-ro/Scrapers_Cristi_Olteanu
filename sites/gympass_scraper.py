@@ -8,10 +8,9 @@ from bs4 import BeautifulSoup
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 
+
 def get_jobs():
-    '''
-    This function collects data from the company site.
-    '''
+
     list_jobs = []
 
     response = requests.get('https://boards.greenhouse.io/gympass', headers=DEFAULT_HEADERS)
