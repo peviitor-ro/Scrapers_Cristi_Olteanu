@@ -6,10 +6,11 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
+from _county import get_county
 
 
 def get_link_id():
-    response = requests.get('https://www.extia-group.com/fr-en/join-us?page=1',                         )
+    response = requests.get('https://www.extia-group.com/fr-en/join-us?page=1',headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(response.text, 'lxml')
     link_id = str(soup.find_all('script', src=True)).split()[-1].split('/')[3]
 
@@ -34,6 +35,7 @@ def get_jobs():
             "company": "extia",
             "country": "Romania",
             "city": city,
+            "county": get_county(city),
             "remote": 'on-site'
         })
     return list_jobs
