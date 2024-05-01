@@ -6,7 +6,8 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import re
 import requests
-import uuid
+from _county import get_county
+from _validate_city import validate_city
 
 session = requests.Session()
 
@@ -83,15 +84,16 @@ def get_jobs():
     for job in response:
         title = job['title']
         link = 'https://jobs.kuehne-nagel.com/global/en/job/' + job['reqId']
-        city = job['city']
+        city = validate_city(job['city'])
 
         list_jobs.append({
-            "id": str(uuid.uuid4()),
             "job_title": title,
             "job_link": link,
             "company": "KuehneNagel",
             "country": "Romania",
-            "city": city
+            "city": city,
+            "county": get_county(city),
+            "remote": 'on-site'
         })
 
     return list_jobs

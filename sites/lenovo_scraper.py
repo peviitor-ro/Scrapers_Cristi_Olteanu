@@ -34,6 +34,8 @@ def get_jobs():
                     "company": "Lenovo",
                     "country": "Romania",
                     "city": 'Bucuresti',
+                    "county": 'Bucuresti',
+                    "remote": 'on-site'
                     })
             else:
                 flag = False
