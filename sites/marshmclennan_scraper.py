@@ -6,6 +6,8 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import re
 import requests
+from _county import get_county
+from _validate_city import validate_city
 
 session = requests.Session()
 
@@ -82,10 +84,25 @@ def get_jobs():
                                     ).json()['eagerLoadRefineSearch']['data']['jobs']
 
         for job in response:
+            romanian_cities = ['Timisoara', 'Cluj-Napoca', 'Bucuresti']
             title = job['title']
-            city = job['city']
+            city = validate_city(job['city'])
             link = 'https://careers.marshmclennan.com/global/en/job/' + job['jobId']
             job_type = value
+            multi_location = job['multi_location_array']
+
+            if city not in romanian_cities:
+                cities = []
+                for s in multi_location:
+                    item = s['location']
+                    if 'Romania' in item:
+                        if 'Timisoara' in s['location']:
+                            cities.append('Timisoara')
+                        if 'Cluj-Napoca' in s['location']:
+                            cities.append('Cluj-Napoca')
+                        if 'Bucharest' in s['location']:
+                            cities.append('Bucuresti')
+                city = cities
 
             list_jobs.append({
                 "job_title": title,
@@ -93,9 +110,11 @@ def get_jobs():
                 "company": "MarshMclennan",
                 "country": "Romania",
                 "city": city,
+                "county": get_county(city),
                 "remote": job_type
             })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
