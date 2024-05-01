@@ -7,6 +7,8 @@ import requests
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import re
+from _county import get_county
+from _validate_city import validate_city
 
 session = requests.Session()
 
@@ -85,14 +87,16 @@ def get_jobs():
             city = job['bulletFields'][2].split(',')[0]
         else:
             city = get_city(link_request)
-
+        city = validate_city(city)
 
         jobs_list.append({
             "job_title": job['title'],
             "job_link": 'https://levistraussandco.wd5.myworkdayjobs.com/ro-RO/External'+job['externalPath'],
             "company": "Levis",
             "country": "Romania",
-            "city": city
+            "city": city,
+            "county": get_county(city),
+            "remote": 'on-site'
         })
     return jobs_list
 
