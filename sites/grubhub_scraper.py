@@ -6,6 +6,7 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import requests
 import re
+from _county import get_county
 
 session = requests.Session()
 
@@ -60,12 +61,16 @@ def get_jobs():
     response = session.request("POST", data[0], json=data[1], headers=data[2]).json()['jobPostings']
 
     for job in response:
+        city = job['locationsText'].split('-')[-1].replace('Cluj', 'Cluj-Napoca')
         jobs_list.append({
             "job_title": job['title'],
             "job_link": 'https://grubhub.wd1.myworkdayjobs.com/en-US/External'+job['externalPath'],
             "company": "grubhub",
             "country": "Romania",
-            "city": job['locationsText'].split('-')[-1].replace('Cluj', 'Cluj-Napoca'),
+            "city": city,
+            "county": get_county(city),
+            "remote": 'on-site'
+
         })
     return jobs_list
 
