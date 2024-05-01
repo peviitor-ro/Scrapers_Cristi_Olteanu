@@ -6,6 +6,7 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
+from _county import get_county
 
 
 def get_jobs():
@@ -21,14 +22,18 @@ def get_jobs():
         title = job.find('h3', class_="entry-title de_title_module dmach-post-title").text
         link = job.find('a', class_="et_pb_button")['href']
         city = job.find_all('p', class_="dmach-acf-value")
+        job_type = []
+
         for c in city:
             if "Locations:" in c.text:
                 cities = c.text.split("Locations:")[1].strip().split(', ')
-        if "Remote" in cities:
-            job_type = "remote"
-            cities.remove("Remote")
-        else:
-            job_type = "on-site"
+            if 'Remote' in c.text:
+                job_type.append('remote')
+            if 'Hybrid' in c.text:
+                job_type.append('hybrid')
+
+        if not job_type:
+            job_type = ['on-site']
 
         job_list.append({
             "job_title": title,
@@ -36,6 +41,7 @@ def get_jobs():
             "company": "humanrise",
             "country": "Romania",
             "city": cities,
+            "county": get_county(cities),
             "remote": job_type})
     return job_list
 
