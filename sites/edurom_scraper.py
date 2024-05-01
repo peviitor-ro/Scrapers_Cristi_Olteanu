@@ -6,6 +6,7 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
+from _county import get_county
 
 
 
@@ -68,12 +69,18 @@ def get_jobs():
             list_city.remove('Cluj')
             list_city.append("Cluj-Napoca")
 
+        if "Bucharest" in list_city:
+            list_city.remove('Bucharest')
+            list_city.append("Bucuresti")
+
+
         list_jobs.append({
             "job_title": title,
             "job_link": link,
             "company": "Edurom",
             "country": "Romania",
             "city": city,
+            "county": get_county(city),
             "remote": job_type
         })
 
