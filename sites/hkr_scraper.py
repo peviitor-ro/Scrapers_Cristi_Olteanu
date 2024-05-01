@@ -14,7 +14,6 @@ def get_jobs():
     soup = BeautifulSoup(response.text, 'lxml')
 
     list_jobs = []
-
     jobs = soup.find_all('div', class_='posting')
 
     for job in jobs:

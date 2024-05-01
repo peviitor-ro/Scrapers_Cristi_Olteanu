@@ -13,20 +13,18 @@ def get_jobs():
     querystring = {"location": ["Romania/Bucharest New", "Romania/Bucharest  Ilfov"], "offset": "0",
                    "calculatedOffset": "0"}
     response = requests.get(url=url, params=querystring, headers=DEFAULT_HEADERS).json()['items']
-
     list_jobs = []
 
     for job in response:
-        location = job['location']
 
-        if 'Bucharest' in location:
-            city = 'Bucuresti'
             list_jobs.append({
                 "job_title": job['title'],
                 "job_link": job['url'],
                 "company": "hitachienergy",
                 "country": "Romania",
-                "city": city
+                "city": 'Bucuresti',
+                "county": 'Bucuresti',
+                "remote": 'on-site'
             })
     return list_jobs
 
