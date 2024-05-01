@@ -6,6 +6,7 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
+from _county import get_county
 
 
 def get_jobs():
@@ -29,6 +30,8 @@ def get_jobs():
             "company": "Kirchhoff",
             "country": "Romania",
             "city": city,
+            "county": get_county(city),
+            "remote": 'on-site'
         })
     return list_jobs
 
