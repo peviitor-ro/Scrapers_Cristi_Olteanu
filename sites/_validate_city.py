@@ -6,7 +6,8 @@ def validate_city(city):
         {'Bolintin-Deal': ['bolintin-deal', 'bolintin - deal']},
         {'Campulung': ['campulung muscel', 'campulung Muscel']},
         {'Poiana Lacului': ['poiana lacului']},
-        {'Dragomiresti Vale': ['com.  dragomiresti vale']}
+        {'Dragomiresti Vale': ['com.  dragomiresti vale']},
+        {'Targu-Mures': ['targu mures']}
 
     ]
 
@@ -15,6 +16,5 @@ def validate_city(city):
             if city.lower() in value:
                 return key
     return city
-
 
 

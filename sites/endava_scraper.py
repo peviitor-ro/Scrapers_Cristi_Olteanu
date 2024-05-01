@@ -5,6 +5,8 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 import re
+from _county import get_county
+from _validate_city import validate_city
 
 
 def get_cookies():
@@ -39,15 +41,12 @@ def get_jobs():
         link = f"https://www.endava.com/careers/jobs/{job['hs_path']}"
         cities = job['locations_id'].split(',')
         romanian_cities = []
-        job_type = ''
+        job_type = 'on-site'
 
         for city in cities:
             for filtered_city in filtered_cities:
                 if city == filtered_city['hs_id']:
-                    romanian_cities.append(filtered_city['name'])
-
-        if 'Targu Mures' in romanian_cities:
-            romanian_cities[romanian_cities.index('Targu Mures')] = 'Targu-Mures'
+                    romanian_cities.append(validate_city(filtered_city['name']))
 
         if 'Other Romanian Locations' in romanian_cities:
             romanian_cities.remove('Other Romanian Locations')
@@ -60,6 +59,7 @@ def get_jobs():
                 "company": "endava",
                 "country": "Romania",
                 "city": romanian_cities,
+                "county": get_county(romanian_cities),
                 "remote": job_type
             })
     return jobs_list
