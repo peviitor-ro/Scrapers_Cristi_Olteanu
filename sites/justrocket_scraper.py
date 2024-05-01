@@ -7,6 +7,7 @@ from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
 
+
 def get_jobs():
 
     list_jobs = []

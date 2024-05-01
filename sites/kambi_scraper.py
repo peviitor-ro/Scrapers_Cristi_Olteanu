@@ -6,6 +6,8 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
+from _county import get_county
+from _validate_city import validate_city
 
 
 def get_soup(url):
@@ -37,6 +39,7 @@ def get_jobs():
                 job_type = 'hibrid'
             else:
                 job_type = 'on-site'
+            city = validate_city(city)
 
             list_jobs.append({
                 "job_title": title,
@@ -44,6 +47,7 @@ def get_jobs():
                 "company": "Kambi",
                 "country": "Romania",
                 "city": city,
+                "county": get_county(city),
                 "remote": job_type
             })
 
