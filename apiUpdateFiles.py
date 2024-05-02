@@ -1,8 +1,8 @@
 import requests
 
-url = "https://dev.laurentiumarian.ro/scraper/Scrapers_Cristi_Olteanu/"
+url = "https://api.laurentiumarian.ro/scraper/Scrapers_Cristi_Olteanu/"
 
-r = requests.post(url, data = {"update": "true"})
+r = requests.post(url, data={"update": "true"})
 
 response = r.json()
 

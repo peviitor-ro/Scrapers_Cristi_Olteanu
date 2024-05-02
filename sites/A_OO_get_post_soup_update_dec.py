@@ -46,19 +46,11 @@ def update_peviitor_api(original_function):
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {token}'
             }
-        validator_endpoint = 'https://api.peviitor.ro/v5/add/'
+        validator_endpoint = 'https://api.laurentiumarian.ro/jobs/add/'
 
         res = requests.post(validator_endpoint, json=data_list, headers=post_header)
-        #print(res.status_code)
         #post_request_to_server = requests.post('https://api.peviitor.ro/v4/update/', headers=post_header, data=json.dumps(data_list))
         print(json.dumps(data_list, indent=4))
-
-        # don't delete this lines if you want to see the graph on scraper's page
-        file = company_name.lower() + '_scraper.py'
-        data = {'data': len(data_list)}
-        dataset_url = f'https://dev.laurentiumarian.ro/dataset/Scrapers_Cristi_Olteanu/{file}/'
-        requests.post(dataset_url, json=data)
-        ########################################################
 
         return original_function(*args, **kwargs)
 
@@ -66,9 +58,13 @@ def update_peviitor_api(original_function):
 
 
 def get_token():
-    token_endpoint = 'https://api.peviitor.ro/v5/get_token/'
+    #token_endpoint = 'https://api.peviitor.ro/v5/get_token/'
+    token_endpoint = 'https://api.laurentiumarian.ro/get_token'
+
     token = requests.post(token_endpoint, json={
         "email": "cristiolteanu1892@gmail.com"
-    })
+    }, headers = {
+    "Content-Type": "application/json",
+})
 
     return token.json()['access']
