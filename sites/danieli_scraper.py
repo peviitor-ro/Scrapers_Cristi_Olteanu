@@ -7,6 +7,7 @@ from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
 import re
+from _county import get_county
 
 
 def get_token():
@@ -99,6 +100,8 @@ def get_jobs():
                 "company": "danieli",
                 "country": "Romania",
                 "city": city,
+                "county": get_county(city),
+                "remote": 'on-site'
             })
     else:
         pass
