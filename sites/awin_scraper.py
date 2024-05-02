@@ -6,6 +6,8 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
+from _county import get_county
+from _validate_city import validate_city
 
 
 def get_jobs():
@@ -13,11 +15,10 @@ def get_jobs():
 
     req = requests.get("https://boards.greenhouse.io/awin", headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(req.text, "lxml")
-
     jobs = soup.find_all('div', class_='opening')
 
     for job in jobs:
-        city = job.find('span', class_='location').text.split(',')[0]
+        city = validate_city(job.find('span', class_='location').text.split(',')[0])
         link = 'https://boards.greenhouse.io' + job.find('a')['href']
         title = job.find('a').text
         location = job.find('span', class_='location').text
@@ -29,6 +30,8 @@ def get_jobs():
                "company": "Awin",
                "country": "Romania",
                "city": city,
+               "county": get_county(city),
+               "remote": 'on-site',
            })
     return list_jobs
 

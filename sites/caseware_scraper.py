@@ -6,6 +6,8 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
+from _county import get_county
+from _validate_city import validate_city
 
 
 def get_jobs():
@@ -20,7 +22,7 @@ def get_jobs():
 
         link = job.find('a', class_='posting-title')['href']
         title = job.find('h5').text
-        city = job.find('span', class_='sort-by-location posting-category small-category-label location').text
+        city = validate_city(job.find('span', class_='sort-by-location posting-category small-category-label location').text)
         job_type = job.find('span', class_='display-inline-block small-category-label workplaceTypes').text.split()[0]
         cities = []
 
@@ -36,6 +38,7 @@ def get_jobs():
                 "company": "caseware",
                 "country": "Romania",
                 "city": cities,
+                "county": get_county(cities),
                 "remote": job_type
             })
 

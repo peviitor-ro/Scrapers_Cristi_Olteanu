@@ -6,6 +6,8 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
+from _validate_city import validate_city
+from _county import get_county
 
 
 def get_soup(url: str):
@@ -36,7 +38,7 @@ def get_jobs():
         for job in jobs:
             title = job.find('a', class_='jobTitle-link').text
             link = 'https://jobs.bonduelle.com' + job.find('a', class_='jobTitle-link')['href']
-            city = job.find('span', class_='jobLocation').text.split(',')[0].strip()
+            city = validate_city(job.find('span', class_='jobLocation').text.split(',')[0].strip())
 
             list_jobs.append({
                 "job_title": title,
@@ -44,6 +46,8 @@ def get_jobs():
                 "company": "Bonduelle",
                 "country": "Romania",
                 "city": city,
+                "county": get_county(city),
+                "remote": 'on-site'
                 })
     return list_jobs
 

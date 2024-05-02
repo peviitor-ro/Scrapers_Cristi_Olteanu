@@ -6,6 +6,7 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import re
 import requests
+from _county import get_county
 
 session = requests.Session()
 
@@ -80,7 +81,7 @@ def get_jobs():
         link = 'https://careers.conduent.com/us/en/job/' + job['jobId']
         city = job['city']
 
-        if 'Remote Romania' in city:
+        if 'Remote Romania' in city or city=='':
             city = 'Iasi'
             job_type = 'remote'
         elif 'remote' in title.lower().strip('('):
@@ -94,6 +95,7 @@ def get_jobs():
             "company": "Conduent",
             "country": "Romania",
             "city": city,
+            "county": get_county(city),
             "remote": job_type
         })
 

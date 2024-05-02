@@ -5,6 +5,8 @@
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
+from _validate_city import validate_city
+from _county import get_county
 
 
 def get_jobs():
@@ -33,7 +35,7 @@ def get_jobs():
         if len(response) > 0:
             for job in response:
                 title = job['name']
-                city = job['location'].split(',')[0]
+                city = validate_city(job['location'].split(',')[0])
                 link = f"https://jobs.bookingholdings-coe.com/careers?query=%2A&location=Bucharest%2C%20Romania&pid={job['id']}&domain=booking.com&sort_by=relevance&microsite=microsite_1"
                 list_jobs.append({
                     "job_title": title,
@@ -41,6 +43,8 @@ def get_jobs():
                     "company": "BookingHoldings",
                     "country": "Romania",
                     "city": city,
+                    "county": get_county(city),
+                    "remote": 'on-site'
                 })
         else:
             flag = False

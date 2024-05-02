@@ -6,22 +6,24 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
+from _county import get_county
+from _validate_city import validate_city
 
 
 def get_jobs():
 
-    req = requests.get('https://www.ceragon.com/about-ceragon/careers',headers=DEFAULT_HEADERS)
+    req = requests.get('https://www.ceragon.com/about-ceragon/careers', headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(req.text,'lxml')
-    jobs = soup.find_all('div',class_='row')
+    jobs = soup.find_all('div', class_='row')
 
-    list_jobs=[]
+    list_jobs = []
 
     for job in jobs:
 
         link = 'https://www.ceragon.com' + job.find('a')['href']
         title = job.find('h5').text
-        city = job.find('li',class_='hs-data-location').text.split()[-1]
-        country = job.find('li',class_='hs-data-location').text.split()[0]
+        city = validate_city(job.find('li', class_='hs-data-location').text.split()[-1])
+        country = job.find('li', class_='hs-data-location').text.split()[0]
 
         if country == 'Romania':
             list_jobs.append({
@@ -30,6 +32,8 @@ def get_jobs():
                 "company": "Ceragon",
                 "country": "Romania",
                 "city": city,
+                "county": get_county(city),
+                "remote": 'on-site',
             })
     return list_jobs
 

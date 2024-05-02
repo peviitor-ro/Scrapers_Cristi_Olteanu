@@ -6,6 +6,8 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
+from _county import get_county
+from _validate_city import validate_city
 
 
 def get_soup(url):
@@ -18,7 +20,6 @@ def get_soup(url):
 def get_jobs():
 
     jobs_list = []
-
     jobs = get_soup('https://jobs.colgate.com/go/View-All-Jobs/8506400/?q=&q2=&alertId=&locationsearch=&title=&location=RO&department=&facility='
                     ).find_all('tr', class_='data-row')
 
@@ -32,6 +33,7 @@ def get_jobs():
                                            ).text.strip()
         except:
             job_type = 'on-site'
+        city = validate_city(city)
 
         jobs_list.append({
             "job_title": title,
@@ -39,10 +41,12 @@ def get_jobs():
             "company": "Colgate",
             "country": "Romania",
             "city": city,
+            "county": get_county(city),
             "remote": job_type
         })
 
     return jobs_list
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
