@@ -66,7 +66,9 @@ def get_jobs():
             "job_link": link,
             "company": "dennemeyer",
             "country": "Romania",
-            "city": 'Brasov'
+            "city": 'Brasov',
+            "county": 'Brasov',
+            "remote": 'on-site'
         })
     return list_jobs
 

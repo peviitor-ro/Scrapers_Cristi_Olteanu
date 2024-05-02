@@ -7,6 +7,8 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import re
 import requests
+from _county import get_county
+from _validate_city import validate_city
 
 session = requests.Session()
 
@@ -71,26 +73,20 @@ def get_jobs():
         title = job['title']
         link = 'https://ecolab.wd1.myworkdayjobs.com/en-US/Ecolab_External' + job['externalPath']
         location = job['locationsText']
-        city = location.split('-')[-1].strip()
+        city = validate_city(location.split('-')[-1].strip())
+        county = get_county(city)
 
-        if 'locations' in location.lower():
-            base_url_location = session.get(f"https://ecolab.wd1.myworkdayjobs.com/wday/cxs/ecolab/Ecolab_External{job['externalPath']}",
-                                               headers=data[2]).json()['jobPostingInfo']
-            additional_locations = base_url_location['additionalLocations']
-
-            if 'ROU' in base_url_location['location']:
-                city = base_url_location['location'].split('-')[-1].strip()
-            else:
-                for additional_location in additional_locations:
-                    if 'ROU' in additional_location:
-                        city = additional_location.split('-')[-1].strip()
+        if 'Victoria' in city:
+            county = 'Brasov'
 
         list_jobs.append({
             "job_title": title,
             "job_link": link,
             "company": "ECOLAB",
             "country": "Romania",
-            "city": city
+            "city": city,
+            "county": county,
+            "remote": 'on-site'
         })
     return list_jobs
 
