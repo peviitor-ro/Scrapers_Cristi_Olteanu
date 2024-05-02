@@ -6,6 +6,7 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
+from _county import get_county
 
 
 def get_jobs():
@@ -19,16 +20,17 @@ def get_jobs():
 
         title = job.find('a', class_='jobTitle-link').text
         link = 'https://careers.crif.com' + job.find('a', class_='jobTitle-link')['href']
-        city = job.find('span', class_='jobLocation').text.split(',')[0].strip()
+        city = str(job.find('span', class_='jobLocation').text.split(',')[0].strip()).lower().capitalize()
 
         list_jobs.append({
                 "job_title": title,
                 "job_link": link,
                 "company": "Crif",
                 "country": "Romania",
-                "city": city
+                "city": city,
+                "county": get_county(city),
+                "remote": 'on-site'
         })
-
         return list_jobs
 
 

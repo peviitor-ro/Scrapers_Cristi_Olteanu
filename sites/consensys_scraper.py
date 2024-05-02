@@ -10,29 +10,28 @@ from bs4 import BeautifulSoup
 
 
 def get_jobs():
-    list_jobs = []
+    jobs_list = []
 
     req = requests.get("https://consensys.io/open-roles?location=83558", headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(req.text, "lxml")
-
-    jobs = soup.find_all('div', class_='card-job svelte-11focjo')
+    jobs = soup.find_all('a', class_='card-job svelte-rgojh5')
 
     for job in jobs:
-       link = 'https://consensys.io/' + job.find('a', class_='svelte-11focjo')['href']
-       title = job.find('h5', class_='job-title svelte-11focjo').text
-       location = job.find('div', class_='job-location svelte-11focjo').text
+       link = 'https://consensys.io/' + job.get('href')
+       title = job.find('h5').text
+       location = job.find('div', class_='job-location svelte-rgojh5').text
 
-       if 'EMEA - Remote' in location:
-           list_jobs.append({
+       if 'EMEA - Remote' in location or 'GLOBAL - Remote' in location:
+           jobs_list.append({
                "job_title": title,
                "job_link": link,
                "company": "Consensys",
                "country": "Romania",
                "city": 'Cluj-Napoca',
+               "county": 'Cluj',
                "remote": 'remote'
            })
-
-    return list_jobs
+    return jobs_list
 
 
 @update_peviitor_api
