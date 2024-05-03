@@ -8,7 +8,7 @@ def validate_city(city):
         {'Poiana Lacului': ['poiana lacului']},
         {'Dragomiresti Vale': ['com.  dragomiresti vale']},
         {'Targu-Mures': ['targu mures']},
-        {'Piatra-Neamt': ['neamt', 'neamţ']},
+        {'Piatra-Neamt': ['neamt', 'neamţ','piatra neamţ']},
         {'Miercurea Ciuc': ['harghita']},
         {'Craiova': ['dolj']},
         {'Alba Iulia': ['iulia']},

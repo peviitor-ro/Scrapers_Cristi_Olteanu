@@ -6,6 +6,8 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
+from _county import get_county
+from _validate_city import validate_city
 
 
 def get_soup(url: str):
@@ -51,7 +53,7 @@ def get_jobs():
                 city = city.split()[0]
             elif 'Bucuresti' in city or '104H' in city or 'Bucharest' in city:
                 city = 'Bucuresti'
-            elif 'Mures' in city or 'Tirgu' in city:
+            elif 'Mures' in city or 'Tirgu' in city or 'Tîrgu Mureş' in city:
                 city = 'Targu-Mures'
             elif 'stefanesti' in city.lower():
                 city = 'Stefanestii de Jos'
@@ -73,10 +75,12 @@ def get_jobs():
                 city = 'Onesti'
             elif 'berceni' in city.lower():
                 city = 'Bucuresti'
-            elif 'Mioveni - Pitesti' in city:
+            elif 'Mioveni - Pitesti' in city.strip():
                 city = city.split(' - ')
             elif 'bihor' in city.lower():
                 city = 'Oradea'
+
+            city = validate_city(city)
 
             list_jobs.append({
                 "job_title": title,
@@ -84,10 +88,12 @@ def get_jobs():
                 "company": "Adecco",
                 "country": "Romania",
                 "city": city,
+                "county": get_county(city),
                 "remote": job_type
             })
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
