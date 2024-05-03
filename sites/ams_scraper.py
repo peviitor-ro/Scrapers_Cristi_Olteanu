@@ -5,6 +5,8 @@
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
+from _county import get_county
+from _validate_city import validate_city
 
 
 def get_jobs():
@@ -18,7 +20,7 @@ def get_jobs():
     for job in response:
 
         title = job['position_name']
-        city = job['city']
+        city = validate_city(job['city'])
         link = 'https://www.careers-page.com/ams-hr/job/' + job['hash']
 
         if "remote" in title.lower():
@@ -34,6 +36,7 @@ def get_jobs():
             "company": "AMS",
             "country": "Romania",
             "city": city,
+            "county": get_county(city),
             "remote": job_type
             })
 
