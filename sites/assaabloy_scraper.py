@@ -29,7 +29,9 @@ def get_jobs():
             "job_link": link,
             "company": "assaabloy",
             "country": "Romania",
-            "city": 'Bucuresti'
+            "city": 'Bucuresti',
+            "county": 'Bucuresti',
+            "remote": 'on=site'
         })
     return list_jobs
 

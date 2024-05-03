@@ -30,6 +30,7 @@ def get_jobs():
                 "company": "AstorMueller",
                 "country": "Romania",
                 "city": 'Oradea',
+                "county": 'Bihor',
                 "remote": job_type
             })
 
