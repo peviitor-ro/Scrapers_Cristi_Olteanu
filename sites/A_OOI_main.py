@@ -32,7 +32,9 @@ exclude = ['__init__.py',
             'sennder_scraper.py',
             'rws_scraper.py',
            'riverbed_scraper.py',
-           'rianpartners_scraper.py'
+           'rianpartners_scraper.py',
+           '_county.py',
+           '_validate_city.py',
 
            ]
 
