@@ -6,6 +6,8 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
+from _county import get_county
+from _validate_city import validate_city
 
 
 def get_soup(url):
@@ -42,28 +44,7 @@ def get_jobs():
                 except:
                     city = job.find('ul', class_='job-card__details').text.split(',')[-1].split()[-1]
 
-                if 'Neamt' in city or 'Neamţ' in city:
-                    city = 'Piatra-Neamt'
-                elif 'Harghita' in city:
-                    city = 'Miercurea Ciuc'
-                elif 'Dolj' in city:
-                    city = 'Craiova'
-                elif 'Iulia' in city:
-                    city = 'Alba Iulia'
-                elif 'Jiu' in city:
-                    city = 'Targu Jiu'
-                elif 'Valcea' in city:
-                    city = 'Ramnicu Valcea'
-                elif 'Mures' in city or 'Mureş' in city:
-                    city = 'Targu Mures'
-                elif 'Mare' in city:
-                    city = 'Satu Mare'
-                elif city.lower() in ['romania', 'negotiable', 'ilfov', '€150', '~156']:
-                    city = 'Bucuresti'
-                elif 'Ialomita' in city or 'Ialomița' in city:
-                    city = 'Slobozia'
-                elif 'Bihor' in city:
-                    city = 'Oradea'
+                city = validate_city(city)
 
                 if 'on site' in title.lower() or 'on-site' in title.lower():
                     job_type = 'on-site'
@@ -80,6 +61,7 @@ def get_jobs():
                     "company": "Antal",
                     "country": "Romania",
                     "city": city,
+                    "county": get_county(city),
                     "remote": job_type
                 })
     return list_jobs
