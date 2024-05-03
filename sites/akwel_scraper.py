@@ -6,6 +6,7 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
+from _county import get_county
 
 
 def get_jobs():
@@ -23,13 +24,16 @@ def get_jobs():
         title = job.find('div', class_='job-offer-list-item__title').text
         city = job.find('div', class_='value').text.split(',')[0]
         country = job.find('div', class_='value').text.split(',')[-1].strip()
+
         if country == 'Roumania' or country == 'Romania':
             list_jobs.append({
                 "job_title": title,
                 "job_link": link,
                 "company": "Akwel",
                 "country": "Romania",
-                "city": city
+                "city": city,
+                "county": get_county(city),
+                "remote": 'on-site'
             })
     return list_jobs
 
