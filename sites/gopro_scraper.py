@@ -37,7 +37,7 @@ def get_jobs():
 
     for job in response:
         title = job['job']['title']
-        link = str(job['job']['customAttributes']['url']['stringValues'][0]).replace('http','https')
+        link = str(job['job']['customAttributes']['url']['stringValues'][0]).replace('http', 'https')
         location_headline = get_soup(link).find('div', class_='col-md-7').find('h5').text
 
         if 'flexible' in location_headline.lower():
