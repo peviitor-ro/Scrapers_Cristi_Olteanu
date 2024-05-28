@@ -8,6 +8,7 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 from _county import get_county
 
+
 def get_soup(url):
 
     response = requests.get(url, headers=DEFAULT_HEADERS)
@@ -60,6 +61,7 @@ def get_jobs():
                 "remote": job_type
             })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
