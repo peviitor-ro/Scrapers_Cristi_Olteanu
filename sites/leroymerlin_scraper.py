@@ -42,7 +42,7 @@ def get_jobs():
             if 'Târgu Mureș' in location:
                 city = 'Târgu-Mureș'
             elif 'Cluj' in location:
-                 city = 'Cluj-Napoca'
+                city = 'Cluj-Napoca'
             else:
                 city = location.split()[0]
 
