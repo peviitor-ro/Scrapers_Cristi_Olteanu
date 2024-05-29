@@ -53,7 +53,7 @@ def get_jobs():
                 "country": "Romania",
                 "city": cities,
                 "county": get_county(cities),
-                "remote": 'hibrid'
+                "remote": 'hybrid'
             })
     return list_jobs
 
