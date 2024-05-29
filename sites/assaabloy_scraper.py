@@ -31,7 +31,7 @@ def get_jobs():
             "country": "Romania",
             "city": 'Bucuresti',
             "county": 'Bucuresti',
-            "remote": 'on=site'
+            "remote": 'on-site'
         })
     return list_jobs
 
