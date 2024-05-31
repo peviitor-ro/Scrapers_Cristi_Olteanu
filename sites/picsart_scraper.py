@@ -13,7 +13,7 @@ from _validate_city import validate_city
 def get_job_types(job_id):
 
     res = requests.get('https://api.picsart.com/careers/jobs/' + job_id).json()['description']
-    soup = BeautifulSoup(res, 'lxml').find_all('li', attrs={'style': 'line-height: 1.1;'})[1].text
+    soup = BeautifulSoup(res, 'lxml').getText()
 
     if 'hybrid' in soup.lower():
         job_type_ = 'hybrid'
