@@ -7,6 +7,7 @@ from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
 from _county import get_county
+from _validate_city import validate_city
 
 
 def get_jobs():
@@ -21,7 +22,7 @@ def get_jobs():
     for job in jobs:
         link = 'https://careers.reckitt.com/' + job.find('a',class_='jobTitle-link')['href']
         title = job.find('a',class_='jobTitle-link').text
-        city = job.find('span',class_='jobLocation').text.split(',')[0].strip()
+        city = validate_city(job.find('span',class_='jobLocation').text.split(',')[0].strip())
 
         list_jobs.append({
             "job_title": title,
