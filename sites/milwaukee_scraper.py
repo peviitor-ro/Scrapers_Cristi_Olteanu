@@ -66,6 +66,7 @@ def get_jobs():
             "company": "Milwaukee",
             "country": "Romania",
             "city": 'Cluj-Napoca',
+            "county": 'Cluj',
             "remote": 'remote'
         })
     return list_jobs
