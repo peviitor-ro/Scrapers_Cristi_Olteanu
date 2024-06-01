@@ -23,7 +23,8 @@ def get_jobs():
         link = job.find('a', class_='posting-title')['href']
         title = job.find('h5').text
         city = validate_city(job.find('span', class_='sort-by-location posting-category small-category-label location').text)
-        job_type = job.find('span', class_='display-inline-block small-category-label workplaceTypes').text.split()[0]
+        job_type = job.find('span', class_='display-inline-block small-category-label workplaceTypes'
+                            ).text.split()[0]
         cities = []
 
         if "Cluj" in city:
