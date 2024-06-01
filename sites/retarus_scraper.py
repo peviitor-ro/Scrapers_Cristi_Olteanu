@@ -91,7 +91,6 @@ def get_jobs():
 
     return list_jobs
 
-
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
     """
