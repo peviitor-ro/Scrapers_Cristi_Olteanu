@@ -23,10 +23,11 @@ def get_jobs():
         link = job.find('a', class_="et_pb_button")['href']
         city = job.find_all('p', class_="dmach-acf-value")
         job_type = []
-
+        cities = 'Bucuresti'
         for c in city:
             if "Locations:" in c.text:
-                cities = c.text.split("Locations:")[1].strip().split(', ')
+                cities = c.text.split()[1:]
+
             if 'Remote' in c.text:
                 job_type.append('remote')
             if 'Hybrid' in c.text:
