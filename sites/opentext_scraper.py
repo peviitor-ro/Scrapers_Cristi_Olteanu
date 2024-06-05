@@ -20,7 +20,10 @@ def get_soup(url):
 def get_num_pages():
 
     soup_pages = get_soup('https://careers.opentext.com/search/?q=&location=RO&sortColumn=referencedate&sortDirection=desc&startrow=')
-    num_pages = soup_pages.find('span', class_='srHelp').text.split('of')[-1].strip()
+    try:
+        num_pages = soup_pages.find('span', class_='srHelp').text.split('of')[-1].strip()
+    except:
+        num_pages = 0
     return int(num_pages)
 
 
