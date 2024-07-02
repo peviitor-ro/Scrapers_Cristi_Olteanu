@@ -20,10 +20,18 @@ def validate_city(city):
 
     ]
 
-    for item in validated_cities:
-        for key, value in item.items():
-            if city.lower() in value:
-                return key
+    if isinstance(city, str):
+        for item in validated_cities:
+            for key, value in item.items():
+                print(city)
+                if city.lower() in value:
+                    return key
+    elif isinstance(city, list):
+        for item in validated_cities:
+            for key, value in item.items():
+                for city_item in city:
+                    if city_item.lower() in value:
+                        return key
     return city
 
 
