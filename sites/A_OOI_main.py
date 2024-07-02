@@ -35,6 +35,7 @@ exclude = ['__init__.py',
            'rianpartners_scraper.py',
            '_county.py',
            '_validate_city.py',
+           'bayware_scraper.py'
 
            ]
 
