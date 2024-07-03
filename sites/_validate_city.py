@@ -23,7 +23,6 @@ def validate_city(city):
     if isinstance(city, str):
         for item in validated_cities:
             for key, value in item.items():
-                print(city)
                 if city.lower() in value:
                     return key
     elif isinstance(city, list):
