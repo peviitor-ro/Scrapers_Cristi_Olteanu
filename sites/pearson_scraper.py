@@ -27,7 +27,7 @@ def get_jobs():
             city = 'Bucuresti'
             remote = 'remote'
         else:
-            remote = 'hibrid'
+            remote = 'hybrid'
 
         job_list.append({
             "job_title": title,
