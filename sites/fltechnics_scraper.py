@@ -7,6 +7,7 @@ from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
 from _county import get_county
+from _validate_city import validate_city
 
 
 
@@ -41,7 +42,7 @@ def get_jobs():
             link = job.find('a')['href']
             title = job.find('a')['title']
             location = job.find('div', class_='asgc-list-col col-location').text.strip().split(', ')[1]
-            city = job.find('div', class_='asgc-list-col col-location').text.strip().split(', ')[0]
+            city = validate_city(job.find('div', class_='asgc-list-col col-location').text.strip().split(', ')[0])
 
             if location == 'Romania':
                 list_jobs.append({
