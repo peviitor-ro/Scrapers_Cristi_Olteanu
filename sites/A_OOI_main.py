@@ -37,7 +37,6 @@ exclude = ['__init__.py',
            '_validate_city.py',
            'bayware_scraper.py',
            'bookingholdings_scraper.py'
-
            ]
 
 path = os.path.dirname(os.path.abspath(__file__))
