@@ -24,29 +24,30 @@ def get_jobs():
                     ).find_all('tr', class_='data-row')
 
     for job in jobs:
-        link = 'https://jobs.colgate.com/' + job.find('a', class_='jobTitle-link')['href']
         city = job.find('span', class_='jobLocation').text.split(', ')[0].strip()
-        title = job.find('a', class_='jobTitle-link').text
 
-        try:
-            job_type = get_soup(link).find('span', {'data-careersite-propertyid': 'customfield5'}
-                                           ).text.strip()
-        except:
-            job_type = 'on-site'
-        city = validate_city(city)
+        if get_county(validate_city(city)):
 
-        jobs_list.append({
-            "job_title": title,
-            "job_link": link,
-            "company": "Colgate",
-            "country": "Romania",
-            "city": city,
-            "county": get_county(city),
-            "remote": job_type
+            link = 'https://jobs.colgate.com/' + job.find('a', class_='jobTitle-link')['href']
+
+            title = job.find('a', class_='jobTitle-link').text
+            try:
+                job_type = get_soup(link).find('span', {'data-careersite-propertyid': 'customfield5'}
+                                               ).text.strip()
+            except:
+                job_type = 'on-site'
+            city = validate_city(city)
+
+            jobs_list.append({
+                "job_title": title,
+                "job_link": link,
+                "company": "Colgate",
+                "country": "Romania",
+                "city": city,
+                "county": get_county(city),
+                "remote": job_type
         })
-
     return jobs_list
-
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
