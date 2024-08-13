@@ -71,7 +71,10 @@ def get_jobs():
 
     list_jobs = []
     data = prepare_post()
-    response = requests.request("POST", data[0], json=data[1], headers=data[2]).json()['data']['requisitions']
+    try:
+        response = requests.request("POST", data[0], json=data[1], headers=data[2]).json()['data']['requisitions']
+    except:
+        return []
 
     for job in response:
 
@@ -90,6 +93,7 @@ def get_jobs():
         })
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
