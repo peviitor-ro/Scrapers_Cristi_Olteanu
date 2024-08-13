@@ -71,10 +71,7 @@ def get_jobs():
 
     list_jobs = []
     data = prepare_post()
-    try:
-        response = requests.request("POST", data[0], json=data[1], headers=data[2]).json()['data']['requisitions']
-    except:
-        return []
+    response = requests.request("POST", data[0], json=data[1], headers=data[2]).json()['data']['requisitions']
 
     for job in response:
 
