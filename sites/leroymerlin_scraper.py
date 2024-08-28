@@ -51,6 +51,9 @@ def get_jobs():
             except:
                 job_type = 'on-site'
 
+            if 'hibrid' in job_type.lower():
+                job_type = 'hybrid'
+
             list_jobs.append({
                 "job_title": title,
                 "job_link": link,
