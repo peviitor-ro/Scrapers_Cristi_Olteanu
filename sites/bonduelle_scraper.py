@@ -19,7 +19,7 @@ def get_soup(url: str):
 
 def get_num_pages():
 
-    soup_pages = get_soup(url='https://jobs.bonduelle.com/search/?searchby=location&createNewAlert=false&q=&locationsearch=Romania&geolocation=&optionsFacetsDD_country=&optionsFacetsDD_customfield1=&optionsFacetsDD_customfield3=')
+    soup_pages = get_soup(url='https://jobs.bonduelle.com/search/?searchby=location&createNewAlert=false&q=&locationsearch=RO&geolocation=&optionsFacetsDD_country=&optionsFacetsDD_customfield1=&optionsFacetsDD_customfield3=')
     try:
         num_jobs = int(soup_pages.find('span', class_='paginationLabel').text.split()[-1])
     except:
@@ -68,3 +68,4 @@ scrape_and_update_peviitor(company_name, data_list)
 print(update_logo('Bonduelle',
                   'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Logo_Bonduelle.svg/800px-Logo_Bonduelle.svg.png?20140911225559'
                   ))
+
