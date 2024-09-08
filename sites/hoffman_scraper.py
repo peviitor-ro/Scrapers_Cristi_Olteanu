@@ -29,6 +29,8 @@ def get_jobs():
                     "company": "Hoffman",
                     "country": "Romania",
                     "city": 'Bucuresti',
+                    "county": "bucuresti",
+                    "remote": "on-site"
                 })
     return list_jobs
 
