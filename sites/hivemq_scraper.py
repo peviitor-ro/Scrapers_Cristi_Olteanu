@@ -12,15 +12,16 @@ def get_jobs():
 
     list_jobs = []
 
-    response = requests.get('https://boards.eu.greenhouse.io/hivemq?t=f4020b82teu', headers=DEFAULT_HEADERS)
+    response = requests.get('https://job-boards.eu.greenhouse.io/hivemq?t=f4020b82teu&offices%5B%5D=4000101101',
+                            headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(response.text, 'lxml')
 
-    jobs = soup.find_all('div', class_='opening')
+    jobs = soup.find_all('div', class_='job-posts')
 
     for job in jobs:
-        title = job.find('a').text
+        title = job.find('p', class_="body body--medium").text
         link = 'https://boards.eu.greenhouse.io/' + job.find('a')['href']
-        location = job.find('span', class_='location').text
+        location = job.find('p', class_='body body__secondary body--metadata').text
 
         if 'europe remote' in location.lower():
             list_jobs.append({
