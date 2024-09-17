@@ -14,9 +14,9 @@ def get_jobs():
     list_jobs = []
     response = requests.get('https://eedu.fa.em3.oraclecloud.com/hcmRestApi/resources/latest/recruitingCEJobRequisitions?onlyData=true&expand=requisitionList.secondaryLocations,flexFieldsFacet.values&finder=findReqs;siteNumber=CX_1003,facetsList=LOCATIONS%3BWORK_LOCATIONS%3BWORKPLACE_TYPES%3BTITLES%3BCATEGORIES%3BORGANIZATIONS%3BPOSTING_DATES%3BFLEX_FIELDS,limit=25,lastSelectedFacet=LOCATIONS,selectedLocationsFacet=300000000346767,sortBy=POSTING_DATES_DESC',
                             headers=DEFAULT_HEADERS).json()['items'][0]['requisitionList']
-
+    count = 0
     for job in response:
-
+        count += 1
         list_jobs.append({
             "job_title": job['Title'],
             "job_link": f"https://eedu.fa.em3.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1003/job/{job['Id']}/?lastSelectedFacet=LOCATIONS&selectedLocationsFacet=300000000346767",
@@ -26,7 +26,6 @@ def get_jobs():
             "county": get_county(job['PrimaryLocation'].split(',')[0]),
             "remote": "on-site"
         })
-
     return list_jobs
 
 
