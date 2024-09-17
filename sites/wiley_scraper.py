@@ -21,15 +21,17 @@ def get_jobs():
         soup = BeautifulSoup(job, 'lxml')
         link = soup.find('a')['href']
         title = soup.find('a').text
-        city = soup.find('div', class_='muted asc-job-public-stats').text.split(' Location:')[-1].split(',')[0].strip()
+        job_type = 'hybrid' if 'hybrid' in soup.find('div', class_='muted asc-job-public-stats').text.lower() \
+            else 'on-site'
 
         list_jobs.append({
             "job_title": title,
             "job_link": link,
             "company": "Wiley",
             "country": "Romania",
-            "city": city,
-            "county": get_county(city)
+            "city": 'Iasi',
+            "county": 'Iasi',
+            "remote": job_type
 
         })
     return list_jobs
