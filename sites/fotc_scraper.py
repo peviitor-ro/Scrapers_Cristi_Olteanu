@@ -2,10 +2,12 @@
 #  Company - > fotc
 # Link -> https://fotc.jobsoid.com/
 #
-from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
+from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
+from _validate_city import validate_city
+from _county import get_county
 
 
 def get_jobs():
@@ -18,29 +20,21 @@ def get_jobs():
 
     for job in jobs:
         text = job.find('a', class_='jobDetailsLink')
-        try:
-            link = 'https://fotc.jobsoid.com'+text.get('href')
-        except:
-            link = None
-
-        if link is not None:
+        if text is not None:
+            link = 'https://fotc.jobsoid.com' + text.get('href')
             title = text.text
-            link = link
-            location = job.find('span', class_='r-space').text.split('/')[0].strip()
-            city = job.find('span', class_='r-space').text.split('/')[-1].strip()
-            job_type = ''
+            city_base = job.find('span', class_='r-space').text
+            job_type = 'remote' if 'remote' in city_base.lower() else 'on-site'
+            city = validate_city(city_base.split()[0].strip())
 
-            if 'Romania' in location:
-                if 'remote' in city.lower():
-                    job_type = 'remote'
-                    city = 'Bucuresti'
-
+            if 'Romania' in city_base:
                 list_jobs.append({
                     "job_title": title,
                     "job_link": link,
                     "company": "fotc",
                     "country": "Romania",
                     "city": city,
+                    "county": get_county(city),
                     "remote": job_type
                 })
     return list_jobs
