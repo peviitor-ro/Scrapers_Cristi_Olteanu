@@ -26,9 +26,14 @@ def get_jobs():
         link = 'https://careers.konecranes.com' + job.find('a', class_='jobTitle-link')['href']
         city = job.find('span', class_='jobLocation').text.split(',')[0].strip()
         title = job.find('a', class_='jobTitle-link').text
-        try:
-            job_type = get_soup(link).find('span', attrs={'data-careersite-propertyid': 'customfield5'}).text.strip()
-        except:
+        job_type_info = get_soup(link).find('span', attrs={'data-careersite-propertyid': 'customfield5'
+                                                           }).text.strip().lower()
+
+        if 'remote' in job_type_info:
+            job_type = 'remote'
+        elif 'hybrid' in job_type_info:
+            job_type = 'hybrid'
+        else:
             job_type = 'on-site'
 
         list_jobs.append({
@@ -41,6 +46,7 @@ def get_jobs():
             "remote": job_type
         })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
