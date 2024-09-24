@@ -14,7 +14,7 @@ def prepare_post():
 
     url = "https://www.edurom.ro/wp-admin/admin-ajax.php"
 
-    payload = "jq=&awsm_job_spec%5Bjob-type%5D=&awsm_job_spec%5Bjob-location%5D=&awsm_job_spec%5Bjob-level%5D=&awsm_job_spec%5Bjob-status%5D=29&awsm_job_spec%5Bjob-requirements%5D=&action=jobfilter&listings_per_page=100&shortcode_specs=job-category%3A18"
+    payload = "jq=&awsm_job_spec%5Bjob-type%5D=&awsm_job_spec%5Bjob-location%5D=&awsm_job_spec%5Bjob-level%5D=&awsm_job_spec%5Bjob-status%5D=29&action=jobfilter&listings_per_page=200&shortcode_specs=job-category%3A18"
     headers = {
         "Content-Type": "application/x-www-form-urlencoded",
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
@@ -27,11 +27,11 @@ def get_jobs():
 
     list_jobs = []
     data = prepare_post()
-
+    open_status = []
     response = requests.request("POST", data[0], data=data[1], headers=data[2])
     soup = BeautifulSoup(response.text, 'lxml')
 
-    jobs = soup.find_all('div', class_='awsm-job-listing-item awsm-list-item')
+    jobs = soup.find_all('div', class_='awsm-job-item')
 
     for job in jobs:
         title = job.find('a').text
@@ -73,7 +73,6 @@ def get_jobs():
             list_city.remove('Bucharest')
             list_city.append("Bucuresti")
 
-
         list_jobs.append({
             "job_title": title,
             "job_link": link,
@@ -83,7 +82,6 @@ def get_jobs():
             "county": get_county(city),
             "remote": job_type
         })
-
     return list_jobs
 
 
