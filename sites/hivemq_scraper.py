@@ -20,7 +20,7 @@ def get_jobs():
 
     for job in jobs:
         title = job.find('p', class_="body body--medium").text
-        link = 'https://boards.eu.greenhouse.io/' + job.find('a')['href']
+        link = job.find('a')['href']
         location = job.find('p', class_='body body__secondary body--metadata').text
 
         if 'europe remote' in location.lower():
