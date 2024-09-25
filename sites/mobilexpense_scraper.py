@@ -6,28 +6,25 @@ from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 from bs4 import BeautifulSoup
 import requests
+from _county import get_county
+from _validate_city import validate_city
 
 
 def get_jobs():
+    list_jobs = []
+
     response = requests.get('https://mobilexpense.recruitee.com/', headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(response.text, 'lxml')
 
-    list_jobs = []
 
-    jobs = soup.find_all('div', class_='sc-465zle-1 eifEKW')
+    jobs = soup.find_all('div', class_='sc-6exb5d-3 gnPPfQ')
 
     for job in jobs:
-        link = 'https://mobilexpense.recruitee.com/' + job.find('a', class_='sc-465zle-2 bCpqiX')['href']
-        title = job.find('a', class_='sc-465zle-2 bCpqiX').text
-        try:
-            remote = job.find('span', class_='sc-1s8re0d-0 feitSf').text
-        except:
-            remote = 'on-site'
-
-        city = job.find('span', class_='custom-css-style-job-location-city').text.split(' or ')
+        link = 'https://mobilexpense.recruitee.com' + job.find('a', class_='sc-6exb5d-1 fmfYYf')['href']
+        title = job.find('a', class_='sc-6exb5d-1 fmfYYf').text
+        remote = job.find('span', class_='sc-6exb5d-5 dNmtYG').text.lower()
+        city = validate_city(job.find('span', class_='sc-qfruxy-1 kiOgGf custom-css-style-job-location-city').text.split(' or '))
         country = job.find('span', class_='custom-css-style-job-location-country').text
-        if 'Cluj' in city:
-            city = 'Cluj-Napoca'
 
         if country == 'Romania':
 
@@ -37,6 +34,7 @@ def get_jobs():
                 "company": "mobilexpense",
                 "country": "Romania",
                 "city": city,
+                "county": get_county(city),
                 "remote": remote
             })
     return list_jobs
