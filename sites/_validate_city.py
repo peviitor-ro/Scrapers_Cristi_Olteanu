@@ -26,11 +26,16 @@ def validate_city(city):
                 if city.lower() in value:
                     return key
     elif isinstance(city, list):
+        res = city
         for item in validated_cities:
             for key, value in item.items():
                 for city_item in city:
                     if city_item.lower() in value:
-                        return key
+                        res.remove(city_item)
+                        res.append(key)
+        return res
     return city
 
 
+print(validate_city(['Iasi', 'Cluj']))
+print(validate_city('Bucuresti'))
