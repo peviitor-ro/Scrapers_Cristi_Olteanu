@@ -37,5 +37,3 @@ def validate_city(city):
     return city
 
 
-print(validate_city(['Iasi', 'Cluj']))
-print(validate_city('Bucuresti'))
