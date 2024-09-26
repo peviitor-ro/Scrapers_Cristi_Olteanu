@@ -14,7 +14,7 @@ def get_jobs():
     list_jobs = []
 
     response = requests.get(
-        "https://www.careers-page.com/api/v1.0/c/ams-hr/jobs/?page_size=50&page=1&city_new__in=5182,172,382,2312&organization__in=&ordering=-is_pinned_in_career_page,-last_published_at",
+        "https://www.careers-page.com/api/v1.0/c/ams-hr/jobs/?page_size=100&page=1&city_new__in=5182,172,382,2312&organization__in=&ordering=-is_pinned_in_career_page,-last_published_at",
         headers=DEFAULT_HEADERS).json()['results']
 
     for job in response:
