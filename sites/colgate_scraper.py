@@ -37,7 +37,6 @@ def get_jobs():
             except:
                 job_type = 'on-site'
             city = validate_city(city)
-
             jobs_list.append({
                 "job_title": title,
                 "job_link": link,
@@ -45,9 +44,10 @@ def get_jobs():
                 "country": "Romania",
                 "city": city,
                 "county": get_county(city),
-                "remote": job_type
+                "remote": job_type.lower()
         })
     return jobs_list
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
