@@ -2,10 +2,13 @@
 # Company - > Garrett
 # Link -> https://ehth.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2001/requisitions?location=Romania&locationId=300000000275207&locationLevel=country&mode=location
 #
+import json
+
 from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from _county import get_county
+from urllib.parse import urlencode, quote
 
 
 def make_request(url):
@@ -38,8 +41,6 @@ def get_jobs():
 
             if city == 'Romania' or city == 'BUCUREŞTI':
                 city = 'Bucuresti'
-            else:
-                pass
 
             list_jobs.append({
                 "job_title": title,
@@ -52,6 +53,7 @@ def get_jobs():
 
             })
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
