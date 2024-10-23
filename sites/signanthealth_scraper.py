@@ -25,22 +25,24 @@ def get_jobs():
 
         jobs = get_soup(f'https://globalus232.dayforcehcm.com/CandidatePortal/en-US/signanthealth?page={page}'
                         ).find_all('li', class_='search-result')
+
         if len(jobs) > 0:
 
             for job in jobs:
-                link = 'https://globalus232.dayforcehcm.com' + job.find('a')['href']
-                title = job.find('a').text
                 location = job.find('div', class_='posting-subtitle').text
-                job_type_text = get_soup(link).find('div', class_="job-posting-section").text
-
-                if "remote" in job_type_text.lower() or "#remote" in job_type_text.lower():
-                    job_type = 'remote'
-                elif 'hybrid' in job_type_text.lower():
-                    job_type = 'hybrid'
-                else:
-                    job_type = "on-site"
-
                 if 'Romania' in location:
+
+                    link = 'https://globalus232.dayforcehcm.com' + job.find('a')['href']
+                    title = job.find('a').text
+                    job_type_text = get_soup(link).find('div', class_="job-posting-section").text
+
+                    if "remote" in job_type_text.lower() or "#remote" in job_type_text.lower():
+                        job_type = 'remote'
+                    elif 'hybrid' in job_type_text.lower():
+                        job_type = 'hybrid'
+                    else:
+                        job_type = "on-site"
+
                     list_jobs.append({
                         "job_title": title,
                         "job_link": link,
@@ -50,11 +52,9 @@ def get_jobs():
                         "county": 'Iasi',
                         "remote": job_type
                     })
-
         else:
             flag = False
         page += 1
-
     return list_jobs
 
 
