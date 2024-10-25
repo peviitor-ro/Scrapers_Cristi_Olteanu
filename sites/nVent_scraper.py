@@ -50,7 +50,7 @@ def prepare_post() -> tuple:
 
     data = {
         "appliedFacets": {
-            "locations": ["090e2b79c4a401eecfe42da8fb10ca48", "8ed57ec2277e01cfca042a6a9c01c50e"]
+            "locations": ["8ed57ec2277e01cfca042a6a9c01c50e","9977415ffa0a012794621c8e47135f31","090e2b79c4a401247bb7e70bbf105717","090e2b79c4a401eecfe42da8fb10ca48"]
         },
         "limit": 20,
         "offset": 0,
@@ -70,14 +70,15 @@ def get_job_type(url):
 
 def get_city(url):
     response = requests.get(url, headers=DEFAULT_HEADERS).json()['jobPostingInfo']
-    city = response['location']
-    if 'RO' not in city:
-        try:
-            for l in response['additionalLocations']:
-                if 'RO' in l:
-                    city = l.split(',')[0]
-        except:
-            pass
+    city = response['location'].split(',')[0]
+    romanian_city = ['Ploiesti', 'Brasov', 'Prejmer']
+    additional_cities = response.get('additionalLocations')
+
+    if city not in romanian_city:
+        if additional_cities:
+            for additional_city in additional_cities:
+                if additional_city in romanian_city:
+                    city = additional_city
     return city
 
 
@@ -90,7 +91,7 @@ def get_jobs():
     for job in response['jobPostings']:
         link_request = 'https://nvent.wd5.myworkdayjobs.com/wday/cxs/nvent/nVent' + job['externalPath']
         job_type = get_job_type(link_request)
-        city = get_city(link_request).split(',')[0]
+        city = get_city(link_request)
 
         list_jobs.append({
             "job_title": job['title'],
