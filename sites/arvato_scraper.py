@@ -2,7 +2,7 @@
 #  Company - > Arvato
 # Link -> https://jobsearch.createyourowncareer.com/Arvato_Systems/search/?q=&q2=&alertId=&locationsearch=&title=&location=RO&department=
 #
-from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
+from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
@@ -14,7 +14,7 @@ def get_jobs():
 
     list_jobs = []
     response = requests.get('https://jobsearch.createyourowncareer.com/Arvato_Systems/go/See-All-Jobs-en/3516301/?q=&q2=&alertId=&locationsearch=&title=&location=RO&department=',headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text,'lxml')
+    soup = BeautifulSoup(response.text, 'lxml')
     jobs = soup.find_all('tr', class_='data-row')
 
     for job in jobs:
