@@ -2,7 +2,7 @@
 # Company - > hkr
 # Link -> https://jobs.eu.lever.co/hkr/
 #
-from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
+from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
 from bs4 import BeautifulSoup
@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 
 def get_jobs():
     response = requests.get('https://jobs.eu.lever.co/hkr/?', headers=DEFAULT_HEADERS)
+
     soup = BeautifulSoup(response.text, 'lxml')
 
     list_jobs = []
