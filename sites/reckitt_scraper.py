@@ -17,12 +17,12 @@ def get_jobs():
     soup = BeautifulSoup(response.text, 'lxml')
     list_jobs = []
 
-    jobs = soup.find_all('tr',class_='data-row')
+    jobs = soup.find_all('tr', class_='data-row')
 
     for job in jobs:
-        link = 'https://careers.reckitt.com/' + job.find('a',class_='jobTitle-link')['href']
-        title = job.find('a',class_='jobTitle-link').text
-        city = validate_city(job.find('span',class_='jobLocation').text.split(',')[0].strip())
+        link = 'https://careers.reckitt.com/' + job.find('a', class_='jobTitle-link')['href']
+        title = job.find('a', class_='jobTitle-link').text
+        city = validate_city(job.find('span', class_='jobLocation').text.split(',')[0].strip())
 
         list_jobs.append({
             "job_title": title,
