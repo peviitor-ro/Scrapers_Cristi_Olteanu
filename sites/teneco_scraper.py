@@ -49,13 +49,13 @@ def get_jobs():
             list_jobs.append({
                 "job_title": title,
                 "job_link": link,
-                "company": "teneco",
+                "company": "tenneco",
                 "country": "Romania",
                 "city": city,
                 "county": get_county(city),
                 "remote": "on-site"
                 })
-
+    print(len(list_jobs))
     return list_jobs
 
 
@@ -68,7 +68,7 @@ def scrape_and_update_peviitor(company_name, data_list):
     return data_list
 
 
-company_name = 'teneco'  # add test comment
+company_name = 'tenneco'  # add test comment
 data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
