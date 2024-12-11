@@ -55,7 +55,7 @@ def get_jobs():
                 "county": get_county(city),
                 "remote": "on-site"
                 })
-    print(len(list_jobs))
+
     return list_jobs
 
 
