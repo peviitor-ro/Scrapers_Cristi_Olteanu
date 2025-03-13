@@ -7,7 +7,7 @@ from L_00_logo import update_logo
 import requests
 from urllib.parse import unquote
 from _validate_city import validate_city
-from sites._county import get_county
+from _county import get_county
 
 
 def get_jobs():
