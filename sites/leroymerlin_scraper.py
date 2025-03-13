@@ -37,14 +37,30 @@ def get_jobs():
 
         for job in jobs:
             link = job.get('href')
-            title = job.find('span', class_='text-block-base-link company-link-style').text
-            location = job.find('div', class_='mt-1 text-md').text.split('·')[1].strip()
-            if 'Târgu Mureș' in location:
-                city = 'Târgu-Mureș'
-            elif 'Cluj' in location:
-                city = 'Cluj-Napoca'
+            title = job.find('span', class_='text-block-base-link company-link-style hyphens-auto').text
+            parts = job.find('div', class_='mt-1 text-md').text.split('·')
+
+            if len(parts) == 2:
+                location = parts[-1]
+            elif len(parts) == 3:
+                location = parts[1]
             else:
-                city = location.split()[0]
+                location = parts[0]
+
+            if 'Cluj' in location:
+                city = 'Cluj-Napoca'
+            elif 'București' in location:
+                city = 'București'
+            elif 'Brașov' in location:
+                city = 'Brașov'
+            elif 'Iași' in location:
+                city = 'Iași'
+            elif 'Craiova' in location:
+                city = 'Craiova'
+            elif 'Târgu Mureș' in location:
+                city = 'Targu-Mures'
+            else:
+                city = location
 
             try:
                 job_type = job.find('span',class_='inline-flex items-center gap-x-2').text.split()[-1]
@@ -59,10 +75,11 @@ def get_jobs():
                 "job_link": link,
                 "company": "LeroyMerlin",
                 "country": "Romania",
-                "city": city,
-                "county": get_county(city),
+                "city": city.strip(),
+                "county": get_county(city.strip()),
                 "remote": job_type
             })
+
     return list_jobs
 
 
