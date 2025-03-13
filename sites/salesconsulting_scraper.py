@@ -41,7 +41,7 @@ def get_jobs():
 
             if text is not None:
                 link = text['href']
-                title = job.find('span', class_='text-block-base-link sm:min-w-[25%] sm:truncate company-link-style')[
+                title = job.find('span', class_='text-block-base-link sm:min-w-[25%] sm:truncate company-link-style hyphens-auto')[
                     'title']
                 info_text = job.find('div', class_='mt-1 text-md').text.split('·')[-1].strip().split()[-1]
 
@@ -80,7 +80,7 @@ def get_jobs():
                 elif city == 'Mare':
                     city = 'Satu Mare'
 
-                if city not in [['Chisinau'],['Ruse']]:
+                if city not in [['Chisinau'], ['Ruse']]:
                     list_jobs.append({
                         "job_title": title,
                         "job_link": link,
