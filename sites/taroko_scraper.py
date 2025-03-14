@@ -12,7 +12,7 @@ def get_jobs():
 
     list_jobs = []
 
-    response = requests.get('https://taroko.breezy.hr/', headers=DEFAULT_HEADERS)
+    response = requests.get('https://taroko.breezy.hr/?&location=Romania#positions', headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(response.text,'lxml')
     jobs = soup.find_all('li', class_='position transition')
 
@@ -20,19 +20,16 @@ def get_jobs():
 
         link = 'https://taroko.breezy.hr' + job.find('a')['href']
         title = job.find('h2').text
-        country = job.find('span').text
-        type = job.find('span', class_='polygot').text.split('_')[-1].strip('%')
+        job_type = 'remote' if 'remote' in job.find('li', class_='location').text.lower() else 'on-site'
 
-        if "Romania" in country:
-
-            list_jobs.append({
-                "job_title": title,
-                "job_link": link,
-                "company": "taroko",
-                "country": "Romania",
-                "city": "Bucuresti",
-                "remote": type
-            })
+        list_jobs.append({
+            "job_title": title,
+            "job_link": link,
+            "company": "taroko",
+            "country": "Romania",
+            "city": "Bucuresti",
+            "remote": job_type
+        })
     return list_jobs
 
 
