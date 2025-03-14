@@ -28,6 +28,7 @@ def get_jobs():
             "company": "taroko",
             "country": "Romania",
             "city": "Bucuresti",
+            "county": "Bucuresti",
             "remote": job_type
         })
     return list_jobs
