@@ -1,6 +1,6 @@
 #
 # Company - > Awin
-# Link -> https://boards.greenhouse.io/awin
+# Link -> https://job-boards.greenhouse.io/awin
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
@@ -13,26 +13,47 @@ from _validate_city import validate_city
 def get_jobs():
     list_jobs = []
 
-    req = requests.get("https://boards.greenhouse.io/awin", headers=DEFAULT_HEADERS)
+    req = requests.get("https://job-boards.greenhouse.io/awin", headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(req.text, "lxml")
-    jobs = soup.find_all('div', class_='opening')
+
+    jobs = soup.find_all('a', href=lambda x: x and '/jobs/' in str(x))
 
     for job in jobs:
-        city = validate_city(job.find('span', class_='location').text.split(',')[0])
-        link = 'https://boards.greenhouse.io' + job.find('a')['href']
-        title = job.find('a').text
-        location = job.find('span', class_='location').text
-
-        if 'Romania' in location:
-           list_jobs.append({
-               "job_title": title,
-               "job_link": link,
-               "company": "Awin",
-               "country": "Romania",
-               "city": city,
-               "county": get_county(city),
-               "remote": 'on-site',
-           })
+        text = job.text.strip()
+        
+        if 'Romania' not in text:
+            continue
+        
+        link = job.get('href')
+        
+        # Extract title - remove city/country from text
+        parts = text.split(',')
+        title = parts[0].strip()
+        
+        # Clean title (remove city suffix like "Iași")
+        for part in parts[1:]:
+            if 'Romania' in part:
+                break
+            if 'Iași' in part or 'Iasi' in part or 'Bucharest' in part:
+                title = title.replace(part.strip(), '').strip()
+                break
+        
+        if 'Iasi' in text or 'Iași' in text:
+            city = 'Iasi'
+        elif 'Bucharest' in text:
+            city = 'Bucuresti'
+        else:
+            city = ''
+        
+        list_jobs.append({
+            "job_title": title,
+            "job_link": link,
+            "company": "Awin",
+            "country": "Romania",
+            "city": city,
+            "county": get_county(city),
+            "remote": 'on-site',
+        })
     return list_jobs
 
 
