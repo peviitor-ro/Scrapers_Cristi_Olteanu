@@ -15,7 +15,7 @@ def get_cookies():
 
     response = session.head(
         url='https://careers.conduent.com/widgets',
-        headers=DEFAULT_HEADERS).headers
+        headers=DEFAULT_HEADERS, verify=False).headers
 
     play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
     phpppe_act = re.search(r"PHPPPE_ACT=([^;]+);", str(response)).group(0)
@@ -74,7 +74,7 @@ def get_jobs():
     list_jobs = []
     data = prepare_post()
 
-    response = session.request("POST", data[0], json=data[1], headers=data[2]
+    response = session.request("POST", data[0], json=data[1], headers=data[2], verify=False
                                ).json()['refineSearch']['data']['jobs']
     for job in response:
         title = job['title']
