@@ -1,6 +1,6 @@
 #
 # Company - > danieli
-# Link -> # https://www.danieli.com/en/europe-and-usa-opportunities.htm?searchCriteria[0][key]=COUN&searchCriteria[0][values][]=1249
+# Link -> https://www.danieli.com/en/career/romania.htm
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
@@ -12,33 +12,47 @@ from _county import get_county
 
 def get_token():
 
-    response = requests.get('https://www.danieli.com/en/europe-and-usa-opportunities.htm?searchCriteria[0][key]=COUN&searchCriteria[0][values][]=1249',
-                            headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text, 'lxml')
-    scripts = soup.find_all('script')
+    try:
+        response = requests.get('https://www.danieli.com/en/europe-and-usa-opportunities.htm?searchCriteria[0][key]=COUN&searchCriteria[0][values][]=1249',
+                            headers=DEFAULT_HEADERS, timeout=15)
+        if response.status_code != 200:
+            return None
+        soup = BeautifulSoup(response.text, 'lxml')
+        scripts = soup.find_all('script')
 
-    for item in scripts:
-        try:
-            return item['data-talentlink-fo-site-tech-id']
-        except:
-            pass
+        for item in scripts:
+            try:
+                return item['data-talentlink-fo-site-tech-id']
+            except:
+                pass
+    except:
+        pass
+    return None
 
 
 def get_cookies():
 
-    response = requests.head(
-        url='https://emea3.recruitmentplatform.com/fo/rest/jobs?firstResult=0&maxResults=12&sortBy=DPOSTINGSTART&sortOrder=asc',
-    headers=DEFAULT_HEADERS)
-    response_text = str(response.headers)
+    try:
+        response = requests.head(
+            url='https://emea3.recruitmentplatform.com/fo/rest/jobs?firstResult=0&maxResults=12&sortBy=DPOSTINGSTART&sortOrder=asc',
+            headers=DEFAULT_HEADERS, timeout=10)
+        response_text = str(response.headers)
 
-    cookie = re.search(r'AWSALBCORS=(.*?)(?:[;]|$)', response_text).group(0)
-    return cookie
+        cookie = re.search(r'AWSALBCORS=(.*?)(?:[;]|$)', response_text)
+        if cookie:
+            return cookie.group(0)
+    except:
+        pass
+    return None
 
 
 def prepare_post():
 
     token = get_token()
     cookies = get_cookies()
+
+    if not token or not cookies:
+        return None
 
     url = "https://emea3.recruitmentplatform.com/fo/rest/jobs"
 
@@ -83,28 +97,32 @@ def get_jobs():
     list_jobs = []
     data = prepare_post()
 
-    response = requests.request("POST", data[0], json=data[1], headers=data[2], params=data[3]
-                                ).json()
-    if response['globals']['jobsCount'] > 0:
-        for job in response['jobs']:
-            title = job['jobFields']['jobTitle']
-            city = job['jobFields']['SLOVLIST2']
-            link = f"https://www.danieli.com/en/europe-and-usa-opportunities.htm?languageSelect=UK&jobId={job['id']}&jobTitle="
+    if data is None:
+        return list_jobs
 
-            if 'Cluj Napoca' in city:
-                city = 'Cluj-Napoca'
+    try:
+        response = requests.request("POST", data[0], json=data[1], headers=data[2], params=data[3], timeout=15
+                                    ).json()
+        if response['globals']['jobsCount'] > 0:
+            for job in response['jobs']:
+                title = job['jobFields']['jobTitle']
+                city = job['jobFields']['SLOVLIST2']
+                link = f"https://www.danieli.com/en/europe-and-usa-opportunities.htm?languageSelect=UK&jobId={job['id']}&jobTitle="
 
-            list_jobs.append({
-                "job_title": title,
-                "job_link": link,
-                "company": "danieli",
-                "country": "Romania",
-                "city": city,
-                "county": get_county(city),
-                "remote": 'on-site'
-            })
-    else:
-        pass
+                if 'Cluj Napoca' in city:
+                    city = 'Cluj-Napoca'
+
+                list_jobs.append({
+                    "job_title": title,
+                    "job_link": link,
+                    "company": "danieli",
+                    "country": "Romania",
+                    "city": city,
+                    "county": get_county(city),
+                    "remote": 'on-site'
+                })
+    except Exception as e:
+        print(f"Error fetching Danieli jobs: {e}")
 
     return list_jobs
 
@@ -123,6 +141,5 @@ scrape_and_update_peviitor(company_name, data_list)
 print(update_logo('danieli',
                   'https://www.danieli.com/media/assets/logo_danieli.svg'
                   ))
-
 
 
