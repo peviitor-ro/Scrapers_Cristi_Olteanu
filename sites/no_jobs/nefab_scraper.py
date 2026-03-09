@@ -20,7 +20,7 @@ def get_jobs():
 
     job_list = []
 
-    jobs = get_soup('https://nefab.workbuster.com'
+    jobs = get_soup('https://www.nefab.com/careers/job-opportunities/'
                     ).find_all('div', class_='position-container filter-item')
 
     for job in jobs:
