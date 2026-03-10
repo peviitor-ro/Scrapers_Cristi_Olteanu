@@ -4,28 +4,57 @@
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
+from _county import get_county
 import requests
 
 
 def get_jobs():
     url = "https://www.hitachienergy.com/careers/open-jobs/_jcr_content/root/container/content_1/content/grid_0/joblist.listsearchresults.json"
 
-    querystring = {"location": ["Romania/Bucharest New", "Romania/Bucharest  Ilfov"], "offset": "0",
-                   "calculatedOffset": "0"}
-    response = requests.get(url=url, params=querystring, headers=DEFAULT_HEADERS).json()['items']
+    response = requests.get(url=url, params={"location": "Romania", "offset": "0"}, headers=DEFAULT_HEADERS).json()
     list_jobs = []
 
-    for job in response:
-
+    for job in response.get('items', []):
+        location = job.get('location', '')
+        
+        if 'Romania' in location:
+            # Handle multi-location jobs - find the Romania city
+            if ';' in location:
+                locations = [loc.strip() for loc in location.split(';')]
+                romania_loc = None
+                for loc in locations:
+                    if 'Romania' in loc:
+                        romania_loc = loc
+                        break
+                if romania_loc:
+                    city = romania_loc.split(',')[0].strip()
+                else:
+                    city = 'București'
+            else:
+                city = location.split(',')[0].strip()
+            
+            city_translations = {
+                'Bucharest': 'București',
+            }
+            city = city_translations.get(city, city)
+            
+            if 'Remote' in location:
+                remote_type = 'remote'
+            elif 'Hybrid' in location:
+                remote_type = 'hybrid'
+            else:
+                remote_type = 'on-site'
+            
             list_jobs.append({
                 "job_title": job['title'],
                 "job_link": job['url'],
                 "company": "hitachienergy",
                 "country": "Romania",
-                "city": 'Bucuresti',
-                "county": 'Bucuresti',
-                "remote": 'on-site'
+                "city": city,
+                "county": get_county(city) if city else 'Bucuresti',
+                "remote": remote_type
             })
+
     return list_jobs
 
 
