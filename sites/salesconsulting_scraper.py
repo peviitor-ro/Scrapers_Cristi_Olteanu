@@ -1,6 +1,6 @@
 #
 # Company - > salesconsulting
-# Link ->https://salesconsulting.teamtailor.com/jobs?page=
+# Link -> https://salesconsulting.teamtailor.com/jobs
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
@@ -9,87 +9,78 @@ import requests
 from _county import get_county
 
 
-def get_soup(url):
-
-    session = requests.Session()
-    response = session.get(url, headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text, 'lxml')
-    return soup
-
-
-def get_nr_pages():
-
-    soup_pages = get_soup('https://salesconsulting.teamtailor.com/jobs?page=')
-    nr_jobs = int(soup_pages.find('span', class_='text-lg font-medium').text.split()[0])
-    nr_pages = int(nr_jobs/20)
-    if nr_jobs % 20 > 0:
-        nr_pages += 1
-
-    return nr_pages
-
-
 def get_jobs():
     list_jobs = []
 
-    for page in range(1, get_nr_pages() + 1, 1):
+    response = requests.get('https://salesconsulting.teamtailor.com/jobs', headers=DEFAULT_HEADERS, timeout=15)
+    soup = BeautifulSoup(response.text, 'lxml')
 
-        soup_jobs = get_soup(f'https://salesconsulting.teamtailor.com/jobs?page={page}')
-        jobs = soup_jobs.find_all('li', class_='w-full')
+    jobs = soup.find_all('li', class_='w-full')
 
-        for job in jobs:
-            text = job.find('a', class_='flex flex-col py-6 text-center sm:px-6 hover:bg-gradient-block-base-bg focus-visible-company focus-visible:rounded')
-
-            if text is not None:
-                link = text['href']
-                title = job.find('span', class_='text-block-base-link sm:min-w-[25%] sm:truncate company-link-style hyphens-auto')[
-                    'title']
-                info_text = job.find('div', class_='mt-1 text-md').text.split('·')[-1].strip().split()[-1]
-
-                if 'remote' in info_text.lower():
-                    job_type = 'remote'
-                    city = job.find('div', class_='mt-1 text-md').text.split('·')[-2].strip()
-                elif 'hybrid' in info_text.lower():
-                    job_type = 'hybrid'
-                    city = job.find('div', class_='mt-1 text-md').text.split('·')[-2].strip()
-                else:
-                    job_type = 'on-site'
-                    city = info_text
-
-                if 'locations' in city.lower():
-                    soup_city = get_soup(link)
-                    try:
-                        city = soup_city.find('dl',
-                                          class_='md:max-w-[70%] mx-auto text-md gap-y-0 md:gap-y-5 flex flex-wrap flex-col md:flex-row company-links'
-                                          ).text.split('Locations')[1].split('Status')[0].strip().split('\n')[0].split(', ')
-                    except:
-                        city = soup_city.find('dl',
-                                          class_='md:max-w-[70%] mx-auto text-md gap-y-0 md:gap-y-5 flex flex-wrap flex-col md:flex-row company-links'
-                                          ).text.split('Locations')[1].strip().split('\n')[0].split(', ')
-
-                try:
-                    city = city.split(', ')
-                except:
-                    pass
-
-                if 'Mureș' in city:
-                    city = 'Targu-Mures'
-                elif 'Turzii' in city:
-                    city = 'Câmpia Turzii'
-                elif 'Multiple locations' in city or 'Bucharest' in city:
-                    city = 'Bucuresti'
-                elif city == 'Mare':
-                    city = 'Satu Mare'
-
-                if city not in [['Chisinau'], ['Ruse']]:
-                    list_jobs.append({
-                        "job_title": title,
-                        "job_link": link,
-                        "company": "salesconsulting",
-                        "country": "Romania",
-                        "city": city,
-                        "county": get_county(city),
-                        "remote": job_type
-                    })
+    for job in jobs:
+        # Get job link
+        link_elem = job.find('a', href=lambda h: h and '/jobs/' in h if h else False)
+        if not link_elem:
+            continue
+            
+        link = link_elem.get('href', '')
+        
+        # Get job text
+        text = job.get_text(separator='|')
+        
+        # Split by | to get parts
+        parts = [p.strip() for p in text.split('|') if p.strip()]
+        
+        # Title is usually the first meaningful text
+        title = parts[0] if parts else ''
+        
+        # Find location
+        city = ''
+        job_type = 'on-site'
+        
+        for part in parts:
+            # Check for location
+            if any(loc in part for loc in ['Bucharest', 'București', 'Cluj', 'Timișoara', 'Timisoara', 'Brașov', 'Brasov', 'Iași', 'Iasi', 'Craiova', 'Constanța', 'Constanta', 'Sibiu', 'Suceava', 'Oradea', 'Ploiești', 'Ploiesti', 'Târgu Mureș', 'Targu Mures', 'Satu Mare']):
+                city = part
+                break
+        
+        # Check for remote type
+        if 'remote' in text.lower():
+            job_type = 'remote'
+        elif 'hybrid' in text.lower():
+            job_type = 'hybrid'
+        
+        # Map cities to Romanian names
+        if 'Bucharest' in city:
+            city = 'București'
+        elif 'Timisoara' in city:
+            city = 'Timișoara'
+        elif 'Brasov' in city:
+            city = 'Brașov'
+        elif 'Iasi' in city:
+            city = 'Iași'
+        elif 'Constanta' in city:
+            city = 'Constanța'
+        elif 'Ploiesti' in city:
+            city = 'Ploiești'
+        elif 'Targu Mures' in city:
+            city = 'Târgu Mureș'
+        
+        # Handle multiple cities - take the first one
+        if ',' in city:
+            city = city.split(',')[0].strip()
+        
+        # Skip non-Romanian cities
+        if city and not any(loc in city for loc in ['Romania', 'Moldova', 'Chisinau', 'Ruse', 'Hungary']):
+            list_jobs.append({
+                "job_title": title,
+                "job_link": link,
+                "company": "salesconsulting",
+                "country": "Romania",
+                "city": city,
+                "county": get_county(city),
+                "remote": job_type
+            })
 
     return list_jobs
 
@@ -103,10 +94,11 @@ def scrape_and_update_peviitor(company_name, data_list):
     return data_list
 
 
-company_name = 'salesconsulting'  # add test comment
+company_name = 'salesconsulting'
 data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
 print(update_logo('salesconsulting',
                   'https://www.salesconsulting.ro/images/logo.png'
                   ))
+
