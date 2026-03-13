@@ -1,46 +1,41 @@
 #
 # Company - > Kambi
-# Link ->https://boards.eu.greenhouse.io/kambi
+# Link -> https://boards.eu.greenhouse.io/kambi
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
-from bs4 import BeautifulSoup
 from _county import get_county
-from _validate_city import validate_city
-
-
-def get_soup(url):
-
-    r = requests.get(url,headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(r.text, 'lxml')
-    return soup
 
 
 def get_jobs():
 
-    jobs = get_soup('https://boards.eu.greenhouse.io/kambi').find_all('div',class_='opening')
-
     list_jobs = []
 
-    for job in jobs:
-        city = job.find('span').text
+    response = requests.get('https://boards-api.greenhouse.io/v1/boards/kambi/jobs', headers=DEFAULT_HEADERS)
+    data = response.json()
 
-        if city == 'Bucharest':
-            link = 'https://boards.eu.greenhouse.io/' + job.find('a')['href']
-            title = job.find('a').text
-            try:
-                job_text = get_soup(link).find_all('strong')[2].text.split()[0]
-            except:
-                job_text = ''
-            if 'Remote' in job_text:
-                job_type = 'remote'
-            elif 'Hybrid' in job_text:
-                job_type = 'hibrid'
+    for job in data.get('jobs', []):
+        location = job.get('location', {}).get('name', '')
+        
+        if 'Romania' in location or 'Bucharest' in location:
+            title = job.get('title', '')
+            link = job.get('absolute_url', '')
+            
+            if 'Remote' in location:
+                remote_type = 'remote'
+            elif 'Hybrid' in location:
+                remote_type = 'hybrid'
             else:
-                job_type = 'on-site'
-            city = validate_city(city)
-
+                remote_type = 'on-site'
+            
+            city = location.split(',')[0].strip() if ',' in location else location.split()[0].strip()
+            
+            city_translations = {
+                'Bucharest': 'București',
+            }
+            city = city_translations.get(city, city)
+            
             list_jobs.append({
                 "job_title": title,
                 "job_link": link,
@@ -48,10 +43,11 @@ def get_jobs():
                 "country": "Romania",
                 "city": city,
                 "county": get_county(city),
-                "remote": job_type
+                "remote": remote_type
             })
 
     return list_jobs
+
 
 @update_peviitor_api
 def scrape_and_update_peviitor(company_name, data_list):
@@ -62,7 +58,7 @@ def scrape_and_update_peviitor(company_name, data_list):
     return data_list
 
 
-company_name = 'Kambi'  # add test comment
+company_name = 'Kambi'
 data_list = get_jobs()
 scrape_and_update_peviitor(company_name, data_list)
 
