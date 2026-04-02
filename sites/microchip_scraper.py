@@ -52,14 +52,15 @@ def get_jobs():
         link = 'https://wd5.myworkdaysite.com/en-US/recruiting/microchiphr/External' + job['externalPath']
 
         if 'Bucharest' in location or 'Locations' in location:
-            city = 'Bucharest'
+            city = 'Bucuresti'
 
         list_jobs.append({
             "job_title": title,
             "job_link": link,
             "company": "Microchip",
             "country": "Romania",
-            "city": city
+            "city": city,
+            "county": "Bucuresti",
         })
     return list_jobs
 

@@ -9,8 +9,15 @@ from bs4 import BeautifulSoup
 from _county import get_county
 
 
+JOBS_URL = 'https://www.extia-group.com/fr-en/join-us?page=1'
+BUCHAREST_LOCATION_ID = 'w9v9xjqtvecyzsw965sa9mlk'
+CITY_TRANSLATIONS = {
+    'Bucharest': 'Bucuresti'
+}
+
+
 def get_link_id():
-    response = requests.get('https://www.extia-group.com/fr-en/join-us?page=1',headers=DEFAULT_HEADERS)
+    response = requests.get(JOBS_URL, headers=DEFAULT_HEADERS)
     soup = BeautifulSoup(response.text, 'lxml')
     link_id = str(soup.find_all('script', src=True)).split()[-1].split('/')[3]
 
@@ -21,13 +28,15 @@ def get_jobs():
 
     link_id = get_link_id()
     list_jobs = []
-    response = requests.get(f'https://www.extia-group.com/_next/data/{link_id}/fr-en/join-us.json?page=1&locations=103',
-                            headers=DEFAULT_HEADERS).json()['pageProps']['jobOffers']
+    response = requests.get(
+        f'https://www.extia-group.com/_next/data/{link_id}/fr-en/join-us.json?page=1&locations={BUCHAREST_LOCATION_ID}',
+        headers=DEFAULT_HEADERS
+    ).json()['pageProps']['jobOffers']
 
     for job in response:
-        title = job['attributes']['offer']['title']
-        link = 'https://www.extia-group.com/fr-en/join-us/' + job['attributes']['slug']
-        city = job['attributes']['location_cities']['data'][0]['attributes']['city']
+        title = job['offer']['title'].strip()
+        link = 'https://www.extia-group.com/fr-en/join-us/' + job['slug']
+        city = CITY_TRANSLATIONS.get(job['offer']['location_city']['city'], job['offer']['location_city']['city'])
 
         list_jobs.append({
             "job_title": title,

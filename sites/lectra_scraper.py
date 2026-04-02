@@ -13,7 +13,7 @@ def get_jobs():
     list_jobs = []
 
     response = requests.get('https://careers.lectra.com/search/?q=&q2=&alertId=&title=&location=RO&date=',
-                            headers=DEFAULT_HEADERS)
+                            headers=DEFAULT_HEADERS, verify=False)
     soup = BeautifulSoup(response.text, 'lxml')
     jobs = soup.find_all('tr', class_='data-row')
 
