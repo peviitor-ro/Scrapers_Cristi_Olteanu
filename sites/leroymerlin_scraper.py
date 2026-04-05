@@ -13,7 +13,7 @@ def get_jobs():
 
     list_jobs = []
 
-    response = requests.get('https://job.leroymerlin.ro/jobs', headers=DEFAULT_HEADERS, timeout=15)
+    response = requests.get('https://job.leroymerlin.ro/jobs', headers=DEFAULT_HEADERS, timeout=60)
     soup = BeautifulSoup(response.text, 'lxml')
 
     job_links = soup.find_all('a', href=lambda h: h and '/jobs/' in h if h else False)
