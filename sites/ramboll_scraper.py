@@ -5,42 +5,39 @@
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import requests
-from bs4 import BeautifulSoup
+import json
 
 
 def get_jobs():
 
     list_jobs = []
-    page = 0
-    flag = True
-    url = "https://careers.smartrecruiters.com/Ramboll3/api/more"
+    url = "https://careers.smartrecruiters.com/Ramboll3"
 
-    while flag:
+    response = requests.get(url=url, headers=DEFAULT_HEADERS)
 
-        querystring = {"search": "Romania", "type": "location", "value": "București, RO", "page": f"{page}"}
-        response = requests.get(url=url, headers=DEFAULT_HEADERS, params=querystring)
+    try:
+        data = response.json()
+    except json.JSONDecodeError:
+        return list_jobs
 
-        soup = BeautifulSoup(response.text, 'lxml')
-        jobs = soup.find_all('li', class_='opening-job job column wide-7of16 medium-1of2')
+    if isinstance(data, dict):
+        content = data.get('content', [])
+        for job in content:
+            link = job.get('url', '')
+            title = job.get('title', '')
+            location = job.get('location', {})
 
-        if len(jobs) > 0:
-
-            for job in jobs:
-                link = job.find('a', class_='link--block details')['href']
-                title = job.find('h4', class_='details-title job-title link--block-target').text
-
+            if link and title:
                 list_jobs.append({
                     "job_title": title,
                     "job_link": link,
                     "company": "Ramboll",
                     "country": "Romania",
-                    "city": 'Bucuresti',
-                    "county": 'Bucuresti',
+                    "city": location.get('city', 'Bucuresti') or 'Bucuresti',
+                    "county": location.get('region', 'Bucuresti') or 'Bucuresti',
                     "remote": 'on-site'
                 })
-            page += 1
-        else:
-            flag = False
+
     return list_jobs
 
 
@@ -51,6 +48,7 @@ def scrape_and_update_peviitor(company_name, data_list):
     """
 
     return data_list
+
 
 company_name = 'Ramboll'
 data_list = get_jobs()
