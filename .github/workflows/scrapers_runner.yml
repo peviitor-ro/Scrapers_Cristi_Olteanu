@@ -28,10 +28,11 @@ jobs:
 
       - name: Install OpenCode
         run: |
-          curl -L "https://github.com/anomalyco/opencode/releases/latest/download/opencode-linux-x64.tar.gz" -o /tmp/opencode.tar.gz
-          tar -xzf /tmp/opencode.tar.gz -C /tmp
-          sudo install /tmp/opencode /usr/local/bin/opencode
-          opencode --version
+          OPENCODE_TMP_DIR="$(mktemp -d)"
+          curl -L "https://github.com/anomalyco/opencode/releases/latest/download/opencode-linux-x64.tar.gz" -o "$OPENCODE_TMP_DIR/opencode.tar.gz"
+          tar -xzf "$OPENCODE_TMP_DIR/opencode.tar.gz" -C "$OPENCODE_TMP_DIR"
+          sudo install "$OPENCODE_TMP_DIR/opencode" /usr/local/bin/opencode
+          rm -rf "$OPENCODE_TMP_DIR"
 
       - name: All scrapers runs
         env:
