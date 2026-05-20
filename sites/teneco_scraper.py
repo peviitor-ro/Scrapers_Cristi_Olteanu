@@ -20,7 +20,10 @@ def get_soup(url):
 def get_num_pages():
 
     soup_pages = get_soup('https://jobs.tenneco.com/search/?createNewAlert=false&q=&locationsearch=Ro')
-    num_pages = soup_pages.find('span', class_='srHelp').text.split('of')[-1].strip()
+    sr_help = soup_pages.find('span', class_='srHelp')
+    if sr_help is None:
+        return 1
+    num_pages = sr_help.text.split('of')[-1].strip()
     return int(num_pages)
 
 
