@@ -19,7 +19,10 @@ def get_soup(url: str):
 def get_nr_jobs():
 
     soup_iter = get_soup(url='https://careers.steelcase.com/external/SearchJobs/?3_142_3=38706&folderOffset=0')
-    nr_jobs = int(soup_iter.find('span', class_='pagination__legend').text.split()[0])
+    pagination = soup_iter.find('span', class_='pagination__legend')
+    if not pagination:
+        return 0
+    nr_jobs = int(pagination.text.split()[0])
     return nr_jobs
 
 
