@@ -18,12 +18,18 @@ def get_token():
 
     pattern = r'"token":"(.*?)"'
     matches = re.findall(pattern, str(soup))
+    if not matches:
+        return None
     token = matches[0]
 
     return token
 
 
 def prepare_post():
+
+    token = get_token()
+    if not token:
+        return None
 
     url = "https://eu-fra.api.csod.com/rec-job-search/external/jobs"
 
@@ -49,7 +55,7 @@ def prepare_post():
         "authority": "eu-fra.api.csod.com",
         "accept": "application/json; q=1.0, text/*; q=0.8, */*; q=0.1",
         "accept-language": "ro-RO,ro;q=0.9,en-US;q=0.8,en;q=0.7",
-        "authorization": f"Bearer {get_token()}",
+        "authorization": f"Bearer {token}",
         "cache-control": "no-cache",
         "content-type": "application/json",
         "csod-accept-language": "en-GB",
@@ -71,23 +77,28 @@ def get_jobs():
 
     list_jobs = []
     data = prepare_post()
-    response = requests.request("POST", data[0], json=data[1], headers=data[2]).json()['data']['requisitions']
+    if data is None:
+        return list_jobs
+    try:
+        response = requests.request("POST", data[0], json=data[1], headers=data[2]).json()['data']['requisitions']
 
-    for job in response:
+        for job in response:
 
-        title = job['displayJobTitle']
-        link = f"https://retarus-learning.csod.com/ux/ats/careersite/4/home/requisition/{job['requisitionId']}?c=retarus-learning&lang=en-GB&source=LinkedIn"
-        city = job['locations'][0]['city']
+            title = job['displayJobTitle']
+            link = f"https://retarus-learning.csod.com/ux/ats/careersite/4/home/requisition/{job['requisitionId']}?c=retarus-learning&lang=en-GB&source=LinkedIn"
+            city = job['locations'][0]['city']
 
-        list_jobs.append({
-            "job_title": title,
-            "job_link": link,
-            "company": "retarus",
-            "country": "Romania",
-            "city": city,
-            "county": get_county(city),
-            "remote": 'on-site'
-        })
+            list_jobs.append({
+                "job_title": title,
+                "job_link": link,
+                "company": "retarus",
+                "country": "Romania",
+                "city": city,
+                "county": get_county(city),
+                "remote": 'on-site'
+            })
+    except Exception:
+        pass
 
     return list_jobs
 
