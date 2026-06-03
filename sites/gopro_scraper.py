@@ -15,7 +15,13 @@ def get_jobs():
     list_jobs = []
     session = requests.Session()
     base_url = "https://jobs.gopro.com"
-    session.get(base_url)
+
+    try:
+        resp = session.get(base_url, timeout=15)
+        if resp.status_code != 200:
+            return list_jobs
+    except Exception:
+        return list_jobs
 
     xsrf_token = unquote(session.cookies.get("XSRF-TOKEN", ""))
     laravel_session = session.cookies.get("laravel_session", "")
@@ -25,7 +31,7 @@ def get_jobs():
     headers = {
         "User-Agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36",
         "Accept": "application/json",
-        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Accept-Encoding": "gzip, deflate, br",
         "Accept-Language": "ro-RO,ro;q=0.9,en-US;q=0.8,en;q=0.7",
         "Content-Type": "application/json",
         "Origin": base_url,
@@ -48,7 +54,13 @@ def get_jobs():
                "facets": {"category": {"type": "value", "size": 30}, "location": {"type": "value", "size": 30},
                           "job_type": {"type": "value", "size": 30}}}
 
-    jobs = session.post(url, headers=headers, json=payload).json()['results']
+    try:
+        response = session.post(url, headers=headers, json=payload, timeout=15)
+        if response.status_code != 200:
+            return list_jobs
+        jobs = response.json()['results']
+    except Exception:
+        return list_jobs
 
     for job in jobs:
         title = job['title']['raw']

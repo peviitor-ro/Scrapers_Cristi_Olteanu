@@ -17,10 +17,14 @@ def get_cookies():
         url='https://careers.conduent.com/widgets',
         headers=DEFAULT_HEADERS, verify=False).headers
 
-    play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
-    phpppe_act = re.search(r"PHPPPE_ACT=([^;]+);", str(response)).group(0)
+    response_str = str(response)
+    play_session = re.search(r"PLAY_SESSION=([^;]+);", response_str)
+    phpppe_act = re.search(r"PHPPPE_ACT=([^;]+);", response_str)
 
-    return play_session, phpppe_act
+    if play_session and phpppe_act:
+        return play_session.group(0), phpppe_act.group(0)
+
+    return '', ''
 
 
 def prepare_post():
@@ -56,7 +60,6 @@ def prepare_post():
         "Accept-Language": "en-US",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
-        "Cookie": f"{cookies[0]}{cookies[1]}",
         "Origin": "https://careers.conduent.com",
         "Referer": "https://careers.conduent.com/us/en/search-results",
         "Sec-Fetch-Dest": "empty",
@@ -67,6 +70,8 @@ def prepare_post():
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": "Windows",
     }
+    if cookies[0] and cookies[1]:
+        headers["Cookie"] = f"{cookies[0]}{cookies[1]}"
     return url, payload, headers
 
 
@@ -74,8 +79,11 @@ def get_jobs():
     list_jobs = []
     data = prepare_post()
 
-    response = session.request("POST", data[0], json=data[1], headers=data[2], verify=False
-                               ).json()['refineSearch']['data']['jobs']
+    try:
+        response = session.request("POST", data[0], json=data[1], headers=data[2], verify=False
+                                   ).json()['refineSearch']['data']['jobs']
+    except Exception:
+        return list_jobs
     for job in response:
         title = job['title']
         link = 'https://careers.conduent.com/us/en/job/' + job['jobId']

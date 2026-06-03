@@ -5,16 +5,22 @@
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
+import json
 from _county import get_county
 from _validate_city import validate_city
 
 
 def get_jobs():
-    url = 'https://www.pepsicojobs.com/api/jobs?page=1&limit=100&country=Romania&sortBy=relevance&descending=false&internal=false'
-    response = requests.get(url, headers=DEFAULT_HEADERS).json()['jobs']
     list_jobs = []
+    url = 'https://www.pepsicojobs.com/api/jobs?page=1&limit=100&country=Romania&sortBy=relevance&descending=false&internal=false'
+    response = requests.get(url, headers=DEFAULT_HEADERS)
 
-    for job in response:
+    try:
+        data = response.json()
+    except json.JSONDecodeError:
+        return list_jobs
+
+    for job in data['jobs']:
 
         full_location = str(job['data']['full_location']).split(';')
         city = ''
