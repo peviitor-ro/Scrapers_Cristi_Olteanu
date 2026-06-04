@@ -8,11 +8,14 @@ import requests
 from bs4 import BeautifulSoup
 from _validate_city import validate_city
 from _county import get_county
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def get_soup(url):
 
-    response = requests.get(url, headers=DEFAULT_HEADERS)
+    response = requests.get(url, headers=DEFAULT_HEADERS, verify=False)
     soup = BeautifulSoup(response.text, 'lxml')
     return soup
 
