@@ -4,7 +4,7 @@
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api
 from L_00_logo import update_logo
-import cloudscraper
+import requests
 from _county import get_county
 from  _validate_city import validate_city
 
@@ -13,17 +13,15 @@ def get_jobs():
 
     list_jobs = []
 
-    scraper = cloudscraper.create_scraper()
-
     try:
-        response = scraper.get('https://careers.n-able.com/api/jobs',
-                               params={
-                                   'page': 1,
-                                   'locations': 'Bucharest,Romania',
-                                   'sortBy': 'relevance',
-                                   'descending': 'false',
-                                   'internal': 'false',
-                               })
+        response = requests.get('https://careers.n-able.com/api/jobs',
+                                params={
+                                    'page': 1,
+                                    'locations': 'Bucharest,Romania',
+                                    'sortBy': 'relevance',
+                                    'descending': 'false',
+                                    'internal': 'false',
+                                })
         if response.status_code != 200:
             return list_jobs
         jobs_data = response.json()['jobs']
