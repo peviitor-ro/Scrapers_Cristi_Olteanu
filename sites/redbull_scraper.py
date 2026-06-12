@@ -11,13 +11,20 @@ from _validate_city import validate_city
 
 def get_jobs():
 
-    response = requests.get('https://jobs.redbull.com/api/search?locations=6188&functions=&keywords=&pageSize=10&locale=ro&country=ro',
-                            headers={
-                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
-                            }).json()['jobs']
     list_jobs = []
 
-    for job in response:
+    try:
+        response = requests.get('https://jobs.redbull.com/api/search?locations=6188&functions=&keywords=&pageSize=10&locale=ro&country=ro',
+                                headers={
+                                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
+                                })
+        if response.status_code != 200:
+            return list_jobs
+        jobs_data = response.json()['jobs']
+    except Exception:
+        return list_jobs
+
+    for job in jobs_data:
         list_jobs.append({
             "job_title": job['title'].split('-')[0],
             "job_link": 'https://jobs.redbull.com/ro-ro/' + job['slug'],
