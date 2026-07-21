@@ -15,15 +15,15 @@ session = requests.Session()
 
 def get_ids() -> tuple:
 
-    response = session.head(
+    session.get(
         url='https://levistraussandco.wd5.myworkdayjobs.com/ro-RO/External/?q=Romania',
-        headers=DEFAULT_HEADERS).headers
+        headers=DEFAULT_HEADERS)
 
-    play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
-    csrf_token = re.search(r"CALYPSO_CSRF_TOKEN=([^;]+);", str(response)).group(0)
-    cf_id = re.search(r"__cf_bm=([^;]+);", str(response)).group(0)
-    wday_vps = re.search(r"wday_vps_cookie=([^;]+);", str(response)).group(0)
-    wd_browser_id = re.search(r"wd-browser-id=([^;]+);", str(response)).group(0)
+    play_session = f"PLAY_SESSION={session.cookies.get('PLAY_SESSION')};"
+    csrf_token = f"CALYPSO_CSRF_TOKEN={session.cookies.get('CALYPSO_CSRF_TOKEN')};"
+    cf_id = f"__cf_bm={session.cookies.get('__cf_bm')};"
+    wday_vps = f"wday_vps_cookie={session.cookies.get('wday_vps_cookie')};"
+    wd_browser_id = f"wd-browser-id={session.cookies.get('wd-browser-id')};"
 
     return play_session, csrf_token, cf_id, wday_vps, wd_browser_id
 
