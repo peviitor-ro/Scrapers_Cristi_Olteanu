@@ -42,6 +42,19 @@ def cleanup_created_sibling_files(script_path, existing_files):
         print(f"Deleted extra file {created_file.name}")
 
 
+NO_JOBS_MARKER = "[NO JOBS]"
+
+
+def parse_no_jobs(stdout):
+    no_jobs_companies = []
+    for line in stdout.splitlines():
+        if line.startswith(NO_JOBS_MARKER):
+            company = line[len(NO_JOBS_MARKER):].strip()
+            if company:
+                no_jobs_companies.append(company)
+    return no_jobs_companies
+
+
 def truncate_output(content, limit=MAX_LOG_LENGTH):
     if not content:
         return "No output captured."
@@ -204,6 +217,8 @@ def test_scraper_repair(scraper_name):
 
 
 def main():
+    all_no_jobs = []
+
     for site in sorted(os.listdir(SITES_DIR)):
         if not site.endswith(".py") or site in EXCLUDE:
             continue
@@ -218,6 +233,9 @@ def main():
             continue
 
         cleanup_created_sibling_files(script_path, existing_files)
+
+        no_jobs = parse_no_jobs(action.stdout)
+        all_no_jobs.extend(no_jobs)
 
         if action.returncode == 0:
             print("Success scraping " + site)
@@ -239,11 +257,27 @@ def main():
 
         cleanup_created_sibling_files(script_path, existing_files)
 
+        repaired_no_jobs = parse_no_jobs(repaired_action.stdout)
+        all_no_jobs.extend(repaired_no_jobs)
+
         if repaired_action.returncode == 0:
             print("Success scraping after auto-repair " + site)
         else:
             print("Auto-repair did not fix " + site)
             print(truncate_output(repaired_action.stderr))
+
+    print_no_jobs_summary(all_no_jobs)
+
+
+def print_no_jobs_summary(all_no_jobs):
+    print("\n" + "=" * 50)
+    if all_no_jobs:
+        print(f"FIRME FARA JOBURI ({len(all_no_jobs)}):")
+        for company in sorted(set(all_no_jobs)):
+            print(f"  - {company}")
+    else:
+        print("Toate firmele au joburi disponibile.")
+    print("=" * 50)
 
 
 class Scraper:
@@ -251,6 +285,8 @@ class Scraper:
         self.exclude = set(EXCLUDE if exclude is None else exclude)
 
     def run(self):
+        all_no_jobs = []
+
         for site in sorted(os.listdir(SITES_DIR)):
             if not site.endswith(".py") or site in self.exclude:
                 continue
@@ -266,12 +302,17 @@ class Scraper:
 
             cleanup_created_sibling_files(script_path, existing_files)
 
+            no_jobs = parse_no_jobs(action.stdout)
+            all_no_jobs.extend(no_jobs)
+
             if action.returncode == 0:
                 print(f"Success scraping {site} with exit code {action.returncode}")
                 continue
 
             print(f"Error scraping {site} with exit code {action.returncode}")
             print(truncate_output(action.stderr))
+
+        print_no_jobs_summary(all_no_jobs)
 
 
 if __name__ == "__main__":
