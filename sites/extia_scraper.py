@@ -36,7 +36,7 @@ def get_jobs():
     for job in response:
         title = job['offer']['title'].strip()
         link = 'https://www.extia-group.com/fr-en/join-us/' + job['slug']
-        city = CITY_TRANSLATIONS.get(job['offer']['location_city']['city'], job['offer']['location_city']['city'])
+        city = CITY_TRANSLATIONS.get(job['location_cities'][0]['city'], job['location_cities'][0]['city'])
 
         list_jobs.append({
             "job_title": title,
