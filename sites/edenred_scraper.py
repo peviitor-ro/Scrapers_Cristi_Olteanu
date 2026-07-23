@@ -17,18 +17,26 @@ def get_soup(url):
 
 
 def get_pages():
-    response = requests.get('https://www.edenred.ro/ro/api/jobs?page=0&_=1696064805636', headers=DEFAULT_HEADERS).json()
-    nr_pages = response['pager']['total_pages']
-
-    return nr_pages
+    try:
+        response = requests.get('https://www.edenred.ro/ro/api/jobs?page=0&_=1696064805636', headers=DEFAULT_HEADERS, timeout=10)
+        if response.status_code != 200:
+            return 0
+        nr_pages = response.json()['pager']['total_pages']
+        return nr_pages
+    except (requests.RequestException, ValueError, KeyError):
+        return 0
 
 
 def get_jobs():
 
     list_jobs = []
 
-    for page in range(0, get_pages()):
-        res = requests.get(f'https://www.edenred.ro/ro/api/jobs?page={page}&_=1696064805636').json()['rows']
+    total_pages = get_pages()
+    for page in range(0, total_pages):
+        try:
+            res = requests.get(f'https://www.edenred.ro/ro/api/jobs?page={page}&_=1696064805636', headers=DEFAULT_HEADERS, timeout=10).json()['rows']
+        except (requests.RequestException, ValueError, KeyError):
+            continue
 
         for job in res:
             link = 'https://www.edenred.ro' + job['nid']

@@ -5,7 +5,7 @@
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
-from bs4 import BeautifulSoup
+import re
 from _county import get_county
 
 
@@ -18,10 +18,10 @@ CITY_TRANSLATIONS = {
 
 def get_link_id():
     response = requests.get(JOBS_URL, headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text, 'lxml')
-    link_id = str(soup.find_all('script', src=True)).split()[-1].split('/')[3]
-
-    return link_id
+    match = re.search(r'/_next/static/([^/]+)/_buildManifest\.js', response.text)
+    if match:
+        return match.group(1)
+    raise ValueError("Could not find Next.js build ID")
 
 
 def get_jobs():
@@ -36,7 +36,7 @@ def get_jobs():
     for job in response:
         title = job['offer']['title'].strip()
         link = 'https://www.extia-group.com/fr-en/join-us/' + job['slug']
-        city = CITY_TRANSLATIONS.get(job['offer']['location_city']['city'], job['offer']['location_city']['city'])
+        city = CITY_TRANSLATIONS.get(job['location_cities'][0]['city'], job['location_cities'][0]['city'])
 
         list_jobs.append({
             "job_title": title,

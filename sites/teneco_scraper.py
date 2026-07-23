@@ -8,11 +8,14 @@ import requests
 from bs4 import BeautifulSoup
 from _validate_city import validate_city
 from _county import get_county
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def get_soup(url):
 
-    response = requests.get(url, headers=DEFAULT_HEADERS)
+    response = requests.get(url, headers=DEFAULT_HEADERS, verify=False)
     soup = BeautifulSoup(response.text, 'lxml')
     return soup
 
@@ -20,7 +23,10 @@ def get_soup(url):
 def get_num_pages():
 
     soup_pages = get_soup('https://jobs.tenneco.com/search/?createNewAlert=false&q=&locationsearch=Ro')
-    num_pages = soup_pages.find('span', class_='srHelp').text.split('of')[-1].strip()
+    sr_help = soup_pages.find('span', class_='srHelp')
+    if sr_help is None:
+        return 1
+    num_pages = sr_help.text.split('of')[-1].strip()
     return int(num_pages)
 
 

@@ -1,101 +1,62 @@
 #
 # Company - > shutterstock
-# Link -> https://careers.shutterstock.com/us/en/search-results
+# Link -> https://shutterstock.wd1.myworkdayjobs.com/ShutterstockCareers
 #
-from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
+from A_OO_get_post_soup_update_dec import update_peviitor_api
 from L_00_logo import update_logo
 import requests
-import re
 
 session = requests.Session()
-
-
-def get_cookies():
-
-    response = session.head(
-        url= "https://careers.shutterstock.com/widgets",
-        headers=DEFAULT_HEADERS
-    ).headers
-
-    play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
-    phpppe_act = re.search(r"PHPPPE_ACT=([^;]+);", str(response)).group(0)
-
-    return play_session, phpppe_act
-
-
-def prepare_post():
-
-    cookies = get_cookies()
-    url = "https://careers.shutterstock.com/widgets"
-
-    payload = {
-        "lang": "en_us",
-        "deviceType": "desktop",
-        "country": "us",
-        "pageName": "search-results",
-        "ddoKey": "refineSearch",
-        "sortBy": "",
-        "subsearch": "",
-        "from": 0,
-        "jobs": True,
-        "counts": True,
-        "all_fields": ["category", "country", "state", "city", "type", "location", "remoteValue"],
-        "size": 100,
-        "clearAll": False,
-        "jdsource": "facets",
-        "isSliderEnable": False,
-        "pageId": "page13",
-        "siteType": "external",
-        "keywords": "",
-        "global": True,
-        "selected_fields": {"country": ["Romania"]},
-        "locationData": {}
-    }
-    headers = {
-        "authority": "careers.shutterstock.com",
-        "accept": "*/*",
-        "accept-language": "ro-RO,ro;q=0.9,en-US;q=0.8,en;q=0.7",
-        "content-type": "application/json",
-        "cookie": f"{cookies[0]}{cookies[1]}",
-        "origin": "https://careers.shutterstock.com",
-        "referer": "https://careers.shutterstock.com/us/en/search-results",
-        "sec-ch-ua": '"Chromium";v="118", "Google Chrome";v="118", "Not=A?Brand";v="99"',
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": "Windows",
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-origin",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
-    }
-    return url, headers, payload
 
 
 def get_jobs():
 
     list_jobs = []
-    data = prepare_post()
-    response = requests.request("POST", data[0], json=data[2], headers=data[1]).json()['refineSearch']['data']['jobs']
 
-    for job in response:
-        id = job['jobId']
+    session.get(
+        'https://shutterstock.wd1.myworkdayjobs.com/en-US/ShutterstockCareers',
+        headers={
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        },
+        timeout=15
+    )
+
+    csrf_token = session.cookies.get('CALYPSO_CSRF_TOKEN', '')
+
+    headers = {
+        'Accept': 'application/json',
+        'Accept-Language': 'en-US',
+        'Content-Type': 'application/json',
+        'Origin': 'https://shutterstock.wd1.myworkdayjobs.com',
+        'Referer': 'https://shutterstock.wd1.myworkdayjobs.com/en-US/ShutterstockCareers',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'X-CALYPSO-CSRF-TOKEN': csrf_token,
+    }
+
+    response = session.post(
+        url='https://shutterstock.wd1.myworkdayjobs.com/wday/cxs/shutterstock/ShutterstockCareers/jobs',
+        headers=headers,
+        json={},
+        timeout=15
+    ).json()
+
+    for job in response.get('jobPostings', []):
         title = job['title']
-        city = job['city'].split(',')[0]
-        link = f'https://careers.shutterstock.com/us/en/job/{id}'
+        locations_text = job['locationsText']
+        external_path = job['externalPath']
 
-        for skill in job['ml_skills']:
-            if 'hybrid' in skill:
-                job_type = 'hybrid'
-            else:
-                job_type = 'on-site'
+        if 'Romania' in locations_text or 'RO' in locations_text.upper():
+            city = locations_text.split(',')[0].strip()
 
-        list_jobs.append({
-            "job_title": title,
-            "job_link": link,
-            "company": "Shutterstock",
-            "country": "Romania",
-            "city": city,
-            "remote": job_type
-        })
+            list_jobs.append({
+                "job_title": title,
+                "job_link": 'https://shutterstock.wd1.myworkdayjobs.com/en-US/ShutterstockCareers' + external_path,
+                "company": "Shutterstock",
+                "country": "Romania",
+                "city": city,
+                "remote": 'on-site'
+            })
+
     return list_jobs
 
 

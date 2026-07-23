@@ -7,48 +7,49 @@ from L_00_logo import update_logo
 import requests
 
 
-def get_json(page):
-    url = "https://careers.spglobal.com/api/jobs"
-    querystring = {"locations": "Bucharest,Bucureşti,Romania", "page": f"{page}", "sortBy": "relevance",
-                   "descending": "false", "internal": "false"}
-    payload = ""
+API_URL = "https://spgi.wd5.myworkdayjobs.com/wday/cxs/spgi/SPGI_Careers/jobs"
+
+
+def get_jobs_from_workday(offset=0, limit=20):
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
     }
-
-    return requests.request("GET", url, data=payload, headers=headers, params=querystring).json()
-
-
-def get_num_pages():
-
-    num_jobs = get_json(1)['totalCount']
-    pages = int(num_jobs/10)
-    if num_jobs % 10 > 0:
-        pages += 1
-    else:
-        pass
-    return pages
+    payload = {
+        "limit": limit,
+        "offset": offset,
+        "searchText": "",
+    }
+    resp = requests.post(API_URL, json=payload, headers=headers)
+    resp.raise_for_status()
+    return resp.json()
 
 
 def get_jobs():
 
     list_jobs = []
-    for page in range(1, get_num_pages()+1, 1):
+    offset = 0
+    limit = 20
 
-        response = get_json(page)['jobs']
-
-        for job in response:
-
-            list_jobs.append({
-                "job_title": job['data']['title'],
-                "job_link": job['data']['meta_data']['canonical_url'],
-                "company": "SandP",
-                "country": "Romania",
-                "city": "Bucuresti",
-                "county": "Bucuresti",
-                "remote": 'on-site'
-
-            })
+    while True:
+        data = get_jobs_from_workday(offset, limit)
+        for job in data.get("jobPostings", []):
+            locations_text = job.get("locationsText", "")
+            if "Bucharest" in locations_text or "Bucure" in locations_text or "Romania" in locations_text:
+                list_jobs.append({
+                    "job_title": job["title"],
+                    "job_link": "https://spgi.wd5.myworkdayjobs.com" + job["externalPath"],
+                    "company": "SandP",
+                    "country": "Romania",
+                    "city": "Bucuresti",
+                    "county": "Bucuresti",
+                    "remote": "on-site",
+                })
+        total = data.get("total", 0)
+        offset += limit
+        if offset >= total:
+            break
 
     return list_jobs
 

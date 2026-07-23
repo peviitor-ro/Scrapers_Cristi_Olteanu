@@ -13,13 +13,22 @@ def get_jobs():
 
     list_jobs = []
 
-    response = requests.get('https://careers.n-able.com/api/jobs?page=1&locations=Bucharest%252C%252CRomania&sortBy=relevance&descending=false&internal=false',
-                            headers={
-                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
-                            }
-                            ).json()['jobs']
+    try:
+        response = requests.get('https://careers.n-able.com/api/jobs',
+                                params={
+                                    'page': 1,
+                                    'locations': 'Bucharest,Romania',
+                                    'sortBy': 'relevance',
+                                    'descending': 'false',
+                                    'internal': 'false',
+                                })
+        if response.status_code != 200:
+            return list_jobs
+        jobs_data = response.json()['jobs']
+    except Exception:
+        return list_jobs
 
-    for job in response:
+    for job in jobs_data:
         city = validate_city(job['data']['city'])
 
         list_jobs.append({
