@@ -1,83 +1,101 @@
 #
 #  Company - > Antal
-# Link -> https://www.antal.com/jobs?keywords=&sector=&location=1721&type=&page=
+# Link -> https://www.antal.com/job-search/#/romania
 #
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
-from bs4 import BeautifulSoup
 import requests
 from _county import get_county
 from _validate_city import validate_city
 
+ANTAL_API = 'https://www.antal.com/_sf/api/v1/jobs/search.json'
+DEFAULT_CITY = 'București'
 
-def get_soup(url):
+CITY_CLEANUP = {
+    'Pipera Metro Station, Bulevardul Dimitrie Pompeiu, București, România': 'București',
+    'North - West, Romania': 'Cluj-Napoca',
+    'Eastern Europe': DEFAULT_CITY,
+}
 
-    session = requests.Session()
-    response = session.get(url, headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text, 'lxml')
-    return soup
+ROMANIA_VARIANTS = {'romania', 'românia'}
 
 
-def get_nr_pages():
+def clean_city(raw_address):
+    if not raw_address:
+        return DEFAULT_CITY
 
-    soup_pages = get_soup('https://www.antal.com/jobs?keywords=&sector=&location=1721&type=&page=')
-    next_page = soup_pages.find('a', class_='next page-numbers')
-    if next_page:
-        nr_pages = int(next_page['href'].split('=')[-1])
-    else:
-        nr_pages = 1
-    return nr_pages
+    if raw_address in CITY_CLEANUP:
+        return CITY_CLEANUP[raw_address]
+
+    city = raw_address.split(',')[0].strip()
+
+    if city.lower() in ROMANIA_VARIANTS:
+        return DEFAULT_CITY
+
+    return city
 
 
 def get_jobs():
-
     list_jobs = []
+    offset = 0
+    jobs_per_page = 100
 
-    for page in range(1, get_nr_pages() + 1, 1):
+    while True:
+        res = requests.post(
+            ANTAL_API,
+            json={
+                "job_search": {
+                    "query": "Romania",
+                    "location": {},
+                    "filters": {},
+                    "commute_filter": {},
+                    "offset": offset,
+                    "jobs_per_page": jobs_per_page,
+                    "salary_range": {}
+                }
+            },
+            headers={'content-type': 'application/json'},
+            timeout=30
+        )
 
-        soup_jobs = get_soup(f'https://www.antal.com/jobs?keywords=&sector=&location=1721&type=&page={page}')
-        jobs = soup_jobs.find_all('li', class_='job-card')
+        if res.status_code != 200:
+            break
 
-        for job in jobs:
-            title_elem = job.find('div', class_='job-card__title')
-            if title_elem:
-                title_link = title_elem.find('a')
-                if title_link:
-                    title = title_link.text.strip()
-                    job_link = title_link['href']
-                else:
+        data = res.json()
+        results = data.get('results', [])
+
+        if not results:
+            break
+
+        for item in results:
+            job = item.get('job', {})
+            addresses = job.get('addresses', [])
+
+            is_romania = False
+            for cat in job.get('categories', []):
+                if cat.get('name') == 'Country':
+                    for v in cat.get('values', []):
+                        if v.get('name', '').lower() in ROMANIA_VARIANTS:
+                            is_romania = True
+
+            if not is_romania:
+                raw_addr = addresses[0] if addresses else ''
+                if raw_addr.lower().strip() not in ROMANIA_VARIANTS:
                     continue
-            else:
-                continue
 
-            try:
-                details = job.find('ul', class_='job-card__details')
-                city = ''
-                if details:
-                    lis = details.find_all('li')
-                    if len(lis) >= 2:
-                        city_line = lis[-1].text.strip()
-                        if ',' in city_line:
-                            city = city_line.split(',')[0].strip()
-                        elif city_line.lower() != 'romania':
-                            city = city_line.strip()
-                    elif len(lis) == 1:
-                        city_line = lis[0].text.strip()
-                        if ',' in city_line:
-                            city = city_line.split(',')[0].strip()
-                        elif city_line.lower() != 'romania':
-                            city = city_line.strip()
-            except:
-                city = ''
-
+            raw_city = addresses[0] if addresses else ''
+            city = clean_city(raw_city)
             city = validate_city(city)
 
-            if 'on site' in title.lower() or 'on-site' in title.lower():
-                job_type = 'on-site'
-            elif 'hybrid' in title.lower() or 'hibrid' in title.lower():
-                job_type = 'hybrid'
-            elif 'remote' in title.lower() or 'ful-remote' in title.lower():
+            title = job.get('title', '')
+            slug = job.get('url_slug', '')
+            job_link = f'https://www.antal.com/job-search/{slug}'
+
+            title_lower = title.lower()
+            if 'remote' in title_lower:
                 job_type = 'remote'
+            elif 'hybrid' in title_lower or 'hibrid' in title_lower:
+                job_type = 'hybrid'
             else:
                 job_type = 'on-site'
 
@@ -90,6 +108,10 @@ def get_jobs():
                 "county": get_county(city),
                 "remote": job_type
             })
+
+        offset += jobs_per_page
+        if offset >= data.get('total_size', 0):
+            break
 
     return list_jobs
 
