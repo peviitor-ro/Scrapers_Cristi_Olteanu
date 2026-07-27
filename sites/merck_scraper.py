@@ -1,36 +1,69 @@
 #
 #  Company - > Merck
-# Link -> https://www.merckgroup.com/en/careers/job.html?s=10&f=0&fjc=Romania
+# Link -> https://careers.merckgroup.com/global/en/search-results
 #
-from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
+from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
+import json
+import urllib.parse
 from _county import get_county
 from _validate_city import validate_city
 
 
+PHENOM_CDN = 'https://content-ir.phenompeople.com/api/MQAMKDGLOBAL/eagerLoadRefineSearch'
+
+
 def get_jobs():
-
-    response = requests.get('https://search.merckgroup.com/v1/search?s=10&f=0&fjc=Romania&d=global_english&l=en&fc=jobs',
-                            headers=DEFAULT_HEADERS).json()['items']
     list_jobs = []
+    seen_ids = set()
+    offset = 0
+    page_size = 500
 
-    for job in response:
+    while True:
+        payload = json.dumps({'from': offset, 'size': page_size})
+        url = f'{PHENOM_CDN}?locale=en_global&siteType=external&deviceType=desktop&payload={urllib.parse.quote(payload)}'
 
-        id = job['jobid']
-        link = f'https://www.merckgroup.com/en/careers/jobs/{id}.html?location=Romania&state=Bucuresti&city=Bucharest&functionalarea=Commercial'
-        city = validate_city(job['city'])
+        response = requests.get(url, headers=DEFAULT_HEADERS, timeout=30)
 
-        list_jobs.append({
-            "job_title": job['title'],
-            "job_link": link,
-            "company": "Merck",
-            "country": "Romania",
-            "city": city,
-            "county": get_county(city),
-            "remote": 'on-site'
+        if response.status_code != 200:
+            break
 
-        })
+        data = response.json()
+        jobs_data = data.get('eagerLoadRefineSearch', data)
+        jobs = jobs_data.get('data', {}).get('jobs', [])
+        total = jobs_data.get('totalHits', 0)
+
+        if not jobs:
+            break
+
+        for job in jobs:
+            if job.get('country') != 'Romania':
+                continue
+
+            job_id = job.get('jobId', '')
+            if job_id in seen_ids:
+                continue
+            seen_ids.add(job_id)
+
+            title = job.get('title', '')
+            city = validate_city(job.get('city', ''))
+            link = f'https://careers.merckgroup.com/global/en/job/{job_id}'
+
+            list_jobs.append({
+                "job_title": title,
+                "job_link": link,
+                "company": "Merck",
+                "country": "Romania",
+                "city": city,
+                "county": get_county(city),
+                "remote": 'on-site'
+            })
+
+        offset += page_size
+        if offset >= total:
+            break
+
     return list_jobs
 
 
@@ -41,6 +74,7 @@ def scrape_and_update_peviitor(company_name, data_list):
     """
 
     return data_list
+
 
 company_name = 'Merck'
 data_list = get_jobs()
