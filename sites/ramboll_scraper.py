@@ -4,39 +4,61 @@
 #
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
+from _county import get_county
+from _validate_city import validate_city
 import requests
-import json
+
+
+SMARTRECRUITERS_API = 'https://api.smartrecruiters.com/v1/companies/Ramboll3/postings'
 
 
 def get_jobs():
-
     list_jobs = []
-    url = "https://careers.smartrecruiters.com/Ramboll3"
+    offset = 0
+    page_size = 100
 
-    response = requests.get(url=url, headers=DEFAULT_HEADERS)
+    while True:
+        response = requests.get(
+            SMARTRECRUITERS_API,
+            params={'q': 'Romania', 'limit': page_size, 'offset': offset},
+            headers=DEFAULT_HEADERS,
+            timeout=30
+        )
 
-    try:
+        if response.status_code != 200:
+            break
+
         data = response.json()
-    except json.JSONDecodeError:
-        return list_jobs
-
-    if isinstance(data, dict):
         content = data.get('content', [])
-        for job in content:
-            link = job.get('url', '')
-            title = job.get('title', '')
-            location = job.get('location', {})
 
-            if link and title:
-                list_jobs.append({
-                    "job_title": title,
-                    "job_link": link,
-                    "company": "Ramboll",
-                    "country": "Romania",
-                    "city": location.get('city', 'Bucuresti') or 'Bucuresti',
-                    "county": location.get('region', 'Bucuresti') or 'Bucuresti',
-                    "remote": 'on-site'
-                })
+        if not content:
+            break
+
+        for job in content:
+            location = job.get('location', {})
+            country = (location.get('country') or '').lower()
+            if country != 'ro':
+                continue
+
+            job_id = job.get('id', '')
+            title = job.get('name', '')
+            link = f'https://careers.smartrecruiters.com/Ramboll3/jobs/{job_id}'
+            raw_city = location.get('city', '')
+            city = validate_city(raw_city)
+
+            list_jobs.append({
+                "job_title": title,
+                "job_link": link,
+                "company": "Ramboll",
+                "country": "Romania",
+                "city": city,
+                "county": get_county(city),
+                "remote": 'on-site'
+            })
+
+        offset += page_size
+        if len(content) < page_size:
+            break
 
     return list_jobs
 
