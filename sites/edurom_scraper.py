@@ -61,7 +61,12 @@ def get_jobs():
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
     }
 
-    response = requests.post(AJAX_URL, data=payload, headers=headers, timeout=30)
+    try:
+        response = requests.post(AJAX_URL, data=payload, headers=headers, timeout=30)
+    except requests.exceptions.RequestException as e:
+        print(f"Connection to {AJAX_URL} failed: {e}")
+        return list_jobs
+
     soup = BeautifulSoup(response.text, 'lxml')
 
     jobs = soup.find_all('div', class_='awsm-job-listing-item')
