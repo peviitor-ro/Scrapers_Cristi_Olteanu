@@ -16,12 +16,15 @@ def get_cookies() -> tuple:
         url='https://ttiemea.wd3.myworkdayjobs.com/wday/cxs/ttiemea/TTI/jobs',
         headers=DEFAULT_HEADERS).headers
 
-    play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
-    cf_id = re.search(r"__cf_bm=([^;]+);", str(response)).group(0)
-    wday_vps = re.search(r"wday_vps_cookie=([^;]+);", str(response)).group(0)
-    wd_browser_id = re.search(r"wd-browser-id=([^;]+);", str(response)).group(0)
+    play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response))
+    cf_id = re.search(r"__cf_bm=([^;]+);", str(response))
+    wday_vps = re.search(r"wday_vps_cookie=([^;]+);", str(response))
+    wd_browser_id = re.search(r"wd-browser-id=([^;]+);", str(response))
 
-    return play_session, cf_id, wday_vps, wd_browser_id
+    return (play_session.group(0) if play_session else '',
+            cf_id.group(0) if cf_id else '',
+            wday_vps.group(0) if wday_vps else '',
+            wd_browser_id.group(0) if wd_browser_id else '')
 
 
 def prepare_post():
@@ -57,7 +60,7 @@ def get_jobs():
 
     list_jobs = []
     data = prepare_post()
-    response = session.request("POST", data[0], json=data[1], headers=data[2]).json()['jobPostings']
+    response = session.request("POST", data[0], json=data[1], headers=data[2]).json().get('jobPostings', [])
 
     for job in response:
         list_jobs.append({
