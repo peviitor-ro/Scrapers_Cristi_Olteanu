@@ -44,7 +44,12 @@ def get_jobs():
         for job in jobs:
             link = job.get('href')
             title = job.find('div', class_='job-title').text.strip()
-            city = validate_city(job.find('div', class_='job-location js-job-city').text.split('-')[0].split()[0].strip(','))
+            location_div = job.find('div', class_='job-location js-job-city')
+
+            if location_div is None or not location_div.text.strip():
+                continue
+
+            city = validate_city(location_div.text.split('-')[0].split()[0].strip(','))
 
             list_jobs.append({
                 "job_title": title,
