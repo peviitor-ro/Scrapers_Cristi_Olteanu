@@ -6,6 +6,7 @@ from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS,update_peviitor_api
 from L_00_logo import update_logo
 import requests
 import re
+import sys
 from _county import get_county
 
 
@@ -17,7 +18,7 @@ CITY_TRANSLATIONS = {
 
 
 def get_link_id():
-    response = requests.get(JOBS_URL, headers=DEFAULT_HEADERS)
+    response = requests.get(JOBS_URL, headers=DEFAULT_HEADERS, verify=False)
     match = re.search(r'/_next/static/([^/]+)/_buildManifest\.js', response.text)
     if match:
         return match.group(1)
@@ -26,12 +27,17 @@ def get_link_id():
 
 def get_jobs():
 
-    link_id = get_link_id()
+    try:
+        link_id = get_link_id()
+        response = requests.get(
+            f'https://www.extia-group.com/_next/data/{link_id}/fr-en/join-us.json?page=1&locations={BUCHAREST_LOCATION_ID}',
+            headers=DEFAULT_HEADERS, verify=False
+        ).json()['pageProps']['jobOffers']
+    except (requests.exceptions.RequestException, ValueError, KeyError, TypeError) as error:
+        print(f'extia: site unavailable ({error})', file=sys.stderr)
+        return []
+
     list_jobs = []
-    response = requests.get(
-        f'https://www.extia-group.com/_next/data/{link_id}/fr-en/join-us.json?page=1&locations={BUCHAREST_LOCATION_ID}',
-        headers=DEFAULT_HEADERS
-    ).json()['pageProps']['jobOffers']
 
     for job in response:
         title = job['offer']['title'].strip()
