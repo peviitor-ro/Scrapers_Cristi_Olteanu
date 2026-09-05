@@ -14,9 +14,10 @@ session = requests.Session()
 
 def get_cookies():
 
-    response = session.head(
+    response = session.get(
         url="https://www.pgcareers.com/widgets",
-        headers=DEFAULT_HEADERS).headers
+        headers=DEFAULT_HEADERS,
+        stream=True).headers
 
     play_session = re.search(r"PLAY_SESSION=([^;]+);", str(response)).group(0)
     phpppe_act = re.search(r"PHPPPE_ACT=([^;]+);", str(response)).group(0)
