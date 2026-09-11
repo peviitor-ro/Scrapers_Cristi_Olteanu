@@ -12,7 +12,7 @@ def get_jobs():
 
     list_jobs = []
 
-    response = requests.get('https://career.hms-networks.com/#page-block-12397', headers=DEFAULT_HEADERS)
+    response = requests.get('https://career.hms-networks.com/#page-block-12397', headers=DEFAULT_HEADERS, verify=False)
     soup = BeautifulSoup(response.text, 'lxml')
 
     jobs = soup.find_all('div', class_='position-container filter-item')
