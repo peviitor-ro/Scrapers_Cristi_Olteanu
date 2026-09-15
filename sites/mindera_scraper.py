@@ -10,70 +10,50 @@ from _county import get_county
 
 session = requests.Session()
 
-
-def get_cookies() -> tuple:
-
-    response = session.head(
-        url='https://apply.workable.com/minderacraft/',
-        headers=DEFAULT_HEADERS).headers
-    wmc = re.search(r"wmc=([^;]+);", str(response)).group(0)
-    cf_bm = re.search(r"__cf_bm=([^;]+);", str(response)).group(0)
-
-    return wmc, cf_bm
+REMOTE_MAP = {
+    "remote": "remote",
+    "hybrid": "hybrid",
+    "on_site": "on-site",
+    "on-site": "on-site",
+}
 
 
-def prepare_post():
-
-    cookies = get_cookies()
-    url = "https://apply.workable.com/api/v3/accounts/minderacraft/jobs"
-
-    payload = {
-        "query": "",
-        "location": [
-            {
-                "country": "Romania",
-                "region": "Cluj County",
-                "city": "Cluj-Napoca",
-                "countryCode": "RO"
-            }
-        ],
-        "department": [],
-        "worktype": [],
-        "remote": [],
-        "workplace": []
-    }
-    headers = {
-        'authority': 'apply.workable.com',
-        'scheme': 'https',
-        'Accept': 'application/json',
-        'Accept-Language': 'en',
-        'Content-Length': '167',
-        'Content-Type': 'application/json',
-        'Cookie': f'{cookies[0]}{cookies[1]}',
-        'Origin': 'https://apply.workable.com',
-        'Referer': 'https://apply.workable.com/minderacraft/',
-        'Sec-Ch-Ua': '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
-        'Sec-Ch-Ua-Mobile': '?0',
-        'Sec-Ch-Ua-Platform': '"Windows"',
-        'Sec-Fetch-Dest': 'empty',
-        'Sec-Fetch-Mode': 'cors',
-        'Sec-Fetch-Site': 'same-origin',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
-    }
-    return url, payload, headers
+def get_remote_from_location(location):
+    match = re.search(r"\((.+?)\)", location)
+    if not match:
+        return "on-site"
+    workplace = match.group(1).strip().lower().replace(" ", "-")
+    return REMOTE_MAP.get(workplace, workplace)
 
 
 def get_jobs():
 
     list_jobs = []
-    data = prepare_post()
-    response = session.request("POST", data[0], json=data[1], headers=data[2]).json()['results']
+    url = "https://apply.workable.com/minderacraft/jobs.md"
 
-    for job in response:
-        title = job['title']
-        city = job['location']['city']
-        job_type = job['workplace']
-        link = f"https://apply.workable.com/minderacraft/j/{job['shortcode']}/"
+    params = {
+        "location[0][country]": "Romania",
+        "location[0][region]": "Cluj County",
+        "location[0][city]": "Cluj-Napoca",
+    }
+
+    response = session.get(url, params=params, headers=DEFAULT_HEADERS)
+    response.raise_for_status()
+
+    for row in response.text.splitlines():
+        if not row.startswith("|"):
+            continue
+        cells = [cell.strip() for cell in row.strip("|").split("|")]
+        if len(cells) < 7 or cells[0] in ("", "Title"):
+            continue
+        shortcode = re.search(r"/jobs/view/([A-Za-z0-9]+)\.md", cells[6])
+        if not shortcode:
+            continue
+
+        title = cells[0]
+        location = cells[2]
+        city = location.split(",")[0].strip()
+        link = f"https://apply.workable.com/minderacraft/j/{shortcode.group(1)}/"
 
         list_jobs.append({
             "job_title": title,
@@ -82,7 +62,7 @@ def get_jobs():
             "country": "Romania",
             "city": city,
             "county": get_county(city),
-            "remote": job_type
+            "remote": get_remote_from_location(location)
         })
     return list_jobs
 
@@ -101,15 +81,3 @@ scrape_and_update_peviitor(company_name, data_list)
 print(update_logo('mindera',
                   'https://www.cbpecapital.com/wp-content/uploads/mindera-logo-1@3x-480x295.png'
                   ))
-
-
-
-
-
-
-
-
-
-
-
-
