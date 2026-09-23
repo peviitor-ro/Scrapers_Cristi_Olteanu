@@ -2,28 +2,50 @@
 #  Company - > Infosys
 # Link -> https://digitalcareers.infosys.com/infosys/global-careers?page=2&per_page=25&job_type=experienced&location=Romania
 #
-from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
+from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
+import json
 import requests
-from bs4 import BeautifulSoup
+import urllib.parse
 from _county import get_county
 from _validate_city import validate_city
 
 
-def get_soup(url: str):
+ALGOLIA_APP_ID = 'UM59DWRPA1'
+ALGOLIA_API_KEY = 'c8bffc42453b5122fd7e0aeb42761027'
+ALGOLIA_INDEX = 'production_Infosys_jobs'
+ALGOLIA_URL = f'https://{ALGOLIA_APP_ID}-dsn.algolia.net/1/indexes/{ALGOLIA_INDEX}/query'
 
-    ses = requests.Session()
-    response = ses.get(url,headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text, 'lxml')
 
-    return soup
+def search_jobs(page: int = 0, per_page: int = 25):
+    """
+    Search Romania jobs on the Infosys Algolia index.
+    """
+
+    params = urllib.parse.urlencode({
+        'filters': 'country:Romania',
+        'hitsPerPage': per_page,
+        'page': page,
+    })
+
+    headers = {
+        **DEFAULT_HEADERS,
+        'X-Algolia-Application-Id': ALGOLIA_APP_ID,
+        'X-Algolia-API-Key': ALGOLIA_API_KEY,
+        'Content-Type': 'application/json',
+    }
+
+    response = requests.post(ALGOLIA_URL, headers=headers, data=json.dumps({'params': params}))
+    response.raise_for_status()
+
+    return response.json()
 
 
 def get_pages():
 
-    soup_pages = get_soup('https://digitalcareers.infosys.com/infosys/global-careers?page=0&per_page=25&job_type=experienced&location=Romania')
-    num_jobs = int(soup_pages.find('div', class_='sumarry').text.split('of')[-1].split()[0])
-    pages = int(num_jobs/25)
+    result = search_jobs()
+    num_jobs = result.get('nbHits', 0)
+    pages = int(num_jobs / 25)
 
     if num_jobs % 25 > 0:
         pages += 1
@@ -37,19 +59,20 @@ def get_jobs():
 
     list_jobs = []
 
-    for page in range(1, get_pages()+1, 1):
-        soup_jobs = get_soup(url=f'https://digitalcareers.infosys.com/infosys/global-careers?page={page}&per_page=25&job_type=experienced&location=Romania')
-        jobs = soup_jobs.find_all('a', class_='job editable-cursor')
+    for page in range(0, get_pages(), 1):
+        result = search_jobs(page=page)
+        jobs = result.get('hits', [])
 
         for job in jobs:
-            link = job.get('href')
-            title = job.find('div', class_='job-title').text.strip()
-            location_div = job.find('div', class_='job-location js-job-city')
+            redirects = job.get('redirect_url') or []
+            link = redirects[0] if redirects else ''
+            title = job.get('title', '')
+            locations = job.get('work_location') or []
 
-            if location_div is None or not location_div.text.strip():
+            if not locations:
                 continue
 
-            city = validate_city(location_div.text.split('-')[0].split()[0].strip(','))
+            city = validate_city(locations[0].strip())
 
             list_jobs.append({
                 "job_title": title,
@@ -79,5 +102,3 @@ scrape_and_update_peviitor(company_name, data_list)
 print(update_logo('Infosys',
                   'https://w7.pngwing.com/pngs/563/912/png-transparent-infosys-technologies-hd-logo-thumbnail.png'
                   ))
-
-
