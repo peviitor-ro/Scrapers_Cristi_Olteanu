@@ -1,59 +1,47 @@
 #
 # Company - > FlTechincs
-# Link -> https://fltechnics.com/careers/?c-ctry=29#career-list
+# Link -> https://fltechnics.com/careers/
+# Jobs -> https://careers.fltechnics.com/
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
-from bs4 import BeautifulSoup
 from _county import get_county
 from _validate_city import validate_city
 
-
-
-def get_soup(url: str):
-    session = requests.Session()
-    response = session.get(url,headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text, 'lxml')
-    return soup
-
-
-def get_pages():
-    soup_pages = get_soup(url='https://fltechnics.com/careers/?c-ctry=29&c-search=#career-list')
-    nr_jobs = int(soup_pages.find('div', class_='vc_col-md-12 vc_col-sm-12 vc_col-xs-12 wpb_column column_container vc_column_container col child_column no-extra-padding inherit_tablet inherit_phone'
-                                  ).text.split()[0])
-    nr_pages = int(nr_jobs / 10)
-    if int(int(nr_jobs % 10) > 0):
-        nr_pages += 1
-    return nr_pages
 
 
 def get_jobs():
 
     list_jobs = []
 
-    for page in range(1, get_pages() + 1, 1):
+    response = requests.get('https://careers.fltechnics.com/jobs.json', headers=DEFAULT_HEADERS).json()['items']
 
-        soup = get_soup(url=f'https://fltechnics.com/careers/?p-page={page}&c-ctry=29&c-search#career-list')
-        jobs = soup.find_all('div', class_='row_col_wrap_12 col span_12 dark left career')
+    for job in response:
 
-        for job in jobs:
+        job_posting = job.get('_jobposting', {})
 
-            link = job.find('a')['href']
-            title = job.find('a')['title']
-            location = job.find('div', class_='asgc-list-col col-location').text.strip().split(', ')[1]
-            city = validate_city(job.find('div', class_='asgc-list-col col-location').text.strip().split(', ')[0])
+        for location in job_posting.get('jobLocation') or []:
 
-            if location == 'Romania':
-                list_jobs.append({
-                    "job_title": title,
-                    "job_link": link,
-                    "company": "FlTechnics",
-                    "country": "Romania",
-                    "city": city,
-                    "county": get_county(city),
-                    "remote": 'on-site'
-                })
+            address = location.get('address', {})
+
+            if address.get('addressCountry') != 'RO':
+                continue
+
+            title = job_posting['title']
+            link = job['url']
+            city = validate_city(address.get('addressLocality'))
+
+            list_jobs.append({
+                "job_title": title,
+                "job_link": link,
+                "company": "FlTechnics",
+                "country": "Romania",
+                "city": city,
+                "county": get_county(city),
+                "remote": 'on-site'
+            })
+
     return list_jobs
 
 
