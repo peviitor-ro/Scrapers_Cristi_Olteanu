@@ -4,7 +4,6 @@
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
-from bs4 import BeautifulSoup
 import requests
 from _county import get_county
 from _validate_city import validate_city
@@ -13,31 +12,19 @@ from _validate_city import validate_city
 def get_jobs():
     list_jobs = []
 
-    req = requests.get("https://job-boards.greenhouse.io/awin", headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(req.text, "lxml")
-
-    jobs = soup.find_all('a', href=lambda x: x and '/jobs/' in str(x))
+    req = requests.get("https://boards-api.greenhouse.io/v1/boards/awin/jobs",
+                       headers=DEFAULT_HEADERS, params={"content": "true"})
+    jobs = req.json()['jobs']
 
     for job in jobs:
-        text = job.text.strip()
-        
+        text = (job.get('location') or {}).get('name', '').strip()
+
         if 'Romania' not in text:
             continue
-        
-        link = job.get('href')
-        
-        # Extract title - remove city/country from text
-        parts = text.split(',')
-        title = parts[0].strip()
-        
-        # Clean title (remove city suffix like "Iași")
-        for part in parts[1:]:
-            if 'Romania' in part:
-                break
-            if 'Iași' in part or 'Iasi' in part or 'Bucharest' in part:
-                title = title.replace(part.strip(), '').strip()
-                break
-        
+
+        link = job.get('absolute_url')
+        title = job.get('title', '').strip()
+
         if 'Iasi' in text or 'Iași' in text:
             city = 'Iasi'
         elif 'Bucharest' in text:
