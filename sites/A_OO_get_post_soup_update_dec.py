@@ -10,7 +10,8 @@ import requests
 import os  # I do not have API KEY
 #
 import json
-import time
+
+from A_OO_empty_jobs_repair import NO_JOBS_MARKER, maybe_repair_empty_jobs_output
 
 
 DEFAULT_HEADERS = {
@@ -30,17 +31,6 @@ def update_peviitor_api(original_function):
     def new_function(*args, **kwargs):
         company_name, data_list = args
         #
-        API_KEY = os.environ.get('API_KEY')
-        CLEAN_URL = 'https://api.peviitor.ro/v4/clean/'
-
-        clean_header = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'apikey': API_KEY
-            }
-
-        #clean_request = requests.post(CLEAN_URL, headers=clean_header, data={'company': company_name})
-
-        time.sleep(0.2)
         token = get_token()
         post_header = {
             'Content-Type': 'application/json',
@@ -49,9 +39,22 @@ def update_peviitor_api(original_function):
             }
         validator_endpoint = 'https://api.laurentiumarian.ro/jobs/add/'
 
-        res = requests.post(validator_endpoint, json=data_list, headers=post_header)
-        #post_request_to_server = requests.post('https://api.peviitor.ro/v4/update/', headers=post_header, data=json.dumps(data_list))
-        print(json.dumps(data_list, indent=4))
+        if not data_list:
+            print(f"{company_name} (0 joburi) - nicio pozitie disponibila")
+            print(f"Data for {company_name} - no jobs found.")
+            # markerul se tipareste inainte de hook: repararea reusita se
+            # incheie cu SystemExit(0) si ar suprima orice print de dupa el
+            print(f"{NO_JOBS_MARKER} {company_name}", flush=True)
+            maybe_repair_empty_jobs_output(company_name)
+        else:
+            res = requests.post(validator_endpoint,
+                                json=data_list, headers=post_header)
+            print(json.dumps(data_list, indent=4))
+            if res.status_code == 200:
+                print(f"Data for {company_name} updated successfully on Peviitor API!")
+            else:
+                print(
+                    f"Failed to update data for {company_name} on Peviitor API. Status code: {res.status_code}, Response: {res.text}")
 
         return original_function(*args, **kwargs)
 
@@ -59,7 +62,6 @@ def update_peviitor_api(original_function):
 
 
 def get_token():
-    #token_endpoint = 'https://api.peviitor.ro/v5/get_token/'
     token_endpoint = 'https://api.laurentiumarian.ro/get_token'
 
     token = requests.post(token_endpoint, json={

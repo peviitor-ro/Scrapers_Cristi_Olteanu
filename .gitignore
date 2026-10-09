@@ -5,3 +5,5 @@ scrapers_forzza/000_delete_api_data.py
 
 /.idea
 /env
+.cache/
+.DS_Store
