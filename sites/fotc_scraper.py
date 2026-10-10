@@ -5,7 +5,6 @@
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import requests
-from bs4 import BeautifulSoup
 from _validate_city import validate_city
 from _county import get_county
 
@@ -13,30 +12,32 @@ from _county import get_county
 def get_jobs():
 
     list_jobs = []
-    response = requests.get('https://fotc.jobsoid.com/',
+    response = requests.get('https://fotc.jobsoid.com/api/v1/jobs',
                             headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text, 'lxml')
-    jobs = soup.find_all('div', class_='row')
+    jobs = response.json()
 
     for job in jobs:
-        text = job.find('a', class_='jobDetailsLink')
-        if text is not None:
-            link = 'https://fotc.jobsoid.com' + text.get('href')
-            title = text.text
-            city_base = job.find('span', class_='r-space').text
-            job_type = 'remote' if 'remote' in city_base.lower() else 'on-site'
-            city = validate_city(city_base.split()[0].strip())
+        location = job.get('location') or {}
+        location_text = ' '.join(str(location.get(field, '') or '')
+                                 for field in ('title', 'city', 'state', 'country'))
 
-            if 'Romania' in city_base:
-                list_jobs.append({
-                    "job_title": title,
-                    "job_link": link,
-                    "company": "fotc",
-                    "country": "Romania",
-                    "city": city,
-                    "county": get_county(city),
-                    "remote": job_type
-                })
+        if 'Romania' not in location_text:
+            continue
+
+        title = job.get('title')
+        link = job.get('hostedUrl')
+        city = validate_city(location.get('city') or location.get('title') or '')
+        job_type = 'remote' if 'remote' in location_text.lower() else 'on-site'
+
+        list_jobs.append({
+            "job_title": title,
+            "job_link": link,
+            "company": "fotc",
+            "country": "Romania",
+            "city": city,
+            "county": get_county(city),
+            "remote": job_type
+        })
     return list_jobs
 
 
