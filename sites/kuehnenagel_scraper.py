@@ -42,13 +42,13 @@ def prepare_post():
         "jobs": True,
         "counts": True,
         "all_fields": ["country", "state", "city", "category", "CareerLevel", "type", "WorkType", "remote"],
-        "size": 15,
+        "size": 100,
         "clearAll": False,
         "jdsource": "facets",
         "isSliderEnable": False,
         "pageId": "page3",
         "siteType": "external",
-        "keywords": "Romania",
+        "keywords": "",
         "global": True,
         "selected_fields": {"country": ["Romania"]},
         "locationData": {}
@@ -76,25 +76,36 @@ def prepare_post():
 
 def get_jobs():
     list_jobs = []
-    data = prepare_post()
+    url, payload, headers = prepare_post()
 
-    response = session.request("POST", data[0], json=data[1], headers=data[2]
-                               ).json()['refineSearch']['data']['jobs']
+    start = 0
+    while True:
+        payload['from'] = start
+        refine_search = session.request("POST", url, json=payload, headers=headers
+                                        ).json()['refineSearch']
+        response = refine_search['data']['jobs']
 
-    for job in response:
-        title = job['title']
-        link = 'https://jobs.kuehne-nagel.com/global/en/job/' + job['reqId']
-        city = validate_city(job['city'])
+        if not response:
+            break
 
-        list_jobs.append({
-            "job_title": title,
-            "job_link": link,
-            "company": "KuehneNagel",
-            "country": "Romania",
-            "city": city,
-            "county": get_county(city),
-            "remote": 'on-site'
-        })
+        for job in response:
+            title = job['title']
+            link = 'https://jobs.kuehne-nagel.com/global/en/job/' + job['reqId']
+            city = validate_city(job['city'])
+
+            list_jobs.append({
+                "job_title": title,
+                "job_link": link,
+                "company": "KuehneNagel",
+                "country": "Romania",
+                "city": city,
+                "county": get_county(city),
+                "remote": 'on-site'
+            })
+
+        start += len(response)
+        if start >= refine_search.get('totalHits', 0):
+            break
 
     return list_jobs
 

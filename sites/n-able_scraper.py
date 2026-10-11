@@ -17,7 +17,7 @@ def get_jobs():
         response = requests.get('https://careers.n-able.com/api/jobs',
                                 params={
                                     'page': 1,
-                                    'locations': 'Bucharest,Romania',
+                                    'country': 'Romania',
                                     'sortBy': 'relevance',
                                     'descending': 'false',
                                     'internal': 'false',
