@@ -32,9 +32,13 @@ def get_jobs():
     offset = 0
     limit = 20
 
+    total = None
     while True:
         data = get_jobs_from_workday(offset, limit)
-        for job in data.get("jobPostings", []):
+        if total is None:
+            total = data.get("total", 0)
+        postings = data.get("jobPostings", [])
+        for job in postings:
             locations_text = job.get("locationsText", "")
             if "Bucharest" in locations_text or "Bucure" in locations_text or "Romania" in locations_text:
                 list_jobs.append({
@@ -46,9 +50,8 @@ def get_jobs():
                     "county": "Bucuresti",
                     "remote": "on-site",
                 })
-        total = data.get("total", 0)
         offset += limit
-        if offset >= total:
+        if not postings or total is not None and offset > total:
             break
 
     return list_jobs
