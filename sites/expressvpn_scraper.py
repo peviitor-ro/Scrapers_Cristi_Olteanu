@@ -1,44 +1,95 @@
 #
 #  Company - > expressvpn
-# Link -> https://boards.greenhouse.io/embed/job_board?for=expressvpn&t=300df8672us&b=https%3A%2F%2Fwww.expressvpn.com%2Fjobs%2Fjob-openings
+# Link -> https://jobs.deel.com/expresspn
 #
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
-from bs4 import BeautifulSoup
 import requests
+import json
+import re
 from _county import get_county
 from _validate_city import validate_city
-
 
 
 def get_jobs():
 
     list_jobs = []
 
-    response = requests.get('https://boards.greenhouse.io/embed/job_board?for=expressvpn&t=300df8672us&b=https%3A%2F%2Fwww.expressvpn.com%2Fjobs%2Fjob-openings',
+    response = requests.get('https://jobs.deel.com/expresspn',
                             headers=DEFAULT_HEADERS)
 
-    soup = BeautifulSoup(response.text, 'lxml')
-    jobs = soup.find_all('div', class_='opening')
+    if response.status_code != 200:
+        return list_jobs
 
-    for job in jobs:
-        link = job.find('a')['href']
-        title = job.find('a').text
-        city = job.find('span', class_='location').text
+    chunks = re.findall(r'self\.__next_f\.push\(\[1,("(?:[^"\\]|\\.)*")\]\)',
+                        response.text)
+    payload = ''
+    for chunk in chunks:
+        try:
+            payload += json.loads(chunk)
+        except json.JSONDecodeError:
+            continue
 
-        if 'REMOTE' in city or 'Remote' in city:
+    key = '"jobPostings":['
+    start = payload.find(key)
+    if start == -1:
+        return list_jobs
+
+    start += len(key) - 1
+    depth = 0
+    end = None
+    for i in range(start, len(payload)):
+        if payload[i] == '[':
+            depth += 1
+        elif payload[i] == ']':
+            depth -= 1
+            if depth == 0:
+                end = i
+                break
+    if end is None:
+        return list_jobs
+
+    try:
+        postings = json.loads(payload[start:end + 1])
+    except json.JSONDecodeError:
+        return list_jobs
+
+    country_by_city = {
+        'Tel Aviv': 'Israel',
+        'Singapore': 'Singapore',
+    }
+
+    for posting in postings:
+        job = posting.get('job') or {}
+        arrangement = job.get('workArrangementEnum') or ''
+
+        if arrangement == 'REMOTE':
             job_type = 'remote'
+        elif arrangement == 'HYBRID':
+            job_type = 'hybrid'
         else:
             job_type = 'on-site'
 
-        if 'Bucharest' in city:
-            city = 'Bucuresti'
+        cities = []
+        for item in job.get('jobLocations') or []:
+            city = (item.get('location') or {}).get('name')
+            if city and city not in cities:
+                cities.append(city)
+
+        job_link = ('https://jobs.deel.com/expresspn/job-details/'
+                    + str(posting.get('id')) + '/overview')
+
+        if not cities:
+            cities = ['']
+
+        for city in cities:
+            city = validate_city(city)
 
             list_jobs.append({
-                "job_title": title,
-                "job_link": link,
+                "job_title": posting.get('title'),
+                "job_link": job_link,
                 "company": "expressvpn",
-                "country": "Romania",
+                "country": country_by_city.get(city, city),
                 "city": city,
                 "county": get_county(city),
                 "remote": job_type

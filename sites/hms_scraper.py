@@ -23,17 +23,18 @@ def get_jobs():
         title = job.find('a', class_='position-title').text
         location = job.find('span', class_='location tag').text
         city = location.split(',')[0]
+        country = location.split(',')[-1].strip()
         try:
             job_type = job.find('div', style='margin-top: 0.5em').text
         except:
             job_type = 'on-site'
 
-        if 'Romania' in location:
+        if location:
             list_jobs.append({
                 "job_title": title,
                 "job_link": link,
                 "company": "HMS",
-                "country": "Romania",
+                "country": country,
                 "city": city,
                 "remote": job_type
             })

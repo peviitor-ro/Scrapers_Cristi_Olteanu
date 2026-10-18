@@ -1,42 +1,62 @@
 #
 # Company - > Consensys
-# Link -> https://consensys.io/open-roles
+# Link -> https://jobs.ashbyhq.com/consensys
 #
 
 from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
-from bs4 import BeautifulSoup
+
+
+EXCLUDED_REGIONS = (
+    'apac',
+    'asia',
+    'australia',
+    'united states',
+    'usa',
+    'canada',
+    'americas',
+    'new york',
+)
 
 
 def get_jobs():
     jobs_list = []
 
-    req = requests.get("https://consensys.io/open-roles", headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(req.text, "lxml")
+    req = requests.get(
+        "https://api.ashbyhq.com/posting-api/job-board/consensys",
+        headers=DEFAULT_HEADERS,
+    )
+    jobs = req.json().get('jobs', [])
 
-    links = soup.find_all('a', href=lambda x: x and '/open-roles/' in x)
+    for job in jobs:
+        if not job.get('isListed', True):
+            continue
 
-    for link in links:
-        href = link.get('href')
-        text = link.text.strip()
-        
-        if 'EMEA - Remote' in text or 'GLOBAL - Remote' in text:
-            # Extract title - get everything before the first location
-            title = text.split(',')[0].strip()
-            # Remove location suffixes from title
-            title = title.replace('UNITED STATES - Remote', '').replace('CANADA - Remote', '').replace('EMEA - Remote', '').replace('GLOBAL - Remote', '').replace('  ', ' ').strip()
-            title = title.rstrip('-').strip()
-            
-            jobs_list.append({
-                "job_title": title,
-                "job_link": 'https://consensys.io' + href,
-                "company": "Consensys",
-                "country": "Romania",
-                "city": 'Bucuresti',
-                "county": 'Bucuresti',
-                "remote": 'remote'
-            })
+        location = (job.get('location') or '').strip()
+        location_lower = location.lower()
+
+        is_remote = bool(job.get('isRemote')) or location_lower.startswith('remote')
+        if not is_remote:
+            continue
+
+        if any(region in location_lower for region in EXCLUDED_REGIONS):
+            continue
+
+        title = (job.get('title') or '').strip()
+        link = job.get('jobUrl') or job.get('applyUrl')
+        if not title or not link:
+            continue
+
+        jobs_list.append({
+            "job_title": title,
+            "job_link": link,
+            "company": "Consensys",
+            "country": "Romania",
+            "city": 'Bucuresti',
+            "county": 'Bucuresti',
+            "remote": 'remote'
+        })
     return jobs_list
 
 
