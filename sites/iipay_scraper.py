@@ -1,41 +1,72 @@
 #
 # Company - > iiPay
-# Link -> https://www.iipay.com/careers/#section-positions
+# Link -> https://careers.vistra.com/  (iiPay is part of Vistra, the old
+#         https://www.iipay.com/careers/ page no longer exists)
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
-from bs4 import BeautifulSoup
 from _county import get_county
 from _validate_city import validate_city
+
+
+SEARCH_URL = 'https://careers.vistra.com/services/recruiting/v1/jobs'
+JOB_URL = 'https://careers.vistra.com/job/{title}/{job_id}-en_US/'
 
 
 def get_jobs():
 
     list_jobs = []
+    seen_ids = set()
+    page_number = 0
 
-    response = requests.get('https://www.iipay.com/careers/#section-positions', headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text, 'lxml')
-    jobs = soup.find_all('li', class_='c-job-list__item')
+    while True:
+        payload = {
+            "keywords": "iiPay",
+            "locale": "en_US",
+            "location": "Romania",
+            "pageNumber": page_number,
+            "sortBy": "recent",
+        }
 
-    for job in jobs:
-        link = job.find('a')['href']
-        title = job.find('div', class_='c-job-list__position').text.strip()
-        job_type = job.find('div', class_='c-job-list__location').text.split(',')[0].strip()
-        country = job.find('div', class_='c-job-list__location').text.split(',')[-1].strip()
+        response = requests.post(SEARCH_URL, json=payload, headers=DEFAULT_HEADERS)
+        response.raise_for_status()
+        jobs = response.json().get('jobSearchResult', [])
 
-        if job_type.lower() == 'remote' and country == 'Romania':
-            city = 'Bucuresti'
+        if not jobs:
+            break
+
+        new_jobs = 0
+
+        for item in jobs:
+            job = item.get('response', {})
+            job_id = str(job.get('id', ''))
+            locations = ' '.join(job.get('jobLocationShort') or [])
+
+            if not job_id or job_id in seen_ids or 'Romania' not in locations:
+                continue
+
+            seen_ids.add(job_id)
+            new_jobs += 1
+            title = job.get('unifiedStandardTitle') or job.get('urlTitle')
+            url_title = job.get('urlTitle') or job.get('unifiedUrlTitle')
+            city = validate_city('Romania')
 
             list_jobs.append({
                 "job_title": title,
-                "job_link": link,
+                "job_link": JOB_URL.format(title=url_title, job_id=job_id),
                 "company": "iiPay",
                 "country": "Romania",
                 "city": city,
                 "county": get_county(city),
-                "remote": job_type
+                "remote": "remote"
             })
+
+        if new_jobs == 0:
+            break
+
+        page_number += 1
+
     return list_jobs
 
 @update_peviitor_api
