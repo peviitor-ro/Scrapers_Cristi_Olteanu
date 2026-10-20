@@ -16,26 +16,23 @@ def get_jobs():
     jobs = response.json()['offers']
 
     for job in jobs:
-        country = job.get('country')
+        city = validate_city(job.get('city'))
+        if job.get('remote'):
+            remote = 'remote'
+        elif job.get('hybrid'):
+            remote = 'hybrid'
+        else:
+            remote = 'on-site'
 
-        if country == 'Romania':
-            city = validate_city(job.get('city'))
-            if job.get('remote'):
-                remote = 'remote'
-            elif job.get('hybrid'):
-                remote = 'hybrid'
-            else:
-                remote = 'on-site'
-
-            list_jobs.append({
-                "job_title": job.get('title'),
-                "job_link": job.get('careers_url'),
-                "company": "mobilexpense",
-                "country": "Romania",
-                "city": city,
-                "county": get_county(city),
-                "remote": remote
-            })
+        list_jobs.append({
+            "job_title": job.get('title'),
+            "job_link": job.get('careers_url'),
+            "company": "mobilexpense",
+            "country": job.get('country'),
+            "city": city,
+            "county": get_county(city),
+            "remote": remote
+        })
     return list_jobs
 
 
