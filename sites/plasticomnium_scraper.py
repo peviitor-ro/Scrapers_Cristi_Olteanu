@@ -12,26 +12,32 @@ from _county import get_county
 def get_jobs():
 
     list_jobs = []
-    req = requests.get("https://careers.opmobility.com/search/?createNewAlert=false&optionsFacetsDD_customfield1=&optionsFacetsDD_customfield2=Romania&optionsFacetsDD_customfield3=",
-                       headers=DEFAULT_HEADERS, verify=False)
-    soup = BeautifulSoup(req.text, "lxml")
-    jobs = soup.find_all('tr', class_="data-row")
+    try:
+        req = requests.get("https://careers.opmobility.com/search/?createNewAlert=false&optionsFacetsDD_customfield1=&optionsFacetsDD_customfield2=Romania&optionsFacetsDD_customfield3=",
+                           headers=DEFAULT_HEADERS, verify=False, timeout=30)
+        soup = BeautifulSoup(req.text, "lxml")
+        jobs = soup.find_all('tr', class_="data-row")
 
-    for job in jobs:
-        link = 'https://careers.plasticomnium.com/' + job.find('a', class_='jobTitle-link')['href']
-        title = job.find('a', class_='jobTitle-link').text
-        city = job.find('span', class_='jobLocation').text.split(',')[0].strip()
+        for job in jobs:
+            try:
+                link = 'https://careers.plasticomnium.com/' + job.find('a', class_='jobTitle-link')['href']
+                title = job.find('a', class_='jobTitle-link').text
+                city = job.find('span', class_='jobLocation').text.split(',')[0].strip()
 
-        list_jobs.append({
-            "job_title": title,
-            "job_link": link,
-            "company": "PlasticOmnium",
-            "country": "Romania",
-            "city": city,
-            "county": get_county(city),
-            "remote": 'on-site'
-        })
-    return list_jobs
+                list_jobs.append({
+                    "job_title": title,
+                    "job_link": link,
+                    "company": "PlasticOmnium",
+                    "country": "Romania",
+                    "city": city,
+                    "county": get_county(city),
+                    "remote": 'on-site'
+                })
+            except Exception:
+                continue
+        return list_jobs
+    except Exception:
+        return []
 
 
 @update_peviitor_api

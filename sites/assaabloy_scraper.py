@@ -1,32 +1,30 @@
 #
 # Company - > assaabloy
-# Link -> https://assaabloy.jobs2web.com/search/?searchby=location&createNewAlert=false&q=&locationsearch=Romania&geolocation=&optionsFacetsDD_country=&optionsFacetsDD_state=&optionsFacetsDD_department=&optionsFacetsDD_lang=
+# Link -> https://www.assaabloy.com/career/en/open-positions
 #
 
 from A_OO_get_post_soup_update_dec import update_peviitor_api,DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
-from bs4 import BeautifulSoup
 
 
 def get_jobs():
 
     res = requests.get(
-        'https://assaabloy.jobs2web.com/search/?searchby=location&createNewAlert=false&q=&locationsearch=Romania&geolocation=&optionsFacetsDD_country=&optionsFacetsDD_state=&optionsFacetsDD_department=&optionsFacetsDD_lang=',
-        headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(res.text, 'lxml')
+        'https://integration-hub-prod-assets.globalweb.aws.assaabloy.com/job-openings/jobs.json',
+        headers=DEFAULT_HEADERS, timeout=30)
+    res.raise_for_status()
 
     list_jobs = []
 
-    jobs = soup.find_all('tr', class_='data-row')
-
-    for job in jobs:
-        title = job.find('a', class_='jobTitle-link').text
-        link = 'https://assaabloy.jobs2web.com/' + job.find('a', class_='jobTitle-link')['href']
+    for job in res.json().get('items', []):
+        locations = job.get('locations') or []
+        if not any(location.get('country') == 'Romania' for location in locations):
+            continue
 
         list_jobs.append({
-            "job_title": title,
-            "job_link": link,
+            "job_title": job['title'],
+            "job_link": 'https://www.assaabloy.com/career/en/open-positions/job.' + job['jobReqId'],
             "company": "assaabloy",
             "country": "Romania",
             "city": 'Bucuresti',

@@ -10,11 +10,27 @@ from _county import get_county
 from _validate_city import validate_city
 
 
+def get_soup(url):
+    try:
+        response = requests.get(url, headers=DEFAULT_HEADERS, timeout=(10, 30))
+        response.raise_for_status()
+        return BeautifulSoup(response.text, 'lxml')
+    except requests.RequestException:
+        response = requests.get(
+            'https://r.jina.ai/' + url,
+            headers={**DEFAULT_HEADERS, 'X-Return-Format': 'html'},
+            timeout=(10, 60))
+        response.raise_for_status()
+        return BeautifulSoup(response.text, 'lxml')
+
+
 def get_jobs():
-    response = requests.get(
-        'https://careers.reckitt.com/search/?createNewAlert=false&q=&locationsearch=Ro&optionsFacetsDD_facility=&optionsFacetsDD_country=',
-        headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text, 'lxml')
+    try:
+        soup = get_soup(
+            'https://careers.reckitt.com/search/?createNewAlert=false&q=&locationsearch=Ro&optionsFacetsDD_facility=&optionsFacetsDD_country=')
+    except requests.RequestException:
+        return []
+
     list_jobs = []
 
     jobs = soup.find_all('tr', class_='data-row')
