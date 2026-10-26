@@ -17,7 +17,7 @@ def get_soup(url):
 
 
 def get_pages():
-    pages = int(get_soup('https://www.hartrodt.com/career/open-positions/p1'
+    pages = int(get_soup('https://www.hartrodt.com/de/karriere/job-offers/p1'
                          ).find('span', class_='m-pagination__content').text.split()[-1])
     return pages
 
@@ -28,15 +28,19 @@ def get_jobs():
 
     for page in range(1, get_pages()+1, 1):
 
-        jobs = get_soup(f'https://www.hartrodt.com/career/open-positions/p{page}'
+        jobs = get_soup(f'https://www.hartrodt.com/de/karriere/job-offers/p{page}'
                         ).find_all('div', class_='m-listicle')
         for job in jobs:
             title = job.find('a', class_='m-listicle__link')['title']
             link = job.find('a', class_='m-listicle__link')['href']
-            city = validate_city(job.find('h4', class_='m-listicle__subline').text.split(',')[0].strip())
-            country = job.find('h4', class_='m-listicle__subline').text.split(',')[-1].strip()
+            location = job.find('h4', class_='m-listicle__subline').text.split(',')
+            city = location[0].strip()
+            country = location[-1].strip()
 
-            if 'Romania' in country:
+            if country in ('Romania', 'Rumänien'):
+                if city == 'Bukarest':
+                    city = 'Bucharest'
+                city = validate_city(city)
                 job_list.append({
                     "job_title": title,
                     "job_link": link,
