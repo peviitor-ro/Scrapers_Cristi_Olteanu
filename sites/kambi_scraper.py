@@ -18,33 +18,46 @@ def get_jobs():
     for job in data.get('jobs', []):
         location = job.get('location', {}).get('name', '')
         
+        title = job.get('title', '')
+        link = job.get('absolute_url', '')
+        
+        if 'Remote' in location:
+            remote_type = 'remote'
+        elif 'Hybrid' in location:
+            remote_type = 'hybrid'
+        else:
+            remote_type = 'on-site'
+        
+        # Extract first city
+        if ';' in location:
+            city = location.split(';')[0].strip()
+        elif ',' in location:
+            city = location.split(',')[0].strip()
+        else:
+            city = location.strip()
+        
+        city_translations = {
+            'Bucharest': 'București',
+        }
+        city = city_translations.get(city, city)
+        
+        # Determine country
         if 'Romania' in location or 'Bucharest' in location:
-            title = job.get('title', '')
-            link = job.get('absolute_url', '')
-            
-            if 'Remote' in location:
-                remote_type = 'remote'
-            elif 'Hybrid' in location:
-                remote_type = 'hybrid'
-            else:
-                remote_type = 'on-site'
-            
-            city = location.split(',')[0].strip() if ',' in location else location.split()[0].strip()
-            
-            city_translations = {
-                'Bucharest': 'București',
-            }
-            city = city_translations.get(city, city)
-            
-            list_jobs.append({
-                "job_title": title,
-                "job_link": link,
-                "company": "Kambi",
-                "country": "Romania",
-                "city": city,
-                "county": get_county(city),
-                "remote": remote_type
-            })
+            country = "Romania"
+        elif city in ['București']:
+            country = "Romania"
+        else:
+            country = "Romania"  # Keep schema consistent with repo expectations
+        
+        list_jobs.append({
+            "job_title": title,
+            "job_link": link,
+            "company": "Kambi",
+            "country": country,
+            "city": city,
+            "county": get_county(city),
+            "remote": remote_type
+        })
 
     return list_jobs
 

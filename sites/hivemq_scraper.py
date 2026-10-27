@@ -1,38 +1,62 @@
 #
 #  Company - > hiveMq
-# Link -> https://boards.eu.greenhouse.io/hivemq
+# Link -> https://jobs.ashbyhq.com/hivemq
 #
 from A_OO_get_post_soup_update_dec import DEFAULT_HEADERS, update_peviitor_api
 from L_00_logo import update_logo
 import requests
-from bs4 import BeautifulSoup
+
+
+EXCLUDED_REGIONS = (
+    'apac',
+    'asia',
+    'australia',
+    'united states',
+    'usa',
+    'canada',
+    'americas',
+    'new york',
+)
 
 
 def get_jobs():
 
     list_jobs = []
 
-    response = requests.get('https://job-boards.eu.greenhouse.io/hivemq?t=f4020b82teu&offices%5B%5D=4000101101',
-                            headers=DEFAULT_HEADERS)
-    soup = BeautifulSoup(response.text, 'lxml')
-
-    jobs = soup.find_all('div', class_='job-posts')
+    req = requests.get(
+        "https://api.ashbyhq.com/posting-api/job-board/hivemq",
+        headers=DEFAULT_HEADERS,
+    )
+    jobs = req.json().get('jobs', [])
 
     for job in jobs:
-        title = job.find('p', class_="body body--medium").text
-        link = job.find('a')['href']
-        location = job.find('p', class_='body body__secondary body--metadata').text
+        if not job.get('isListed', True):
+            continue
 
-        if 'europe remote' in location.lower():
-            list_jobs.append({
-                "job_title": title,
-                "job_link": link,
-                "company": "hiveMq",
-                "country": "Romania",
-                "city": 'Bucuresti',
-                "county": 'Bucuresti',
-                "remote": 'remote'
-            })
+        location = (job.get('location') or '').strip()
+        location_lower = location.lower()
+
+        is_remote = bool(job.get('isRemote')) or location_lower.startswith('remote') or (job.get('workplaceType') or '').lower() == 'remote'
+        if not is_remote:
+            continue
+
+        if any(region in location_lower for region in EXCLUDED_REGIONS):
+            continue
+
+        title = (job.get('title') or '').strip()
+        link = job.get('jobUrl') or job.get('applyUrl')
+        if not title or not link:
+            continue
+
+        list_jobs.append({
+            "job_title": title,
+            "job_link": link,
+            "company": "hiveMq",
+            "country": "Romania",
+            "city": 'Bucuresti',
+            "county": 'Bucuresti',
+            "remote": 'remote'
+        })
     return list_jobs
 
 
