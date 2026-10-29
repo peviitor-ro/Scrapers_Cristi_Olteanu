@@ -17,7 +17,7 @@ def get_soup(url: str):
 
 def get_nr_pages():
 
-    soup_pages = get_soup('https://careers.stericycle.com/search/?q=&q2=&alertId=&locationsearch=&geolocation=&searchby=location&d=10&lat=&lon=&title=&location=Romania')
+    soup_pages = get_soup('https://careers.stericycle.com/search/?q=&q2=&alertId=&locationsearch=Romania&geolocation=&searchby=location&d=10&lat=&lon=&title=')
     try:
         nr_pages = int(soup_pages.find('span', class_='paginationLabel').text.split()[-1])
     except:
@@ -30,7 +30,7 @@ def get_jobs():
 
     for page in range(0, get_nr_pages(), 10):
 
-        soup_jobs = get_soup('https://careers.stericycle.com/search/?q=&q2=&alertId=&locationsearch=&geolocation=&searchby=location&d=10&lat=&lon=&title=&location=Romania&startrow='+str(page))
+        soup_jobs = get_soup('https://careers.stericycle.com/search/?q=&q2=&alertId=&locationsearch=Romania&geolocation=&searchby=location&d=10&lat=&lon=&title=&startrow='+str(page))
         jobs = soup_jobs.find_all('tr', class_='data-row')
 
         if len(jobs) > 0:
