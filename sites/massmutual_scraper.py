@@ -1,45 +1,85 @@
 #
 #  Company - > MassMutual
-# Link -> https://careers.massmutualromania.com/search-jobs
+# Link -> https://massmutual.wd1.myworkdayjobs.com/en-US/MMROCareerSite
 #
 from A_OO_get_post_soup_update_dec import update_peviitor_api, DEFAULT_HEADERS
 from L_00_logo import update_logo
 import requests
-from bs4 import BeautifulSoup
 from _county import get_county
+from _validate_city import validate_city
+
+BASE_URL = 'https://massmutual.wd1.myworkdayjobs.com'
+CAREER_SITE = 'MMROCareerSite'
+JOBS_URL = f'{BASE_URL}/wday/cxs/massmutual/{CAREER_SITE}/jobs'
+
+
+def get_job_details(external_path):
+
+    response = requests.get(
+        f'{BASE_URL}/wday/cxs/massmutual/{CAREER_SITE}{external_path}',
+        headers=DEFAULT_HEADERS)
+
+    if response.status_code != 200:
+        return None
+
+    return response.json().get('jobPostingInfo', {})
 
 
 def get_jobs():
 
     list_jobs = []
+    offset = 0
 
-    response = requests.get(
-        'https://careers.massmutualromania.com/search-jobs/results?ActiveFacetID=0&CurrentPage=1&RecordsPerPage=41&Distance=50&RadiusUnitType=0&Keywords=&Location=&ShowRadius=False&IsPagination=False&CustomFacetName=&FacetTerm=&FacetType=0&SearchResultsModuleName=Search+Results&SearchFiltersModuleName=Search+Filters&SortCriteria=0&SortDirection=0&SearchType=5&PostalCode=&ResultsType=0&fc=&fl=&fcf=&afc=&afl=&afcf=',
-        headers=DEFAULT_HEADERS).json()['results']
+    while True:
+        response = requests.post(
+            JOBS_URL,
+            headers=DEFAULT_HEADERS,
+            json={
+                "appliedFacets": {},
+                "limit": 20,
+                "offset": offset,
+                "searchText": ""
+            }).json()
 
-    soup = BeautifulSoup(response, 'lxml')
-    jobs = soup.find_all('li')
+        job_postings = response.get('jobPostings', [])
+        total = response.get('total', 0)
 
-    for job in jobs:
-        link = 'https://careers.massmutualromania.com' + job.find('a')['href']
-        title = job.find('a').text
-        location = job.find('span', class_='job-location').text
-        cities = []
+        for job in job_postings:
+            details = get_job_details(job['externalPath']) or {}
+            locations = [details.get('location', '')] + details.get('additionalLocations', [])
 
-        if 'Cluj-Napoca' in location:
-            cities.append('Cluj-Napoca')
-        if 'Bucharest' in location:
-            cities.append('Bucuresti')
+            cities = []
+            for location in locations:
+                if 'Romania' not in location:
+                    continue
+                city = validate_city(location.split(',')[0].strip())
+                if city and city not in cities:
+                    cities.append(city)
 
-        list_jobs.append({
-            "job_title": title,
-            "job_link": link,
-            "company": "MassMutual",
-            "country": "Romania",
-            "city": cities,
-            "county": get_county(cities),
-            "remote": 'on-site'
-        })
+            if not cities:
+                continue
+
+            remote_type = details.get('remoteType', '')
+            if 'hybrid' in remote_type.lower():
+                remote = 'hybrid'
+            elif 'remote' in remote_type.lower():
+                remote = 'remote'
+            else:
+                remote = 'on-site'
+
+            list_jobs.append({
+                "job_title": job['title'],
+                "job_link": f'{BASE_URL}/en-US/{CAREER_SITE}{job["externalPath"]}',
+                "company": "MassMutual",
+                "country": "Romania",
+                "city": cities,
+                "county": get_county(cities),
+                "remote": remote
+            })
+
+        offset += len(job_postings)
+        if not job_postings or offset >= total:
+            break
 
     return list_jobs
 
