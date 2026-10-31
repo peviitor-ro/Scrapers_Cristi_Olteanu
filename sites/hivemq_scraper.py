@@ -11,8 +11,6 @@ EXCLUDED_REGIONS = (
     'apac',
     'asia',
     'australia',
-    'united states',
-    'usa',
     'canada',
     'americas',
     'new york',
