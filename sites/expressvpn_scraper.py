@@ -15,7 +15,7 @@ def get_jobs():
 
     list_jobs = []
 
-    response = requests.get('https://jobs.deel.com/expresspn',
+    response = requests.get('https://jobs.deel.com/expressvpn',
                             headers=DEFAULT_HEADERS)
 
     if response.status_code != 200:
@@ -76,7 +76,7 @@ def get_jobs():
             if city and city not in cities:
                 cities.append(city)
 
-        job_link = ('https://jobs.deel.com/expresspn/job-details/'
+        job_link = ('https://jobs.deel.com/expressvpn/job-details/'
                     + str(posting.get('id')) + '/overview')
 
         if not cities:

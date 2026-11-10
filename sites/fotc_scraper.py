@@ -34,7 +34,7 @@ def get_jobs():
     soup = BeautifulSoup(response.text, 'lxml')
 
     for card in soup.select('#results .tw-col-12'):
-        link = card.find('a', class_='stretched-link')
+        link = card.find('a', class_=re.compile(r'stretched-link'))
         location_icon = card.find('i', class_='fa-map-marker-alt')
         if link is None or location_icon is None:
             continue
