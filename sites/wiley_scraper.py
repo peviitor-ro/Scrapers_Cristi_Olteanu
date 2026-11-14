@@ -14,6 +14,16 @@ WORKDAY_SITE = "wiley_careers"
 ROMANIA_COUNTRY_FACET = "f2e609fe92974a55a05fc1cdc2852122"
 
 
+def _fetch_jobs_page(url, payload, headers):
+
+    try:
+        response = requests.post(url=url, json=payload, headers=headers, timeout=30)
+        response.raise_for_status()
+        return response.json()
+    except (requests.RequestException, ValueError):
+        return None
+
+
 def _get_remote_type(external_path):
 
     url = f"{WORKDAY_BASE}/wday/cxs/{WORKDAY_TENANT}/{WORKDAY_SITE}{external_path}"
@@ -49,7 +59,9 @@ def get_jobs():
             "offset": offset,
             "searchText": ""
         }
-        response = requests.post(url=url, json=payload, headers=headers, timeout=30).json()
+        response = _fetch_jobs_page(url, payload, headers)
+        if response is None:
+            break
         jobs = response.get('jobPostings', [])
         if not jobs:
             break

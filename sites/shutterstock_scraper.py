@@ -14,7 +14,7 @@ def get_jobs():
     list_jobs = []
 
     session.get(
-        'https://shutterstock.wd1.myworkdayjobs.com/en-US/ShutterstockCareers',
+        'https://wd1.myworkdaysite.com/recruiting/shutterstock/ShutterstockCareers',
         headers={
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         },
@@ -27,14 +27,14 @@ def get_jobs():
         'Accept': 'application/json',
         'Accept-Language': 'en-US',
         'Content-Type': 'application/json',
-        'Origin': 'https://shutterstock.wd1.myworkdayjobs.com',
-        'Referer': 'https://shutterstock.wd1.myworkdayjobs.com/en-US/ShutterstockCareers',
+        'Origin': 'https://wd1.myworkdaysite.com',
+        'Referer': 'https://wd1.myworkdaysite.com/recruiting/shutterstock/ShutterstockCareers',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'X-CALYPSO-CSRF-TOKEN': csrf_token,
     }
 
     response = session.post(
-        url='https://shutterstock.wd1.myworkdayjobs.com/wday/cxs/shutterstock/ShutterstockCareers/jobs',
+        url='https://wd1.myworkdaysite.com/wday/cxs/shutterstock/ShutterstockCareers/jobs',
         headers=headers,
         json={},
         timeout=15
