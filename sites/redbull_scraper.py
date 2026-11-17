@@ -30,8 +30,8 @@ def get_jobs():
             "job_link": 'https://jobs.redbull.com/ro-ro/' + job['slug'],
             "company": "RedBull",
             "country": "Romania",
-            "city": validate_city(job['locationText'].split(',')[0]),
-            "county": get_county(validate_city(job['locationText'].split(',')[0])),
+            "city": validate_city(job['location']['city']),
+            "county": get_county(validate_city(job['location']['city'])),
             "remote": 'on-site'
         })
 
