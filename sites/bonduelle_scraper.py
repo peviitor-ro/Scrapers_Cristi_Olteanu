@@ -10,6 +10,13 @@ from _validate_city import validate_city
 from _county import get_county
 
 
+SEARCH_URL = (
+    'https://jobs.bonduelle.com/search/?searchby=location&createNewAlert=false'
+    '&q=&locationsearch=&geolocation=&optionsFacetsDD_country=RO'
+    '&optionsFacetsDD_customfield1=&optionsFacetsDD_customfield3='
+)
+
+
 def get_soup(url: str):
 
     req = requests.get(url, headers=DEFAULT_HEADERS)
@@ -19,7 +26,7 @@ def get_soup(url: str):
 
 def get_num_pages():
 
-    soup_pages = get_soup(url='https://jobs.bonduelle.com/search/?searchby=location&createNewAlert=false&q=&locationsearch=RO&geolocation=&optionsFacetsDD_country=&optionsFacetsDD_customfield1=&optionsFacetsDD_customfield3=')
+    soup_pages = get_soup(url=SEARCH_URL)
     try:
         num_jobs = int(soup_pages.find('span', class_='paginationLabel').text.split()[-1])
     except:
@@ -32,7 +39,7 @@ def get_jobs():
 
     for page in range(0, get_num_pages(), 20):
 
-        soup_jobs = get_soup(url=f'https://jobs.bonduelle.com/search/?searchby=location&createNewAlert=false&q=&locationsearch=Romania&geolocation=&optionsFacetsDD_country=&optionsFacetsDD_customfield1=&optionsFacetsDD_customfield3=&startrow={page}')
+        soup_jobs = get_soup(url=f'{SEARCH_URL}&startrow={page}')
         jobs = soup_jobs.find_all('tr', class_='data-row')
 
         for job in jobs:
